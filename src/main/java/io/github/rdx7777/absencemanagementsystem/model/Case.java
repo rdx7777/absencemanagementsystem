@@ -22,14 +22,14 @@ public class Case {
     private LocalDate endDate;
     private PartDayType type;
     private String absenceReason;
-    private String userComment; // must not be validated
+    private String userComment; // option, must not be validated
     private Boolean isCoverRequired;
     private Boolean isCoverProvided;
-    private String coverSupervisorComment; // must not be validated
+    private String coverSupervisorComment; // option, must not be validated
     private Boolean isApprovedByHeadTeacher;
     private Boolean isAbsencePaid;
-    private String headTeacherComment; // must not be validated
-    private String hrSupervisorComment; // must not be validated
+    private String headTeacherComment; // option, must not be validated
+    private String hrSupervisorComment; // option, must not be validated
     private Boolean isCaseResolved;
 
     @SuppressWarnings("unused")

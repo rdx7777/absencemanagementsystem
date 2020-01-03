@@ -44,7 +44,13 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>com.github.mifmif</groupId>
+            <artifactId>generex</artifactId>
+            <version>1.0.2</version>
+<!--            <scope>test</scope>-->
+        </dependency>
+    </dependencies>
 
 	<build>
 		<plugins>
