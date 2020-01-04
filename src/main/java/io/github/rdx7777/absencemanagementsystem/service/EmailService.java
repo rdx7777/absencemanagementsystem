@@ -30,14 +30,12 @@ public class EmailService {
     }
 
     @Async
-    public void sendEmailToCoverSupervisor(User coverSupervisor, User headTeacher, User user, AbsenceCase aCase) {
-        String coverSupervisorEmail = coverSupervisor.getEmail();
+    public void sendEmailToCoverSupervisor(User headTeacher, User user, AbsenceCase aCase) {
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
             helper.setFrom(mailProperties.getUsername());
-            helper.setTo(mailProperties.getProperties().get("to_cover_supervisor")); // temporary
-//            helper.setTo(coverSupervisorEmail);
+            helper.setTo(mailProperties.getProperties().get("to_cover_supervisor")); // permanent settings
             helper.setSubject("New case in Absence Management System - action required");
             helper.setText("Dear Cover Supervisor, you have new case to deal with." + "\n"
                 + "Absence case id: " + aCase.getId() + "\n"
@@ -81,8 +79,7 @@ public class EmailService {
     }
 
     @Async
-    public void sendEmailToHumanResourcesSupervisor(User hrSupervisor, User headTeacher, User user, AbsenceCase aCase) {
-        String hrSupervisorEmail = hrSupervisor.getEmail();
+    public void sendEmailToHumanResourcesSupervisor(User headTeacher, User user, AbsenceCase aCase) {
         String isCoverRequired = aCase.getIsCoverRequired() ? "yes" : "no";
         String isCoverProvided = aCase.getIsCoverProvided() ? "yes" : "no";
         String isApprovedByHeadTeacher = aCase.getIsApprovedByHeadTeacher() ? "yes" : "no";
@@ -91,8 +88,7 @@ public class EmailService {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
             helper.setFrom(mailProperties.getUsername());
-            helper.setTo(mailProperties.getProperties().get("to_hr_supervisor")); // temporary
-//            helper.setTo(hrSupervisorEmail);
+            helper.setTo(mailProperties.getProperties().get("to_hr_supervisor")); // permanent settings
             helper.setSubject("New case in Absence Management System - action required");
             helper.setText("Dear HR Supervisor, you have new case to deal with." + "\n"
                 + "Absence case id: " + aCase.getId() + "\n"
