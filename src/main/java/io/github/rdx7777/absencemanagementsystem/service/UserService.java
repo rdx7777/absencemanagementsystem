@@ -27,18 +27,12 @@ public class UserService {
             logger.error("Attempt to add null user.");
             throw new IllegalArgumentException("User cannot be null.");
         }
-        try {
-            Long userId = user.getId();
-            if (userId != null && repository.existsById(userId)) {
-                logger.error("Attempt to add user already existing in database.");
-                throw new ServiceOperationException("User already exists in database.");
-            }
-            return repository.save(user);
-        } catch (Exception e) {
-            String message = "An error occurred during adding user to database.";
-            logger.error(message);
-            throw new ServiceOperationException(message, e);
+        Long userId = user.getId();
+        if (userId != null && repository.existsById(userId)) {
+            logger.error("Attempt to add user already existing in database.");
+            throw new ServiceOperationException("User already exists in database.");
         }
+        return repository.save(user);
     }
 
     public User updateUser(User user) throws ServiceOperationException {
@@ -46,76 +40,40 @@ public class UserService {
             logger.error("Attempt to update user providing null user.");
             throw new IllegalArgumentException("User cannot be null.");
         }
-        try {
-            Long userId = user.getId();
-            if (userId == null || !repository.existsById(userId)) {
-                logger.error("Attempt to update not existing user.");
-                throw new ServiceOperationException("Given user does not exist in database.");
-            }
-            return repository.save(user);
-        } catch (Exception e) {
-            String message = "An error occurred during updating user.";
-            logger.error(message, e);
-            throw new ServiceOperationException(message, e);
+        Long userId = user.getId();
+        if (userId == null || !repository.existsById(userId)) {
+            logger.error("Attempt to update not existing user.");
+            throw new ServiceOperationException("Given user does not exist in database.");
         }
+        return repository.save(user);
     }
 
-    public Optional<User> getUserById(Long id) throws ServiceOperationException {
+    public Optional<User> getUserById(Long id) {
         if (id == null) {
             logger.error("Attempt to get user by id providing null id.");
             throw new IllegalArgumentException("Id cannot be null.");
         }
-        try {
-            return repository.findById(id);
-        } catch (Exception e) {
-            String message = "An error occurred during getting user by id.";
-            logger.error(message, e);
-            throw new ServiceOperationException(message, e);
-        }
+        return repository.findById(id);
     }
 
-    public Collection<User> getAllUsers() throws ServiceOperationException {
-        try {
-            return repository.findAll();
-        } catch (Exception e) {
-            String message = "An error occurred during getting all users.";
-            logger.error(message, e);
-            throw new ServiceOperationException(message, e);
-        }
+    public Collection<User> getAllUsers() {
+        return repository.findAll();
     }
 
-    public Collection<User> getAllActiveUsers() throws ServiceOperationException {
+    public Collection<User> getAllActiveUsers() {
         Example<User> example = Example.of(new User.Builder().withIsActive(true).build());
-        try {
-            return repository.findAll(example);
-        } catch (Exception e) {
-            String message = "An error occurred during getting all active users.";
-            logger.error(message, e);
-            throw new ServiceOperationException(message, e);
-        }
+        return repository.findAll(example);
     }
 
-    public boolean userExists(Long id) throws ServiceOperationException {
+    public boolean userExists(Long id) {
         if (id == null) {
             logger.error("Attempt to check if user exists providing null id.");
             throw new IllegalArgumentException("Id cannot be null.");
         }
-        try {
-            return repository.existsById(id);
-        } catch (Exception e) {
-            String message = "An error occurred during checking if user exists.";
-            logger.error(message, e);
-            throw new ServiceOperationException(message, e);
-        }
+        return repository.existsById(id);
     }
 
-    public long usersCount() throws ServiceOperationException {
-        try {
-            return repository.count();
-        } catch (Exception e) {
-            String message = "An error occurred during getting number of users.";
-            logger.error(message, e);
-            throw new ServiceOperationException(message, e);
-        }
+    public long usersCount() {
+        return repository.count();
     }
 }

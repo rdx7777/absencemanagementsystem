@@ -27,18 +27,12 @@ public class CaseService {
             logger.error("Attempt to add null case.");
             throw new IllegalArgumentException("Case cannot be null.");
         }
-        try {
-            Long caseId = aCase.getId();
-            if (caseId != null && repository.existsById(caseId)) {
-                logger.error("Attempt to add case already existing in database.");
-                throw new ServiceOperationException("Case already exists in database.");
-            }
-            return repository.save(aCase);
-        } catch (Exception e) {
-            String message = "An error occurred during adding case to database.";
-            logger.error(message);
-            throw new ServiceOperationException(message, e);
+        Long caseId = aCase.getId();
+        if (caseId != null && repository.existsById(caseId)) {
+            logger.error("Attempt to add case already existing in database.");
+            throw new ServiceOperationException("Case already exists in database.");
         }
+        return repository.save(aCase);
     }
 
     public Case updateCase(Case aCase) throws ServiceOperationException {
@@ -46,99 +40,50 @@ public class CaseService {
             logger.error("Attempt to update case providing null case.");
             throw new IllegalArgumentException("Case cannot be null.");
         }
-        try {
-            Long caseId = aCase.getId();
-            if (caseId == null || !repository.existsById(caseId)) {
-                logger.error("Attempt to update not existing case.");
-                throw new ServiceOperationException("Given case does not exist in database.");
-            }
-            return repository.save(aCase);
-        } catch (Exception e) {
-            String message = "An error occurred during updating case.";
-            logger.error(message, e);
-            throw new ServiceOperationException(message, e);
+        Long caseId = aCase.getId();
+        if (caseId == null || !repository.existsById(caseId)) {
+            logger.error("Attempt to update not existing case.");
+            throw new ServiceOperationException("Given case does not exist in database.");
         }
+        return repository.save(aCase);
     }
 
-    public Optional<Case> getCaseById(Long id) throws ServiceOperationException {
+    public Optional<Case> getCaseById(Long id) {
         if (id == null) {
             logger.error("Attempt to get case by id providing null id.");
             throw new IllegalArgumentException("Id cannot be null.");
         }
-        try {
-            return repository.findById(id);
-        } catch (Exception e) {
-            String message = "An error occurred during getting case by id.";
-            logger.error(message, e);
-            throw new ServiceOperationException(message, e);
-        }
+        return repository.findById(id);
     }
 
-    public Collection<Case> getAllCases() throws ServiceOperationException {
-        try {
-            return repository.findAll();
-        } catch (Exception e) {
-            String message = "An error occurred during getting all cases.";
-            logger.error(message, e);
-            throw new ServiceOperationException(message, e);
-        }
+    public Collection<Case> getAllCases() {
+        return repository.findAll();
     }
 
-    public Collection<Case> getAllActiveCases() throws ServiceOperationException {
+    public Collection<Case> getAllActiveCases() {
         Example<Case> example = Example.of(new Case.Builder().withIsCaseResolved(false).build());
-        try {
-            return repository.findAll(example);
-        } catch (Exception e) {
-            String message = "An error occurred during getting all active cases.";
-            logger.error(message, e);
-            throw new ServiceOperationException(message, e);
-        }
+        return repository.findAll(example);
     }
 
-    public Collection<Case> getAllUserCases(Long userId) throws ServiceOperationException {
+    public Collection<Case> getAllUserCases(Long userId) {
         Example<Case> example = Example.of(new Case.Builder().withUserId(userId).build());
-        try {
-            return repository.findAll(example);
-        } catch (Exception e) {
-            String message = "An error occurred during getting all user cases.";
-            logger.error(message, e);
-            throw new ServiceOperationException(message, e);
-        }
+        return repository.findAll(example);
     }
 
-    public Collection<Case> getAllActiveCasesForHeadTeacher(Long headTeacherId) throws ServiceOperationException {
+    public Collection<Case> getAllActiveCasesForHeadTeacher(Long headTeacherId) {
         Example<Case> example = Example.of(new Case.Builder().withHeadTeacherId(headTeacherId).withIsCaseResolved(false).build());
-        try {
-            return repository.findAll(example);
-        } catch (Exception e) {
-            String message = "An error occurred during getting all active cases for Head Teacher.";
-            logger.error(message, e);
-            throw new ServiceOperationException(message, e);
-        }
+        return repository.findAll(example);
     }
 
-
-    public boolean caseExists(Long id) throws ServiceOperationException {
+    public boolean caseExists(Long id) {
         if (id == null) {
             logger.error("Attempt to check if case exists providing null id.");
             throw new IllegalArgumentException("Id cannot be null.");
         }
-        try {
-            return repository.existsById(id);
-        } catch (Exception e) {
-            String message = "An error occurred during checking if case exists.";
-            logger.error(message, e);
-            throw new ServiceOperationException(message, e);
-        }
+        return repository.existsById(id);
     }
 
-    public long casesCount() throws ServiceOperationException {
-        try {
-            return repository.count();
-        } catch (Exception e) {
-            String message = "An error occurred during getting number of cases.";
-            logger.error(message, e);
-            throw new ServiceOperationException(message, e);
-        }
+    public long casesCount() {
+        return repository.count();
     }
 }
