@@ -177,6 +177,23 @@ class UserServiceTest {
     }
 
     @Test
+    void shouldDeleteUser() {
+        // given
+        doNothing().when(repository).deleteById(1L);
+
+        // when
+        userService.deleteUser(1L);
+
+        // then
+        verify(repository).deleteById(1L);
+    }
+
+    @Test
+    void deleteUserMethodShouldThrowIllegalArgumentExceptionForNullUserId() {
+        assertThrows(IllegalArgumentException.class, () -> userService.deleteUser(null));
+    }
+
+    @Test
     void shouldReturnTrueWhenUserExistsInDatabase() {
         // given
         when(repository.existsById(1L)).thenReturn(true);

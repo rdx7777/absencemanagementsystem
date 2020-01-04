@@ -14,9 +14,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserService {
 
-    private final UserRepository repository;
-
     private final Logger logger = LoggerFactory.getLogger(UserService.class);
+
+    private final UserRepository repository;
 
     public UserService(UserRepository repository) {
         this.repository = repository;
@@ -63,6 +63,14 @@ public class UserService {
     public Collection<User> getAllActiveUsers() {
         Example<User> example = Example.of(new User.Builder().withIsActive(true).build());
         return repository.findAll(example);
+    }
+
+    public void deleteUser(Long id) {
+        if (id == null) {
+            logger.error("Attempt to delete user providing null id.");
+            throw new IllegalArgumentException("Id cannot be null.");
+        }
+        repository.deleteById(id);
     }
 
     public boolean userExists(Long id) {

@@ -1,7 +1,7 @@
 package io.github.rdx7777.absencemanagementsystem.service;
 
-import io.github.rdx7777.absencemanagementsystem.model.Case;
-import io.github.rdx7777.absencemanagementsystem.repository.CaseRepository;
+import io.github.rdx7777.absencemanagementsystem.model.AbsenceCase;
+import io.github.rdx7777.absencemanagementsystem.repository.AbsenceCaseRepository;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -12,33 +12,33 @@ import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CaseService {
+public class AbsenceCaseService {
 
-    private final CaseRepository repository;
+    private final Logger logger = LoggerFactory.getLogger(AbsenceCaseService.class);
 
-    private final Logger logger = LoggerFactory.getLogger(CaseService.class);
+    private final AbsenceCaseRepository repository;
 
-    public CaseService(CaseRepository repository) {
+    public AbsenceCaseService(AbsenceCaseRepository repository) {
         this.repository = repository;
     }
 
-    public Case addCase(Case aCase) throws ServiceOperationException {
+    public AbsenceCase addCase(AbsenceCase aCase) throws ServiceOperationException {
         if (aCase == null) {
             logger.error("Attempt to add null case.");
-            throw new IllegalArgumentException("Case cannot be null.");
+            throw new IllegalArgumentException("AbsenceCase cannot be null.");
         }
         Long caseId = aCase.getId();
         if (caseId != null && repository.existsById(caseId)) {
             logger.error("Attempt to add case already existing in database.");
-            throw new ServiceOperationException("Case already exists in database.");
+            throw new ServiceOperationException("AbsenceCase already exists in database.");
         }
         return repository.save(aCase);
     }
 
-    public Case updateCase(Case aCase) throws ServiceOperationException {
+    public AbsenceCase updateCase(AbsenceCase aCase) throws ServiceOperationException {
         if (aCase == null) {
             logger.error("Attempt to update case providing null case.");
-            throw new IllegalArgumentException("Case cannot be null.");
+            throw new IllegalArgumentException("AbsenceCase cannot be null.");
         }
         Long caseId = aCase.getId();
         if (caseId == null || !repository.existsById(caseId)) {
@@ -48,7 +48,7 @@ public class CaseService {
         return repository.save(aCase);
     }
 
-    public Optional<Case> getCaseById(Long id) {
+    public Optional<AbsenceCase> getCaseById(Long id) {
         if (id == null) {
             logger.error("Attempt to get case by id providing null id.");
             throw new IllegalArgumentException("Id cannot be null.");
@@ -56,23 +56,31 @@ public class CaseService {
         return repository.findById(id);
     }
 
-    public Collection<Case> getAllCases() {
+    public Collection<AbsenceCase> getAllCases() {
         return repository.findAll();
     }
 
-    public Collection<Case> getAllActiveCases() {
-        Example<Case> example = Example.of(new Case.Builder().withIsCaseResolved(false).build());
+    public Collection<AbsenceCase> getAllActiveCases() {
+        Example<AbsenceCase> example = Example.of(new AbsenceCase.Builder().withIsCaseResolved(false).build());
         return repository.findAll(example);
     }
 
-    public Collection<Case> getAllUserCases(Long userId) {
-        Example<Case> example = Example.of(new Case.Builder().withUserId(userId).build());
+    public Collection<AbsenceCase> getAllUserCases(Long userId) {
+        Example<AbsenceCase> example = Example.of(new AbsenceCase.Builder().withUserId(userId).build());
         return repository.findAll(example);
     }
 
-    public Collection<Case> getAllActiveCasesForHeadTeacher(Long headTeacherId) {
-        Example<Case> example = Example.of(new Case.Builder().withHeadTeacherId(headTeacherId).withIsCaseResolved(false).build());
+    public Collection<AbsenceCase> getAllActiveCasesForHeadTeacher(Long headTeacherId) {
+        Example<AbsenceCase> example = Example.of(new AbsenceCase.Builder().withHeadTeacherId(headTeacherId).withIsCaseResolved(false).build());
         return repository.findAll(example);
+    }
+
+    public void deleteCase(Long id) {
+        if (id == null) {
+            logger.error("Attempt to delete case providing null id.");
+            throw new IllegalArgumentException("Id cannot be null.");
+        }
+        repository.deleteById(id);
     }
 
     public boolean caseExists(Long id) {

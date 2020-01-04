@@ -1,6 +1,6 @@
 package io.github.rdx7777.absencemanagementsystem.model.validation;
 
-import io.github.rdx7777.absencemanagementsystem.model.Case;
+import io.github.rdx7777.absencemanagementsystem.model.AbsenceCase;
 import io.github.rdx7777.absencemanagementsystem.model.PartDayType;
 
 import java.time.LocalDate;
@@ -8,11 +8,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class CaseValidator extends Validator {
+public class AbsenceCaseValidator extends Validator {
 
-    public static List<String> validate(Case aCase) {
+    public static List<String> validate(AbsenceCase aCase) {
         if (aCase == null) {
-            return Collections.singletonList("Case cannot be null.");
+            return Collections.singletonList("AbsenceCase cannot be null.");
         }
 
         List<String> result = new ArrayList<>();

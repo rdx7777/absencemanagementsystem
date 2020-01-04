@@ -4,9 +4,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-import io.github.rdx7777.absencemanagementsystem.generators.CaseGenerator;
-import io.github.rdx7777.absencemanagementsystem.model.Case;
-import io.github.rdx7777.absencemanagementsystem.repository.CaseRepository;
+import io.github.rdx7777.absencemanagementsystem.generators.AbsenceCaseGenerator;
+import io.github.rdx7777.absencemanagementsystem.model.AbsenceCase;
+import io.github.rdx7777.absencemanagementsystem.repository.AbsenceCaseRepository;
 
 import java.util.Collection;
 import java.util.List;
@@ -20,24 +20,24 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Example;
 
 @ExtendWith(MockitoExtension.class)
-class CaseServiceTest {
+class AbsenceCaseServiceTest {
 
     @Mock
-    CaseRepository repository;
+    AbsenceCaseRepository repository;
 
     @InjectMocks
-    CaseService caseService;
+    AbsenceCaseService absenceCaseService;
 
     @Test
     void shouldAddCase() throws ServiceOperationException {
         // given
-        Case caseToAdd = CaseGenerator.getRandomCaseWithAllDayPartDayType();
-        Case addedCase = CaseGenerator.getRandomCaseWithAllDayPartDayType();
+        AbsenceCase caseToAdd = AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayType();
+        AbsenceCase addedCase = AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayType();
         when(repository.existsById(caseToAdd.getId())).thenReturn(false);
         when(repository.save(caseToAdd)).thenReturn(addedCase);
 
         // when
-        Case result = caseService.addCase(caseToAdd);
+        AbsenceCase result = absenceCaseService.addCase(caseToAdd);
 
         // then
         assertEquals(addedCase, result);
@@ -48,12 +48,12 @@ class CaseServiceTest {
     @Test
     void shouldAddCaseWithNullId() throws ServiceOperationException {
         // given
-        Case caseToAdd = CaseGenerator.getRandomCaseWithAllDayPartDayTypeAndNullId();
-        Case addedCase = CaseGenerator.getRandomCaseWithAllDayPartDayType();
+        AbsenceCase caseToAdd = AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayTypeAndNullId();
+        AbsenceCase addedCase = AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayType();
         when(repository.save(caseToAdd)).thenReturn(addedCase);
 
         // when
-        Case result = caseService.addCase(caseToAdd);
+        AbsenceCase result = absenceCaseService.addCase(caseToAdd);
 
         // then
         assertEquals(addedCase, result);
@@ -63,7 +63,7 @@ class CaseServiceTest {
 
     @Test
     void addCaseMethodShouldThrowIllegalArgumentExceptionForNullCase() {
-        assertThrows(IllegalArgumentException.class, () -> caseService.addCase(null));
+        assertThrows(IllegalArgumentException.class, () -> absenceCaseService.addCase(null));
         verify(repository, never()).existsById(any());
         verify(repository, never()).save(any());
     }
@@ -71,11 +71,11 @@ class CaseServiceTest {
     @Test
     void addCaseMethodShouldThrowExceptionForCaseExistingInDatabase() {
         // given
-        Case aCase = CaseGenerator.getRandomCaseWithAllDayPartDayType();
+        AbsenceCase aCase = AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayType();
         when(repository.existsById(aCase.getId())).thenReturn(true);
 
         // then
-        assertThrows(ServiceOperationException.class, () -> caseService.addCase(aCase));
+        assertThrows(ServiceOperationException.class, () -> absenceCaseService.addCase(aCase));
         verify(repository).existsById(aCase.getId());
         verify(repository, never()).save(aCase);
     }
@@ -83,13 +83,13 @@ class CaseServiceTest {
     @Test
     void shouldUpdateGivenCaseInDatabase() throws ServiceOperationException {
         // given
-        Case caseToUpdate = CaseGenerator.getRandomCaseWithAllDayPartDayType();
-        Case updatedCase = CaseGenerator.getRandomCaseWithAllDayPartDayType();
+        AbsenceCase caseToUpdate = AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayType();
+        AbsenceCase updatedCase = AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayType();
         when(repository.existsById(caseToUpdate.getId())).thenReturn(true);
         when(repository.save(caseToUpdate)).thenReturn(updatedCase);
 
         // when
-        Case result = caseService.updateCase(caseToUpdate);
+        AbsenceCase result = absenceCaseService.updateCase(caseToUpdate);
 
         // then
         assertEquals(updatedCase, result);
@@ -99,7 +99,7 @@ class CaseServiceTest {
 
     @Test
     void updateCaseMethodShouldThrowIllegalArgumentExceptionForNullCase() {
-        assertThrows(IllegalArgumentException.class, () -> caseService.updateCase(null));
+        assertThrows(IllegalArgumentException.class, () -> absenceCaseService.updateCase(null));
         verify(repository, never()).existsById(any());
         verify(repository, never()).save(any());
     }
@@ -107,10 +107,10 @@ class CaseServiceTest {
     @Test
     void updateCaseMethodShouldThrowExceptionForNullCaseId() {
         // given
-        Case aCase = CaseGenerator.getRandomCaseWithAllDayPartDayTypeAndNullId();
+        AbsenceCase aCase = AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayTypeAndNullId();
 
         // then
-        assertThrows(ServiceOperationException.class, () -> caseService.updateCase(aCase));
+        assertThrows(ServiceOperationException.class, () -> absenceCaseService.updateCase(aCase));
         verify(repository, never()).existsById(any());
         verify(repository, never()).save(any());
     }
@@ -118,11 +118,11 @@ class CaseServiceTest {
     @Test
     void updateCaseMethodShouldThrowExceptionWhenCaseDoesNotExistInDatabase() {
         // given
-        Case aCase = CaseGenerator.getRandomCaseWithAllDayPartDayType();
+        AbsenceCase aCase = AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayType();
         when(repository.existsById(aCase.getId())).thenReturn(false);
 
         // then
-        assertThrows(ServiceOperationException.class, () -> caseService.updateCase(aCase));
+        assertThrows(ServiceOperationException.class, () -> absenceCaseService.updateCase(aCase));
         verify(repository).existsById(aCase.getId());
         verify(repository, never()).save(aCase);
     }
@@ -130,11 +130,11 @@ class CaseServiceTest {
     @Test
     void shouldReturnCaseByGivenId() {
         // given
-        Case aCase = CaseGenerator.getRandomCaseWithAllDayPartDayType();
+        AbsenceCase aCase = AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayType();
         when(repository.findById(1L)).thenReturn(Optional.of(aCase));
 
         // when
-        Optional<Case> result = caseService.getCaseById(1L);
+        Optional<AbsenceCase> result = absenceCaseService.getCaseById(1L);
 
         // then
         assertTrue(result.isPresent());
@@ -144,18 +144,18 @@ class CaseServiceTest {
 
     @Test
     void getCaseByIdMethodShouldThrowIllegalArgumentExceptionForNullCaseId() {
-        assertThrows(IllegalArgumentException.class, () -> caseService.getCaseById(null));
+        assertThrows(IllegalArgumentException.class, () -> absenceCaseService.getCaseById(null));
         verify(repository, never()).findById(1L);
     }
 
     @Test
     void shouldReturnAllCases() {
         // given
-        List<Case> cases = List.of(CaseGenerator.getRandomCaseWithAllDayPartDayType(), CaseGenerator.getRandomCaseWithAllDayPartDayType());
+        List<AbsenceCase> cases = List.of(AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayType(), AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayType());
         when(repository.findAll()).thenReturn(cases);
 
         // when
-        Collection<Case> result = caseService.getAllCases();
+        Collection<AbsenceCase> result = absenceCaseService.getAllCases();
 
         // then
         assertEquals(cases, result);
@@ -165,12 +165,12 @@ class CaseServiceTest {
     @Test
     void shouldReturnAllActiveCases() {
         // given
-        List<Case> cases = List.of(CaseGenerator.getRandomCaseWithAllDayPartDayType(), CaseGenerator.getRandomCaseWithAllDayPartDayType());
-        Example example = Example.of(new Case.Builder().withIsCaseResolved(false).build());
+        List<AbsenceCase> cases = List.of(AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayType(), AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayType());
+        Example example = Example.of(new AbsenceCase.Builder().withIsCaseResolved(false).build());
         when(repository.findAll(example)).thenReturn(cases);
 
         // when
-        Collection<Case> result = caseService.getAllActiveCases();
+        Collection<AbsenceCase> result = absenceCaseService.getAllActiveCases();
 
         // then
         assertEquals(cases, result);
@@ -180,12 +180,12 @@ class CaseServiceTest {
     @Test
     void shouldReturnAllUserCases() {
         // given
-        List<Case> cases = List.of(CaseGenerator.getRandomCaseWithAllDayPartDayTypeAndSpecificUserId(2L), CaseGenerator.getRandomCaseWithAllDayPartDayTypeAndSpecificUserId(2L));
-        Example example = Example.of(new Case.Builder().withUserId(2L).build());
+        List<AbsenceCase> cases = List.of(AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayTypeAndSpecificUserId(2L), AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayTypeAndSpecificUserId(2L));
+        Example example = Example.of(new AbsenceCase.Builder().withUserId(2L).build());
         when(repository.findAll(example)).thenReturn(cases);
 
         // when
-        Collection<Case> result = caseService.getAllUserCases(2L);
+        Collection<AbsenceCase> result = absenceCaseService.getAllUserCases(2L);
 
         // then
         assertEquals(cases, result);
@@ -195,16 +195,33 @@ class CaseServiceTest {
     @Test
     void shouldReturnAllActiveCasesForHeadTeacher() {
         // given
-        List<Case> cases = List.of(CaseGenerator.getRandomCaseWithAllDayPartDayTypeAndSpecificHeadTeacherId(4L), CaseGenerator.getRandomCaseWithAllDayPartDayTypeAndSpecificHeadTeacherId(4L));
-        Example example = Example.of(new Case.Builder().withHeadTeacherId(4L).withIsCaseResolved(false).build());
+        List<AbsenceCase> cases = List.of(AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayTypeAndSpecificHeadTeacherId(4L), AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayTypeAndSpecificHeadTeacherId(4L));
+        Example example = Example.of(new AbsenceCase.Builder().withHeadTeacherId(4L).withIsCaseResolved(false).build());
         when(repository.findAll(example)).thenReturn(cases);
 
         // when
-        Collection<Case> result = caseService.getAllActiveCasesForHeadTeacher(4L);
+        Collection<AbsenceCase> result = absenceCaseService.getAllActiveCasesForHeadTeacher(4L);
 
         // then
         assertEquals(cases, result);
         verify(repository).findAll(example);
+    }
+
+    @Test
+    void shouldDeleteCase() {
+        // given
+        doNothing().when(repository).deleteById(1L);
+
+        // when
+        absenceCaseService.deleteCase(1L);
+
+        // then
+        verify(repository).deleteById(1L);
+    }
+
+    @Test
+    void deleteCaseMethodShouldThrowIllegalArgumentExceptionForNullCaseId() {
+        assertThrows(IllegalArgumentException.class, () -> absenceCaseService.deleteCase(null));
     }
 
     @Test
@@ -213,7 +230,7 @@ class CaseServiceTest {
         when(repository.existsById(1L)).thenReturn(true);
 
         // when
-        boolean result = caseService.caseExists(1L);
+        boolean result = absenceCaseService.caseExists(1L);
 
         // then
         assertTrue(result);
@@ -226,7 +243,7 @@ class CaseServiceTest {
         when(repository.existsById(1L)).thenReturn(false);
 
         // when
-        boolean result = caseService.caseExists(1L);
+        boolean result = absenceCaseService.caseExists(1L);
 
         // then
         assertFalse(result);
@@ -235,7 +252,7 @@ class CaseServiceTest {
 
     @Test
     void caseExistsMethodShouldThrowIllegalArgumentExceptionForNullCaseId() {
-        assertThrows(IllegalArgumentException.class, () -> caseService.caseExists(null));
+        assertThrows(IllegalArgumentException.class, () -> absenceCaseService.caseExists(null));
     }
 
     @Test
@@ -244,7 +261,7 @@ class CaseServiceTest {
         when(repository.count()).thenReturn(10L);
 
         // when
-        long result = caseService.casesCount();
+        long result = absenceCaseService.casesCount();
 
         // then
         assertEquals(10L, result);

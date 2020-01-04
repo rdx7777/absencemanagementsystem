@@ -8,7 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class Case {
+public class AbsenceCase {
 
     @Id
 //    @GeneratedValue(generator = "inc")
@@ -33,7 +33,7 @@ public class Case {
     private Boolean isCaseResolved;
 
     @SuppressWarnings("unused")
-    private Case() {
+    private AbsenceCase() {
         id = null;
         userId = null;
         headTeacherId = null;
@@ -52,7 +52,7 @@ public class Case {
         isCaseResolved = null;
     }
 
-    private Case(Case.Builder builder) {
+    private AbsenceCase(AbsenceCase.Builder builder) {
         id = builder.id;
         userId = builder.userId;
         headTeacherId = builder.headTeacherId;
@@ -71,8 +71,8 @@ public class Case {
         isCaseResolved = builder.isCaseResolved;
     }
 
-    public static Case.Builder builder() {
-        return new Case.Builder();
+    public static AbsenceCase.Builder builder() {
+        return new AbsenceCase.Builder();
     }
 
     public Long getId() {
@@ -142,8 +142,8 @@ public class Case {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Case)) return false;
-        Case aCase = (Case) o;
+        if (!(o instanceof AbsenceCase)) return false;
+        AbsenceCase aCase = (AbsenceCase) o;
         return Objects.equals(id, aCase.id) &&
             Objects.equals(userId, aCase.userId) &&
             Objects.equals(headTeacherId, aCase.headTeacherId) &&
@@ -169,7 +169,7 @@ public class Case {
 
     @Override
     public String toString() {
-        return "Case{" +
+        return "AbsenceCase{" +
             "id=" + id +
             ", userId=" + userId +
             ", headTeacherId=" + headTeacherId +
@@ -208,7 +208,7 @@ public class Case {
         private String hrSupervisorComment;
         private Boolean isCaseResolved;
 
-        public Builder withCase(Case aCase) {
+        public Builder withCase(AbsenceCase aCase) {
             this.id = aCase.getId();
             this.userId = aCase.getUserId();
             this.headTeacherId = aCase.getHeadTeacherId();
@@ -308,8 +308,8 @@ public class Case {
             return this;
         }
 
-        public Case build() {
-            return new Case(this);
+        public AbsenceCase build() {
+            return new AbsenceCase(this);
         }
     }
 }

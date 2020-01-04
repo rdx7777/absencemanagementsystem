@@ -2,7 +2,7 @@ package io.github.rdx7777.absencemanagementsystem.model.validation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import io.github.rdx7777.absencemanagementsystem.model.Case;
+import io.github.rdx7777.absencemanagementsystem.model.AbsenceCase;
 import io.github.rdx7777.absencemanagementsystem.model.PartDayType;
 
 import java.time.LocalDate;
@@ -16,13 +16,13 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-class CaseValidatorTest {
+class AbsenceCaseValidatorTest {
 
-    private Case correctCase;
+    private AbsenceCase correctCase;
 
     @BeforeEach
     void setup() {
-        correctCase = Case.builder()
+        correctCase = AbsenceCase.builder()
             .withId(1000L)
             .withUserId(1000L)
             .withHeadTeacherId(1000L)
@@ -44,14 +44,14 @@ class CaseValidatorTest {
 
     @Test
     void shouldValidateCase() {
-        List<String> resultOfValidation = CaseValidator.validate(null);
-        assertEquals(Arrays.asList("Case cannot be null."), resultOfValidation);
+        List<String> resultOfValidation = AbsenceCaseValidator.validate(null);
+        assertEquals(Arrays.asList("AbsenceCase cannot be null."), resultOfValidation);
     }
 
     @ParameterizedTest
     @MethodSource("SetOfUserIdsAndValidationResults")
     void shouldValidateUserId(Long userId, List<String> expected) {
-//        Case caseWithVariableUserId = Case.builder()
+//        AbsenceCase caseWithVariableUserId = AbsenceCase.builder()
 //            .withId(1L)
 //            .withUserId(userId)
 //            .withHeadTeacherId(10L)
@@ -70,12 +70,12 @@ class CaseValidatorTest {
 //            .withIsCaseResolved(true)
 //            .build();
 
-        Case caseWithVariableUserId = Case.builder()
+        AbsenceCase caseWithVariableUserId = AbsenceCase.builder()
             .withCase(correctCase)
             .withUserId(userId)
             .build();
 
-        List<String> resultOfValidation = CaseValidator.validate(caseWithVariableUserId);
+        List<String> resultOfValidation = AbsenceCaseValidator.validate(caseWithVariableUserId);
 
         assertEquals(expected, resultOfValidation);
     }
@@ -91,12 +91,12 @@ class CaseValidatorTest {
     @ParameterizedTest
     @MethodSource("SetOfHeadTeacherIdsAndValidationResults")
     void shouldValidateHeadTeacherId(Long headTeacherId, List<String> expected) {
-        Case caseWithVariableHeadTeacherId = Case.builder()
+        AbsenceCase caseWithVariableHeadTeacherId = AbsenceCase.builder()
             .withCase(correctCase)
             .withHeadTeacherId(headTeacherId)
             .build();
 
-        List<String> resultOfValidation = CaseValidator.validate(caseWithVariableHeadTeacherId);
+        List<String> resultOfValidation = AbsenceCaseValidator.validate(caseWithVariableHeadTeacherId);
 
         assertEquals(expected, resultOfValidation);
     }
@@ -112,12 +112,12 @@ class CaseValidatorTest {
     @ParameterizedTest
     @MethodSource("SetOfStartDatesAndValidationResults")
     void shouldValidateStartDate(LocalDate startDate, List<String> expected) {
-        Case caseWithVariableStartDate = Case.builder()
+        AbsenceCase caseWithVariableStartDate = AbsenceCase.builder()
             .withCase(correctCase)
             .withStartDate(startDate)
             .build();
 
-        List<String> resultOfValidation = CaseValidator.validate(caseWithVariableStartDate);
+        List<String> resultOfValidation = AbsenceCaseValidator.validate(caseWithVariableStartDate);
 
         assertEquals(expected, resultOfValidation);
     }
@@ -133,12 +133,12 @@ class CaseValidatorTest {
     @ParameterizedTest
     @MethodSource("SetOfEndDatesAndValidationResults")
     void shouldValidateEndDate(LocalDate endDate, List<String> expected) {
-        Case caseWithVariableEndDate = Case.builder()
+        AbsenceCase caseWithVariableEndDate = AbsenceCase.builder()
             .withCase(correctCase)
             .withEndDate(endDate)
             .build();
 
-        List<String> resultOfValidation = CaseValidator.validate(caseWithVariableEndDate);
+        List<String> resultOfValidation = AbsenceCaseValidator.validate(caseWithVariableEndDate);
 
         assertEquals(expected, resultOfValidation);
     }
@@ -154,13 +154,13 @@ class CaseValidatorTest {
     @ParameterizedTest
     @MethodSource("setOfRelationsBetweenStartDateEndDateAndValidationResults")
     void shouldValidateRelationOfStartDateAndEndDate(LocalDate startDate, LocalDate endDate, List<String> expected) {
-        Case caseWithDatesVariable = Case.builder()
+        AbsenceCase caseWithDatesVariable = AbsenceCase.builder()
             .withCase(correctCase)
             .withStartDate(startDate)
             .withEndDate(endDate)
             .build();
 
-        List<String> resultOfValidation = CaseValidator.validate(caseWithDatesVariable);
+        List<String> resultOfValidation = AbsenceCaseValidator.validate(caseWithDatesVariable);
 
         assertEquals(expected, resultOfValidation);
     }
@@ -184,12 +184,12 @@ class CaseValidatorTest {
 
     @Test
     void shouldValidatePartDayType() {
-        Case caseWithNullPartDayType = Case.builder()
+        AbsenceCase caseWithNullPartDayType = AbsenceCase.builder()
             .withCase(correctCase)
             .withPartDayType(null)
             .build();
 
-        List<String> resultOfValidation = CaseValidator.validate(caseWithNullPartDayType);
+        List<String> resultOfValidation = AbsenceCaseValidator.validate(caseWithNullPartDayType);
 
         assertEquals(Arrays.asList("Part day type cannot be null."), resultOfValidation);
     }
@@ -197,12 +197,12 @@ class CaseValidatorTest {
     @ParameterizedTest
     @MethodSource("SetOfAbsenceReasonsAndValidationResults")
     void shouldValidateAbsenceReason(String absenceReason, List<String> expected) {
-        Case caseWithVariableAbsenceReason = Case.builder()
+        AbsenceCase caseWithVariableAbsenceReason = AbsenceCase.builder()
             .withCase(correctCase)
             .withAbsenceReason(absenceReason)
             .build();
 
-        List<String> resultOfValidation = CaseValidator.validate(caseWithVariableAbsenceReason);
+        List<String> resultOfValidation = AbsenceCaseValidator.validate(caseWithVariableAbsenceReason);
 
         assertEquals(expected, resultOfValidation);
     }
@@ -219,60 +219,60 @@ class CaseValidatorTest {
 
     @Test
     void shouldValidateIsCoverRequiredIndex() {
-        Case caseWithNullIsCoverRequiredIndex = Case.builder()
+        AbsenceCase caseWithNullIsCoverRequiredIndex = AbsenceCase.builder()
             .withCase(correctCase)
             .withIsCoverRequired(null)
             .build();
 
-        List<String> resultOfValidation = CaseValidator.validate(caseWithNullIsCoverRequiredIndex);
+        List<String> resultOfValidation = AbsenceCaseValidator.validate(caseWithNullIsCoverRequiredIndex);
 
         assertEquals(Arrays.asList("Is cover required index cannot be null."), resultOfValidation);
     }
 
     @Test
     void shouldValidateIsCoverProvidedIndex() {
-        Case caseWithNullIsCoverProvidedIndex = Case.builder()
+        AbsenceCase caseWithNullIsCoverProvidedIndex = AbsenceCase.builder()
             .withCase(correctCase)
             .withIsCoverProvided(null)
             .build();
 
-        List<String> resultOfValidation = CaseValidator.validate(caseWithNullIsCoverProvidedIndex);
+        List<String> resultOfValidation = AbsenceCaseValidator.validate(caseWithNullIsCoverProvidedIndex);
 
         assertEquals(Arrays.asList("Is cover provided index cannot be null."), resultOfValidation);
     }
 
     @Test
     void shouldValidateIsApprovedByHeadTeacherIndex() {
-        Case caseWithNullIsApprovedByHeadTeacherIndex = Case.builder()
+        AbsenceCase caseWithNullIsApprovedByHeadTeacherIndex = AbsenceCase.builder()
             .withCase(correctCase)
             .withIsApprovedByHeadTeacher(null)
             .build();
 
-        List<String> resultOfValidation = CaseValidator.validate(caseWithNullIsApprovedByHeadTeacherIndex);
+        List<String> resultOfValidation = AbsenceCaseValidator.validate(caseWithNullIsApprovedByHeadTeacherIndex);
 
         assertEquals(Arrays.asList("Is approved by Head Teacher index cannot be null."), resultOfValidation);
     }
 
     @Test
     void shouldValidateIsAbsencePaidIndex() {
-        Case caseWithNullIsAbsencePaidIndex = Case.builder()
+        AbsenceCase caseWithNullIsAbsencePaidIndex = AbsenceCase.builder()
             .withCase(correctCase)
             .withIsAbsencePaid(null)
             .build();
 
-        List<String> resultOfValidation = CaseValidator.validate(caseWithNullIsAbsencePaidIndex);
+        List<String> resultOfValidation = AbsenceCaseValidator.validate(caseWithNullIsAbsencePaidIndex);
 
         assertEquals(Arrays.asList("Is absence paid index cannot be null."), resultOfValidation);
     }
 
     @Test
     void shouldValidateIsCaseResolvedIndex() {
-        Case caseWithNullIsCaseResolvedIndex = Case.builder()
+        AbsenceCase caseWithNullIsCaseResolvedIndex = AbsenceCase.builder()
             .withCase(correctCase)
             .withIsCaseResolved(null)
             .build();
 
-        List<String> resultOfValidation = CaseValidator.validate(caseWithNullIsCaseResolvedIndex);
+        List<String> resultOfValidation = AbsenceCaseValidator.validate(caseWithNullIsCaseResolvedIndex);
 
         assertEquals(Arrays.asList("Is case resolved index cannot be null."), resultOfValidation);
     }

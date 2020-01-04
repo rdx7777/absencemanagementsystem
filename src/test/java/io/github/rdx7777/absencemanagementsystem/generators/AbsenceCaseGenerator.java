@@ -1,13 +1,13 @@
 package io.github.rdx7777.absencemanagementsystem.generators;
 
-import io.github.rdx7777.absencemanagementsystem.model.Case;
+import io.github.rdx7777.absencemanagementsystem.model.AbsenceCase;
 import io.github.rdx7777.absencemanagementsystem.model.PartDayType;
 
 import java.time.LocalDate;
 
-public class CaseGenerator {
+public class AbsenceCaseGenerator {
 
-    public static Case getRandomCaseWithMorningPartDayType() {
+    public static AbsenceCase getRandomCaseWithMorningPartDayType() {
         Long id = IdGenerator.getNextId();
         Long userId = IdGenerator.getNextId();
         Long headTeacherId = IdGenerator.getNextId();
@@ -25,7 +25,7 @@ public class CaseGenerator {
         String hrSupervisorComment = WordGenerator.getRandomWord();
         Boolean isCaseResolved = false;
 
-        return Case.builder()
+        return AbsenceCase.builder()
             .withId(id)
             .withUserId(userId)
             .withHeadTeacherId(headTeacherId)
@@ -45,7 +45,7 @@ public class CaseGenerator {
             .build();
     }
 
-    public static Case getRandomCaseWithAfternoonPartDayType() {
+    public static AbsenceCase getRandomCaseWithAfternoonPartDayType() {
         Long id = IdGenerator.getNextId();
         Long userId = IdGenerator.getNextId();
         Long headTeacherId = IdGenerator.getNextId();
@@ -63,7 +63,7 @@ public class CaseGenerator {
         String hrSupervisorComment = WordGenerator.getRandomWord();
         Boolean isCaseResolved = false;
 
-        return Case.builder()
+        return AbsenceCase.builder()
             .withId(id)
             .withUserId(userId)
             .withHeadTeacherId(headTeacherId)
@@ -83,7 +83,7 @@ public class CaseGenerator {
             .build();
     }
 
-    public static Case getRandomCaseWithAllDayPartDayType() {
+    public static AbsenceCase getRandomCaseWithAllDayPartDayType() {
         Long id = IdGenerator.getNextId();
         Long userId = IdGenerator.getNextId();
         Long headTeacherId = IdGenerator.getNextId();
@@ -101,7 +101,7 @@ public class CaseGenerator {
         String hrSupervisorComment = WordGenerator.getRandomWord();
         Boolean isCaseResolved = false;
 
-        return Case.builder()
+        return AbsenceCase.builder()
             .withId(id)
             .withUserId(userId)
             .withHeadTeacherId(headTeacherId)
@@ -121,7 +121,7 @@ public class CaseGenerator {
             .build();
     }
 
-    public static Case getRandomCaseWithAllDayPartDayTypeAndSpecificId(Long id) {
+    public static AbsenceCase getRandomCaseWithAllDayPartDayTypeAndSpecificId(Long id) {
         Long userId = IdGenerator.getNextId();
         Long headTeacherId = IdGenerator.getNextId();
         LocalDate startDate = LocalDate.now();
@@ -138,7 +138,7 @@ public class CaseGenerator {
         String hrSupervisorComment = WordGenerator.getRandomWord();
         Boolean isCaseResolved = false;
 
-        return Case.builder()
+        return AbsenceCase.builder()
             .withId(id)
             .withUserId(userId)
             .withHeadTeacherId(headTeacherId)
@@ -158,7 +158,7 @@ public class CaseGenerator {
             .build();
     }
 
-    public static Case getRandomCaseWithAllDayPartDayTypeAndNullId() {
+    public static AbsenceCase getRandomCaseWithAllDayPartDayTypeAndNullId() {
         Long userId = IdGenerator.getNextId();
         Long headTeacherId = IdGenerator.getNextId();
         LocalDate startDate = LocalDate.now();
@@ -175,7 +175,7 @@ public class CaseGenerator {
         String hrSupervisorComment = WordGenerator.getRandomWord();
         Boolean isCaseResolved = false;
 
-        return Case.builder()
+        return AbsenceCase.builder()
             .withUserId(userId)
             .withHeadTeacherId(headTeacherId)
             .withStartDate(startDate)
@@ -194,7 +194,7 @@ public class CaseGenerator {
             .build();
     }
 
-    public static Case getRandomCaseWithAllDayPartDayTypeAndSpecificUserId(Long userId) {
+    public static AbsenceCase getRandomCaseWithAllDayPartDayTypeAndSpecificUserId(Long userId) {
         Long id = IdGenerator.getNextId();
         Long headTeacherId = IdGenerator.getNextId();
         LocalDate startDate = LocalDate.now();
@@ -211,7 +211,7 @@ public class CaseGenerator {
         String hrSupervisorComment = WordGenerator.getRandomWord();
         Boolean isCaseResolved = false;
 
-        return Case.builder()
+        return AbsenceCase.builder()
             .withId(id)
             .withUserId(userId)
             .withHeadTeacherId(headTeacherId)
@@ -231,7 +231,7 @@ public class CaseGenerator {
             .build();
     }
 
-    public static Case getRandomCaseWithAllDayPartDayTypeAndSpecificHeadTeacherId(Long headTeacherId) {
+    public static AbsenceCase getRandomCaseWithAllDayPartDayTypeAndSpecificHeadTeacherId(Long headTeacherId) {
         Long id = IdGenerator.getNextId();
         Long userId = IdGenerator.getNextId();
         LocalDate startDate = LocalDate.now();
@@ -248,7 +248,7 @@ public class CaseGenerator {
         String hrSupervisorComment = WordGenerator.getRandomWord();
         Boolean isCaseResolved = false;
 
-        return Case.builder()
+        return AbsenceCase.builder()
             .withId(id)
             .withUserId(userId)
             .withHeadTeacherId(headTeacherId)
