@@ -89,7 +89,7 @@ public class AbsenceCaseGenerator {
         Long headTeacherId = IdGenerator.getNextId();
         LocalDate startDate = LocalDate.now();
         LocalDate endDate = startDate.plusDays(2);
-        PartDayType type = PartDayType.AllDay;
+        PartDayType partDayType = PartDayType.AllDay;
         String absenceReason = WordGenerator.getRandomWord();
         String userComment = WordGenerator.getRandomWord();
         Boolean isCoverRequired = false;
@@ -107,7 +107,7 @@ public class AbsenceCaseGenerator {
             .withHeadTeacherId(headTeacherId)
             .withStartDate(startDate)
             .withEndDate(endDate)
-            .withPartDayType(type)
+            .withPartDayType(partDayType)
             .withAbsenceReason(absenceReason)
             .withUserComment(userComment)
             .withIsCoverRequired(isCoverRequired)

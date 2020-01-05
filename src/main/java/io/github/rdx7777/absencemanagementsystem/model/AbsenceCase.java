@@ -20,7 +20,7 @@ public class AbsenceCase {
     private Long headTeacherId;
     private LocalDate startDate;
     private LocalDate endDate;
-    private PartDayType type;
+    private PartDayType partDayType;
     private String absenceReason;
     private String userComment; // option, must not be validated
     private Boolean isCoverRequired;
@@ -39,7 +39,7 @@ public class AbsenceCase {
         headTeacherId = null;
         startDate = null;
         endDate = null;
-        type = null;
+        partDayType = null;
         absenceReason = null;
         userComment = null;
         isCoverRequired = null;
@@ -58,7 +58,7 @@ public class AbsenceCase {
         headTeacherId = builder.headTeacherId;
         startDate = builder.startDate;
         endDate = builder.endDate;
-        type = builder.type;
+        partDayType = builder.partDayType;
         absenceReason = builder.absenceReason;
         userComment = builder.userComment;
         isCoverRequired = builder.isCoverRequired;
@@ -96,7 +96,7 @@ public class AbsenceCase {
     }
 
     public PartDayType getPartDayType() {
-        return type;
+        return partDayType;
     }
 
     public String getAbsenceReason() {
@@ -149,7 +149,7 @@ public class AbsenceCase {
             Objects.equals(headTeacherId, aCase.headTeacherId) &&
             Objects.equals(startDate, aCase.startDate) &&
             Objects.equals(endDate, aCase.endDate) &&
-            type == aCase.type &&
+            partDayType == aCase.partDayType &&
             Objects.equals(absenceReason, aCase.absenceReason) &&
             Objects.equals(userComment, aCase.userComment) &&
             Objects.equals(isCoverRequired, aCase.isCoverRequired) &&
@@ -164,7 +164,7 @@ public class AbsenceCase {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, userId, headTeacherId, startDate, endDate, type, absenceReason, userComment, isCoverRequired, isCoverProvided, coverSupervisorComment, isApprovedByHeadTeacher, isAbsencePaid, headTeacherComment, hrSupervisorComment, isCaseResolved);
+        return Objects.hash(id, userId, headTeacherId, startDate, endDate, partDayType, absenceReason, userComment, isCoverRequired, isCoverProvided, coverSupervisorComment, isApprovedByHeadTeacher, isAbsencePaid, headTeacherComment, hrSupervisorComment, isCaseResolved);
     }
 
     @Override
@@ -175,7 +175,7 @@ public class AbsenceCase {
             ", headTeacherId=" + headTeacherId +
             ", startDate=" + startDate +
             ", endDate=" + endDate +
-            ", type=" + type +
+            ", partDayType=" + partDayType +
             ", absenceReason='" + absenceReason + '\'' +
             ", userComment='" + userComment + '\'' +
             ", isCoverRequired=" + isCoverRequired +
@@ -196,7 +196,7 @@ public class AbsenceCase {
         private Long headTeacherId;
         private LocalDate startDate;
         private LocalDate endDate;
-        private PartDayType type;
+        private PartDayType partDayType;
         private String absenceReason;
         private String userComment;
         private Boolean isCoverRequired;
@@ -214,7 +214,7 @@ public class AbsenceCase {
             this.headTeacherId = aCase.getHeadTeacherId();
             this.startDate = aCase.getStartDate();
             this.endDate = aCase.getEndDate();
-            this.type = aCase.getPartDayType();
+            this.partDayType = aCase.getPartDayType();
             this.absenceReason = aCase.getAbsenceReason();
             this.userComment = aCase.getUserComment();
             this.isCoverRequired = aCase.getIsCoverRequired();
@@ -253,8 +253,8 @@ public class AbsenceCase {
             return this;
         }
 
-        public Builder withPartDayType(PartDayType type) {
-            this.type = type;
+        public Builder withPartDayType(PartDayType partDayType) {
+            this.partDayType = partDayType;
             return this;
         }
 

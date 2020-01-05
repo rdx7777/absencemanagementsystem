@@ -5,11 +5,13 @@ import io.github.rdx7777.absencemanagementsystem.model.validation.UserValidator;
 import io.github.rdx7777.absencemanagementsystem.service.ServiceOperationException;
 import io.github.rdx7777.absencemanagementsystem.service.UserService;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -51,7 +53,10 @@ public class UserController {
         }
         User addedUser = service.addUser(user);
         logger.debug("New user added with id: {}.", addedUser.getId());
-        return ResponseEntity.ok(addedUser);
+        URI location = URI.create(String.format("/api/users/%d", addedUser.getId()));
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setLocation(location);
+        return new ResponseEntity<>(addedUser, httpHeaders, HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/{id}")

@@ -9,11 +9,13 @@ import io.github.rdx7777.absencemanagementsystem.service.EmailService;
 import io.github.rdx7777.absencemanagementsystem.service.ServiceOperationException;
 import io.github.rdx7777.absencemanagementsystem.service.UserService;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -55,7 +57,9 @@ public class AbsenceCaseController {
         }
         List<String> validations = AbsenceCaseValidator.validate(aCase);
         if (validations.size() > 0) {
+            System.out.println(validations);
             logger.error("Attempt to add invalid case to database.");
+            logger.error(String.valueOf(validations));
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attempt to add invalid case to database.");
         }
         AbsenceCase addedCase = caseService.addCase(aCase);
@@ -63,10 +67,13 @@ public class AbsenceCaseController {
         User headTeacher = userService.getUserById(aCase.getHeadTeacherId()).get();
         User user = userService.getUserById(aCase.getUserId()).get();
         emailService.sendEmailToCoverSupervisor(headTeacher, user, aCase);
-        return ResponseEntity.ok(addedCase);
+        URI location = URI.create(String.format("/api/cases/%d", addedCase.getId()));
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setLocation(location);
+        return new ResponseEntity<>(addedCase, httpHeaders, HttpStatus.CREATED);
     }
 
-    @PutMapping
+    @PutMapping(params = {"id", "userId"})
     public ResponseEntity<?> updateCase(@RequestParam(name = "id") Long id,
                                         @RequestParam(name = "userId") Long editingUserId,
                                         @RequestBody AbsenceCase aCase) throws ServiceOperationException {
@@ -82,10 +89,12 @@ public class AbsenceCaseController {
             logger.error("Attempt to update not existing case.");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Attempt to update not existing case.");
         }
+/*
         if (!userService.userExists(editingUserId)) {
             logger.error("Attempt to update case by not existing user.");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attempt to update case by not existing user.");
         }
+*/
         List<String> validations = AbsenceCaseValidator.validate(aCase);
         if (validations.size() > 0) {
             logger.error("Attempt to update invalid case.");
@@ -137,6 +146,10 @@ public class AbsenceCaseController {
 
     @GetMapping(value = "/user/{id}")
     public ResponseEntity<?> getAllUserCases(@PathVariable("id") Long id) {
+        /*if (!userService.getUserById(id).get().getIsActive()) {
+            logger.error("Attempt to get all user cases by not active user.");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }*/
         logger.info("Attempt to get all user cases.");
         return ResponseEntity.ok(caseService.getAllUserCases(id));
     }
