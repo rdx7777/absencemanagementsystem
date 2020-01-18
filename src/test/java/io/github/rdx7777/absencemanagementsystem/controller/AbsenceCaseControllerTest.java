@@ -27,11 +27,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(AbsenceCaseController.class)
+@WithMockUser(roles = "ADMIN")
 class AbsenceCaseControllerTest {
 
     @MockBean
@@ -334,7 +336,7 @@ class AbsenceCaseControllerTest {
             .accept(MediaType.APPLICATION_XML))
             .andExpect(status().isNotAcceptable());
 
-        verify(caseService).getAllCases(); // ???????????????
+        verify(caseService, never()).getAllCases();
     }
 
     @Test

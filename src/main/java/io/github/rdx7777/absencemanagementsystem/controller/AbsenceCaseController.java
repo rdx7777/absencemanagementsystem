@@ -45,7 +45,7 @@ public class AbsenceCaseController {
         this.emailService = emailService;
     }
 
-    @PostMapping
+    @PostMapping(produces = "application/json", consumes = "application/json")
     public ResponseEntity<?> addCase(@RequestBody AbsenceCase aCase) throws ServiceOperationException {
         if (aCase == null) {
             logger.error("Attempt to add null case.");
@@ -57,23 +57,30 @@ public class AbsenceCaseController {
         }
         List<String> validations = AbsenceCaseValidator.validate(aCase);
         if (validations.size() > 0) {
-            System.out.println(validations);
             logger.error("Attempt to add invalid case to database.");
             logger.error(String.valueOf(validations));
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attempt to add invalid case to database.");
         }
         AbsenceCase addedCase = caseService.addCase(aCase);
         logger.debug("New case added with id: {}.", addedCase.getId());
-        User headTeacher = userService.getUserById(aCase.getHeadTeacherId()).get();
-        User user = userService.getUserById(aCase.getUserId()).get();
-        emailService.sendEmailToCoverSupervisor(headTeacher, user, aCase);
+        Optional<User> headTeacher = userService.getUserById(aCase.getHeadTeacherId());
+        if (headTeacher.isEmpty()) {
+            logger.error("Attempt to send email to Cover Supervisor with details of Head Teacher, who does not exist in database.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attempt to send email to Cover Supervisor with details of Head Teacher, who does not exist in database.");
+        }
+        Optional<User> user = userService.getUserById(aCase.getUserId());
+        if (user.isEmpty()) {
+            logger.error("Attempt to send email to Cover Supervisor with details of user, who does not exist in database.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attempt to send email to Cover Supervisor with details of user, who does not exist in database.");
+        }
+        emailService.sendEmailToCoverSupervisor(headTeacher.get(), user.get(), aCase);
         URI location = URI.create(String.format("/api/cases/%d", addedCase.getId()));
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setLocation(location);
         return new ResponseEntity<>(addedCase, httpHeaders, HttpStatus.CREATED);
     }
 
-    @PutMapping(params = {"id", "userId"})
+    @PutMapping(params = {"id", "userId"}, produces = "application/json", consumes = "application/json") // "api/cases?id=%d&userId=%d"
     public ResponseEntity<?> updateCase(@RequestParam(name = "id") Long id,
                                         @RequestParam(name = "userId") Long editingUserId,
                                         @RequestBody AbsenceCase aCase) throws ServiceOperationException {
@@ -89,27 +96,34 @@ public class AbsenceCaseController {
             logger.error("Attempt to update not existing case.");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Attempt to update not existing case.");
         }
-/*
-        if (!userService.userExists(editingUserId)) {
-            logger.error("Attempt to update case by not existing user.");
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attempt to update case by not existing user.");
-        }
-*/
         List<String> validations = AbsenceCaseValidator.validate(aCase);
         if (validations.size() > 0) {
             logger.error("Attempt to update invalid case.");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attempt to update invalid case.");
         }
         logger.debug("Updated case with id {} by .", aCase.getId());
-        User headTeacher = userService.getUserById(aCase.getHeadTeacherId()).get();
-        User user = userService.getUserById(aCase.getUserId()).get();
+        Optional<User> headTeacher = userService.getUserById(aCase.getHeadTeacherId());
+        if (headTeacher.isEmpty()) {
+            logger.error("Attempt to send email with details of Head Teacher, who does not exist in database.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attempt to send email with details of Head Teacher, who does not exist in database.");
+        }
+        Optional<User> user = userService.getUserById(aCase.getUserId());
+        if (user.isEmpty()) {
+            logger.error("Attempt to send email with details of user, who does not exist in database.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attempt to send email with details of user, who does not exist in database.");
+        }
         AbsenceCase updatedCase = caseService.updateCase(aCase);
-        sendEmail(editingUserId, headTeacher, user, updatedCase);
+        sendEmail(editingUserId, headTeacher.get(), user.get(), updatedCase);
         return ResponseEntity.ok(updatedCase);
     }
 
-    private void sendEmail(Long editingUserId, User headTeacher, User user, AbsenceCase updatedCase) {
-        Position position = userService.getUserById(editingUserId).get().getPosition();
+    private void sendEmail(Long editingUserId, User headTeacher, User user, AbsenceCase updatedCase) throws ServiceOperationException {
+        Optional<User> emailSender = userService.getUserById(editingUserId);
+        if (emailSender.isEmpty()) {
+            logger.error("Attempt to send email from user, who does not exist in database.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attempt to send email from user, who does not exist in database.");
+        }
+        Position position = emailSender.get().getPosition();
         switch (position) {
             case CoverSupervisor:
                 emailService.sendEmailToHeadTeacher(headTeacher, user, updatedCase);
@@ -119,11 +133,12 @@ public class AbsenceCaseController {
                 break;
             case HumanResourcesSupervisor:
                 emailService.sendEmailToUser(headTeacher, user, updatedCase);
+                break;
         }
     }
 
-    @GetMapping(value = "/{id}")
-    public ResponseEntity<?> getCase(@PathVariable("id") Long id) {
+    @GetMapping(value = "/{id}", produces = "application/json")
+    public ResponseEntity<?> getCase(@PathVariable("id") Long id) throws ServiceOperationException {
         Optional<AbsenceCase> aCase = caseService.getCaseById(id);
         if (aCase.isEmpty()) {
             logger.error("Attempt to get case by id that does not exist in database.");
@@ -132,36 +147,44 @@ public class AbsenceCaseController {
         return ResponseEntity.ok(aCase.get());
     }
 
-    @GetMapping
-    public ResponseEntity<?> getAllCases() {
+    @GetMapping(produces = "application/json")
+    public ResponseEntity<?> getAllCases() throws ServiceOperationException {
         logger.info("Attempt to get all cases.");
         return ResponseEntity.ok(caseService.getAllCases());
     }
 
-    @GetMapping(value = "/active")
-    public ResponseEntity<?> getAllActiveCases() {
+    @GetMapping(value = "/active", produces = "application/json")
+    public ResponseEntity<?> getAllActiveCases() throws ServiceOperationException {
         logger.info("Attempt to get all active cases.");
         return ResponseEntity.ok(caseService.getAllActiveCases());
     }
 
-    @GetMapping(value = "/user/{id}")
-    public ResponseEntity<?> getAllUserCases(@PathVariable("id") Long id) {
-        /*if (!userService.getUserById(id).get().getIsActive()) {
-            logger.error("Attempt to get all user cases by not active user.");
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-        }*/
+/*    @GetMapping(value = "/user", params = {"id", "caseId"}, produces = "application/json") // "api/cases/user?id=%d&caseId=%d"
+    public ResponseEntity<?> getUserCase(@RequestParam(name = "id") Long id, @RequestParam(name = "caseId") Long caseId) throws ServiceOperationException {
+//    @GetMapping(value = "/user/{id}/{caseId}") // "api/cases/user/%d/%d"
+//    public ResponseEntity<?> getUserCase(@PathVariable("id") Long id, @PathVariable("caseId") Long caseId) {
+        if (!caseService.getCaseById(caseId).get().getId().equals(id)) {
+            logger.error("Attempt to get case which is not corresponding with user id.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attempt to get case which is not corresponding with user id.");
+        }
+        logger.info("Attempt to get all user cases.");
+         return ResponseEntity.ok(caseService.getCaseById(caseId).get());
+    }*/
+
+    @GetMapping(value = "/user/{id}", produces = "application/json")
+    public ResponseEntity<?> getAllUserCases(@PathVariable("id") Long id) throws ServiceOperationException {
         logger.info("Attempt to get all user cases.");
         return ResponseEntity.ok(caseService.getAllUserCases(id));
     }
 
-    @GetMapping(value = "/active/ht/{id}")
-    public ResponseEntity<?> getAllActiveCasesForHeadTeacher(@PathVariable("id") Long id) {
+    @GetMapping(value = "/active/ht/{id}", produces = "application/json")
+    public ResponseEntity<?> getAllActiveCasesForHeadTeacher(@PathVariable("id") Long id) throws ServiceOperationException {
         logger.info("Attempt to get all active cases for Head Teacher with id {}.", id);
         return ResponseEntity.ok(caseService.getAllActiveCasesForHeadTeacher(id));
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<?> deleteCase(@PathVariable("id") Long id) {
+    public ResponseEntity<?> deleteCase(@PathVariable("id") Long id) throws ServiceOperationException {
         if (!caseService.caseExists(id)) {
             logger.error("Attempt to delete not existing case.");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Attempt to delete not existing case.");

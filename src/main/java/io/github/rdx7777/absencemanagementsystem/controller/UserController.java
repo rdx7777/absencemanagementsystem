@@ -36,7 +36,7 @@ public class UserController {
         this.service = service;
     }
 
-    @PostMapping
+    @PostMapping(produces = "application/json", consumes = "application/json")
     public ResponseEntity<?> addUser(@RequestBody User user) throws ServiceOperationException {
         if (user == null) {
             logger.error("Attempt to add null user.");
@@ -59,7 +59,7 @@ public class UserController {
         return new ResponseEntity<>(addedUser, httpHeaders, HttpStatus.CREATED);
     }
 
-    @PutMapping(value = "/{id}")
+    @PutMapping(value = "/{id}", produces = "application/json", consumes = "application/json")
     public ResponseEntity<?> updateUser(@PathVariable("id") Long id, @RequestBody User user) throws ServiceOperationException {
         if (user == null) {
             logger.error("Attempt to update user providing null user.");
@@ -82,8 +82,8 @@ public class UserController {
         return ResponseEntity.ok(service.updateUser(user));
     }
 
-    @GetMapping(value = "/{id}")
-    public ResponseEntity<?> getUser(@PathVariable("id") Long id) {
+    @GetMapping(value = "/{id}", produces = "application/json")
+    public ResponseEntity<?> getUser(@PathVariable("id") Long id) throws ServiceOperationException {
         Optional<User> user = service.getUserById(id);
         if (user.isEmpty()) {
             logger.error("Attempt to get user by id that does not exist in database.");
@@ -92,20 +92,20 @@ public class UserController {
         return ResponseEntity.ok(user.get());
     }
 
-    @GetMapping
-    public ResponseEntity<?> getAllUsers() {
+    @GetMapping(produces = "application/json")
+    public ResponseEntity<?> getAllUsers() throws ServiceOperationException {
         logger.info("Attempt to get all users.");
         return ResponseEntity.ok(service.getAllUsers());
     }
 
-    @GetMapping(value = "/active")
-    public ResponseEntity<?> getAllActiveUsers() {
+    @GetMapping(value = "/active", produces = "application/json")
+    public ResponseEntity<?> getAllActiveUsers() throws ServiceOperationException {
         logger.info("Attempt to get all active users.");
         return ResponseEntity.ok(service.getAllActiveUsers());
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable("id") Long id) {
+    public ResponseEntity<?> deleteUser(@PathVariable("id") Long id) throws ServiceOperationException {
         if (!service.userExists(id)) {
             logger.error("Attempt to delete not existing user.");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Attempt to delete not existing user.");

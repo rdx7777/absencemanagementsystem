@@ -128,7 +128,7 @@ class AbsenceCaseServiceTest {
     }
 
     @Test
-    void shouldReturnCaseByGivenId() {
+    void shouldReturnCaseByGivenId() throws ServiceOperationException {
         // given
         AbsenceCase aCase = AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayType();
         when(repository.findById(1L)).thenReturn(Optional.of(aCase));
@@ -149,7 +149,7 @@ class AbsenceCaseServiceTest {
     }
 
     @Test
-    void shouldReturnAllCases() {
+    void shouldReturnAllCases() throws ServiceOperationException {
         // given
         List<AbsenceCase> cases = List.of(AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayType(), AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayType());
         when(repository.findAll()).thenReturn(cases);
@@ -163,7 +163,7 @@ class AbsenceCaseServiceTest {
     }
 
     @Test
-    void shouldReturnAllActiveCases() {
+    void shouldReturnAllActiveCases() throws ServiceOperationException {
         // given
         List<AbsenceCase> cases = List.of(AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayType(), AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayType());
         Example example = Example.of(new AbsenceCase.Builder().withIsCaseResolved(false).build());
@@ -178,7 +178,7 @@ class AbsenceCaseServiceTest {
     }
 
     @Test
-    void shouldReturnAllUserCases() {
+    void shouldReturnAllUserCases() throws ServiceOperationException {
         // given
         List<AbsenceCase> cases = List.of(AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayTypeAndSpecificUserId(2L), AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayTypeAndSpecificUserId(2L));
         Example example = Example.of(new AbsenceCase.Builder().withUserId(2L).build());
@@ -193,7 +193,7 @@ class AbsenceCaseServiceTest {
     }
 
     @Test
-    void shouldReturnAllActiveCasesForHeadTeacher() {
+    void shouldReturnAllActiveCasesForHeadTeacher() throws ServiceOperationException {
         // given
         List<AbsenceCase> cases = List.of(AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayTypeAndSpecificHeadTeacherId(4L), AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayTypeAndSpecificHeadTeacherId(4L));
         Example example = Example.of(new AbsenceCase.Builder().withHeadTeacherId(4L).withIsCaseResolved(false).build());
@@ -208,7 +208,7 @@ class AbsenceCaseServiceTest {
     }
 
     @Test
-    void shouldDeleteCase() {
+    void shouldDeleteCase() throws ServiceOperationException {
         // given
         doNothing().when(repository).deleteById(1L);
 
@@ -225,7 +225,7 @@ class AbsenceCaseServiceTest {
     }
 
     @Test
-    void shouldReturnTrueWhenCaseExistsInDatabase() {
+    void shouldReturnTrueWhenCaseExistsInDatabase() throws ServiceOperationException {
         // given
         when(repository.existsById(1L)).thenReturn(true);
 
@@ -238,7 +238,7 @@ class AbsenceCaseServiceTest {
     }
 
     @Test
-    void shouldReturnFalseWhenCaseDoesNotExistInDatabase() {
+    void shouldReturnFalseWhenCaseDoesNotExistInDatabase() throws ServiceOperationException {
         // given
         when(repository.existsById(1L)).thenReturn(false);
 
@@ -256,7 +256,7 @@ class AbsenceCaseServiceTest {
     }
 
     @Test
-    void shouldReturnNumberOfCases() {
+    void shouldReturnNumberOfCases() throws ServiceOperationException {
         // given
         when(repository.count()).thenReturn(10L);
 

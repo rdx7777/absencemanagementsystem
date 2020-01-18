@@ -4,10 +4,12 @@ import io.github.rdx7777.absencemanagementsystem.model.User;
 import io.github.rdx7777.absencemanagementsystem.repository.UserRepository;
 
 import java.util.Collection;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +34,13 @@ public class UserService {
             logger.error("Attempt to add user already existing in database.");
             throw new ServiceOperationException("User already exists in database.");
         }
-        return repository.save(user);
+        try {
+            return repository.save(user);
+        } catch (NonTransientDataAccessException e) {
+            String message = "An error occurred during adding user.";
+            logger.error(message, e);
+            throw new ServiceOperationException(message, e);
+        }
     }
 
     public User updateUser(User user) throws ServiceOperationException {
@@ -45,43 +53,99 @@ public class UserService {
             logger.error("Attempt to update not existing user.");
             throw new ServiceOperationException("Given user does not exist in database.");
         }
-        return repository.save(user);
+        try {
+            return repository.save(user);
+        } catch (NonTransientDataAccessException e) {
+            String message = "An error occurred during updating user.";
+            logger.error(message, e);
+            throw new ServiceOperationException(message, e);
+        }
     }
 
-    public Optional<User> getUserById(Long id) {
+    public Optional<User> getUserById(Long id) throws ServiceOperationException {
         if (id == null) {
             logger.error("Attempt to get user by id providing null id.");
             throw new IllegalArgumentException("Id cannot be null.");
         }
-        return repository.findById(id);
+        try {
+            return repository.findById(id);
+        } catch (NoSuchElementException e) {
+            String message = "An error occurred during getting user by id.";
+            logger.error(message, e);
+            throw new ServiceOperationException(message, e);
+        }
     }
 
-    public Collection<User> getAllUsers() {
-        return repository.findAll();
+    public Optional<User> getUserByEmail(String email) throws ServiceOperationException {
+        if (email == null) {
+            logger.error("Attempt to get user by email providing null email.");
+            throw new IllegalArgumentException("Email cannot be null.");
+        }
+        try {
+            return repository.findUserByEmail(email);
+        } catch (NonTransientDataAccessException e) {
+            String message = "An error occurred during getting user by email.";
+            logger.error(message, e);
+            throw new ServiceOperationException(message, e);
+        }
     }
 
-    public Collection<User> getAllActiveUsers() {
+    public Collection<User> getAllUsers() throws ServiceOperationException {
+        try {
+            return repository.findAll();
+        } catch (NonTransientDataAccessException e) {
+            String message = "An error occurred during getting all users.";
+            logger.error(message, e);
+            throw new ServiceOperationException(message, e);
+        }
+    }
+
+    public Collection<User> getAllActiveUsers() throws ServiceOperationException {
         Example<User> example = Example.of(new User.Builder().withIsActive(true).build());
-        return repository.findAll(example);
+        try {
+            return repository.findAll(example);
+        } catch (NonTransientDataAccessException e) {
+            String message = "An error occurred during getting all active users.";
+            logger.error(message, e);
+            throw new ServiceOperationException(message, e);
+        }
     }
 
-    public void deleteUser(Long id) {
+    public void deleteUser(Long id) throws ServiceOperationException {
         if (id == null) {
             logger.error("Attempt to delete user providing null id.");
             throw new IllegalArgumentException("Id cannot be null.");
         }
-        repository.deleteById(id);
+        try {
+            repository.deleteById(id);
+        } catch (NonTransientDataAccessException e) {
+            String message = "An error occurred during deleting user.";
+            logger.error(message, e);
+            throw new ServiceOperationException(message, e);
+        }
     }
 
-    public boolean userExists(Long id) {
+    public boolean userExists(Long id) throws ServiceOperationException {
         if (id == null) {
             logger.error("Attempt to check if user exists providing null id.");
             throw new IllegalArgumentException("Id cannot be null.");
         }
-        return repository.existsById(id);
+        try {
+            return repository.existsById(id);
+        } catch (NonTransientDataAccessException e) {
+            String message = "An error occurred during checking if user exists.";
+            logger.error(message, e);
+            throw new ServiceOperationException(message, e);
+        }
     }
 
-    public long usersCount() {
-        return repository.count();
+    public long usersCount() throws ServiceOperationException {
+        try {
+            return repository.count();
+        } catch (NonTransientDataAccessException e) {
+            String message = "An error occurred during getting number of users.";
+            logger.error(message, e);
+            throw new ServiceOperationException(message, e);
+        }
     }
 }

@@ -127,7 +127,7 @@ class UserServiceTest {
     }
 
     @Test
-    void shouldReturnUserByGivenId() {
+    void shouldReturnUserByGivenId() throws ServiceOperationException {
         // given
         User user = UserGenerator.getRandomEmployee();
         when(repository.findById(1L)).thenReturn(Optional.of(user));
@@ -148,7 +148,28 @@ class UserServiceTest {
     }
 
     @Test
-    void shouldReturnAllUsers() {
+    void shouldReturnUserByGivenEmail() throws ServiceOperationException {
+        // given
+        User user = UserGenerator.getRandomEmployee();
+        when(repository.findUserByEmail("user@users.com")).thenReturn(Optional.of(user));
+
+        // when
+        Optional<User> result = userService.getUserByEmail("user@users.com");
+
+        // then
+        assertTrue(result.isPresent());
+        assertEquals(user, result.get());
+        verify(repository).findUserByEmail("user@users.com");
+    }
+
+    @Test
+    void getUserByEmailMethodShouldThrowIllegalArgumentExceptionForNullUserEmail() {
+        assertThrows(IllegalArgumentException.class, () -> userService.getUserByEmail(null));
+        verify(repository, never()).findUserByEmail("user@users.com");
+    }
+
+    @Test
+    void shouldReturnAllUsers() throws ServiceOperationException {
         // given
         List<User> users = List.of(UserGenerator.getRandomEmployee(), UserGenerator.getRandomEmployee());
         when(repository.findAll()).thenReturn(users);
@@ -162,7 +183,7 @@ class UserServiceTest {
     }
 
     @Test
-    void shouldReturnAllActiveUsers() {
+    void shouldReturnAllActiveUsers() throws ServiceOperationException {
         // given
         List<User> users = List.of(UserGenerator.getRandomEmployee(), UserGenerator.getRandomEmployee());
         Example example = Example.of(new User.Builder().withIsActive(true).build());
@@ -177,7 +198,7 @@ class UserServiceTest {
     }
 
     @Test
-    void shouldDeleteUser() {
+    void shouldDeleteUser() throws ServiceOperationException {
         // given
         doNothing().when(repository).deleteById(1L);
 
@@ -194,7 +215,7 @@ class UserServiceTest {
     }
 
     @Test
-    void shouldReturnTrueWhenUserExistsInDatabase() {
+    void shouldReturnTrueWhenUserExistsInDatabase() throws ServiceOperationException {
         // given
         when(repository.existsById(1L)).thenReturn(true);
 
@@ -207,7 +228,7 @@ class UserServiceTest {
     }
 
     @Test
-    void shouldReturnFalseWhenUserDoesNotExistInDatabase() {
+    void shouldReturnFalseWhenUserDoesNotExistInDatabase() throws ServiceOperationException {
         // given
         when(repository.existsById(1L)).thenReturn(false);
 
@@ -225,7 +246,7 @@ class UserServiceTest {
     }
 
     @Test
-    void shouldReturnNumberOfUsers() {
+    void shouldReturnNumberOfUsers() throws ServiceOperationException {
         // given
         when(repository.count()).thenReturn(10L);
 
