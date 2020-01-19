@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.github.rdx7777.absencemanagementsystem.generators.UserGenerator;
 import io.github.rdx7777.absencemanagementsystem.model.User;
+import io.github.rdx7777.absencemanagementsystem.service.ServiceOperationException;
 import io.github.rdx7777.absencemanagementsystem.service.UserService;
 
 import java.util.ArrayList;
@@ -69,6 +70,7 @@ class UserControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsBytes(null))
             .accept(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest());
 
         verify(userService, never()).userExists(any());
@@ -86,6 +88,7 @@ class UserControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsBytes(user))
             .accept(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isConflict());
 
         verify(userService).userExists(user.getId());
@@ -101,8 +104,9 @@ class UserControllerTest {
 
         mockMvc.perform(post(url)
             .contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsBytes(invalidUser)).accept(MediaType.APPLICATION_JSON))
-//            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .content(mapper.writeValueAsBytes(invalidUser))
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest());
 
         verify(userService).userExists(invalidUser.getId());
@@ -121,6 +125,25 @@ class UserControllerTest {
             .andExpect(status().isUnsupportedMediaType());
 
         verify(userService, never()).addUser(userToAdd);
+    }
+
+    @Test
+    void shouldReturnInternalServerErrorDuringAddingUserWhenSomethingWentWrongOnServer() throws Exception {
+        User user = UserGenerator.getRandomEmployee();
+        when(userService.userExists(user.getId())).thenReturn(false);
+        when(userService.addUser(user)).thenThrow(new ServiceOperationException());
+
+        String url = "/api/users";
+
+        mockMvc.perform(post(url)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(mapper.writeValueAsBytes(user))
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isInternalServerError());
+
+        verify(userService).userExists(user.getId());
+        verify(userService).addUser(user);
     }
 
     @Test
@@ -151,6 +174,7 @@ class UserControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsBytes(null))
             .accept(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest());
 
         verify(userService, never()).userExists(any());
@@ -167,6 +191,7 @@ class UserControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsBytes(user))
             .accept(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest());
 
         verify(userService, never()).userExists(any());
@@ -184,6 +209,7 @@ class UserControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsBytes(user))
             .accept(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isNotFound());
 
         verify(userService).userExists(user.getId());
@@ -201,6 +227,7 @@ class UserControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsBytes(invalidUser))
             .accept(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest());
 
         verify(userService).userExists(invalidUser.getId());
@@ -219,6 +246,25 @@ class UserControllerTest {
             .andExpect(status().isUnsupportedMediaType());
 
         verify(userService, never()).updateUser(user);
+    }
+
+    @Test
+    void shouldReturnInternalServerErrorDuringUpdatingUserWhenSomethingWentWrongOnServer() throws Exception {
+        User user = UserGenerator.getRandomEmployee();
+        when(userService.userExists(user.getId())).thenReturn(true);
+        when(userService.updateUser(user)).thenThrow(new ServiceOperationException());
+
+        String url = String.format("/api/users/%d", user.getId());
+
+        mockMvc.perform(put(url)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(mapper.writeValueAsBytes(user))
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isInternalServerError());
+
+        verify(userService).userExists(user.getId());
+        verify(userService).updateUser(user);
     }
 
     @Test
@@ -246,6 +292,7 @@ class UserControllerTest {
 
         mockMvc.perform(get(url)
             .accept(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isNotFound());
 
         verify(userService).getUserById(id);
@@ -265,6 +312,34 @@ class UserControllerTest {
             .andExpect(content().json(mapper.writeValueAsString(user)));
 
         verify(userService).getUserById(user.getId());
+    }
+
+    @Test
+    void shouldReturnNotAcceptableStatusDuringGettingUserWithNotSupportedMediaType() throws Exception {
+        User user = UserGenerator.getRandomEmployee();
+
+        String url = String.format("/api/users/%d", user.getId());
+
+        mockMvc.perform(get(url)
+            .accept(MediaType.APPLICATION_XML))
+            .andExpect(status().isNotAcceptable());
+
+        verify(userService, never()).getUserById(user.getId());
+    }
+
+    @Test
+    void shouldReturnInternalServerErrorDuringGettingUserWhenSomethingWentWrongOnServer() throws Exception {
+        Long id = 1L;
+        when(userService.getUserById(id)).thenThrow(new ServiceOperationException());
+
+        String url = String.format("/api/users/%d", id);
+
+        mockMvc.perform(get(url)
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isInternalServerError());
+
+        verify(userService).getUserById(id);
     }
 
     @Test
@@ -310,16 +385,72 @@ class UserControllerTest {
     }
 
     @Test
+    void shouldReturnInternalServerErrorDuringGettingAllUsersWhenSomethingWentWrongOnServer() throws Exception {
+        when(userService.getAllUsers()).thenThrow(new ServiceOperationException());
+
+        String url = "/api/users";
+
+        mockMvc.perform(get(url)
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isInternalServerError());
+
+        verify(userService).getAllUsers();
+    }
+
+    @Test
     void shouldReturnAllActiveUsers() throws Exception {
         Collection<User> users = Arrays.asList(UserGenerator.getRandomEmployee(), UserGenerator.getRandomEmployee());
         when(userService.getAllActiveUsers()).thenReturn(users);
 
         String url = "/api/users/active";
 
-        mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get(url)
+            .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(content().json(mapper.writeValueAsString(users)));
+
+        verify(userService).getAllActiveUsers();
+    }
+
+    @Test
+    void shouldReturnEmptyListOfActiveUsersWhenThereAreNotActiveUsersInTheDatabase() throws Exception {
+        Collection<User> users = new ArrayList<>();
+        when(userService.getAllActiveUsers()).thenReturn(users);
+
+        String url = "/api/users/active";
+
+        mockMvc.perform(get(url)
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(content().json(mapper.writeValueAsString(users)));
+
+        verify(userService).getAllActiveUsers();
+    }
+
+    @Test
+    void shouldReturnNotAcceptableStatusDuringGettingAllActiveUsersWithNotSupportedMediaType() throws Exception {
+        String url = "/api/users/active";
+
+        mockMvc.perform(get(url)
+            .accept(MediaType.APPLICATION_XML))
+            .andExpect(status().isNotAcceptable());
+
+        verify(userService, never()).getAllActiveUsers();
+    }
+
+    @Test
+    void shouldReturnInternalServerErrorDuringGettingAllActiveUsersWhenSomethingWentWrongOnServer() throws Exception {
+        when(userService.getAllActiveUsers()).thenThrow(new ServiceOperationException());
+
+        String url = "/api/users/active";
+
+        mockMvc.perform(get(url)
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isInternalServerError());
 
         verify(userService).getAllActiveUsers();
     }
@@ -334,6 +465,7 @@ class UserControllerTest {
 
         mockMvc.perform(delete(url)
             .accept(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isNoContent());
 
         verify(userService).userExists(user.getId());
@@ -348,9 +480,27 @@ class UserControllerTest {
 
         mockMvc.perform(delete(url)
             .accept(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isNotFound());
 
         verify(userService).userExists(1L);
         verify(userService, never()).deleteUser(1L);
+    }
+
+    @Test
+    void shouldReturnInternalServerErrorDuringRemovingUserWhenSomethingWentWrongOnServer() throws Exception {
+        Long id = 1L;
+        when(userService.userExists(id)).thenReturn(true);
+        doThrow(ServiceOperationException.class).when(userService).deleteUser(id);
+
+        String url = String.format("/api/users/%d", id);
+
+        mockMvc.perform(delete(url)
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isInternalServerError());
+
+        verify(userService).userExists(id);
+        verify(userService).deleteUser(id);
     }
 }

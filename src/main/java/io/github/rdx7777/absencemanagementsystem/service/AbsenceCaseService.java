@@ -98,9 +98,6 @@ public class AbsenceCaseService {
     }
 
     public Collection<AbsenceCase> getAllUserCases(Long userId) throws ServiceOperationException {
-        // todo: *******************************************************************************************************
-        // todo: add test for id = null ********************************************************************************
-        // todo: *******************************************************************************************************
         if (userId == null) {
             logger.error("Attempt to get absence case for user id providing null id.");
             throw new IllegalArgumentException("User id cannot be null.");
@@ -116,9 +113,6 @@ public class AbsenceCaseService {
     }
 
     public Collection<AbsenceCase> getAllActiveCasesForHeadTeacher(Long headTeacherId) throws ServiceOperationException {
-        // todo: *******************************************************************************************************
-        // todo: add test for headTeacherId = null *********************************************************************
-        // todo: *******************************************************************************************************
         if (headTeacherId == null) {
             logger.error("Attempt to get absence case for head teacher id providing null id.");
             throw new IllegalArgumentException("Head teacher id cannot be null.");

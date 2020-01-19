@@ -193,6 +193,12 @@ class AbsenceCaseServiceTest {
     }
 
     @Test
+    void getAllUserCasesMethodShouldThrowIllegalArgumentExceptionForNullUserId() {
+        assertThrows(IllegalArgumentException.class, () -> absenceCaseService.getAllUserCases(null));
+        verify(repository, never()).findAll((Example<AbsenceCase>) any());
+    }
+
+    @Test
     void shouldReturnAllActiveCasesForHeadTeacher() throws ServiceOperationException {
         // given
         List<AbsenceCase> cases = List.of(AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayTypeAndSpecificHeadTeacherId(4L), AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayTypeAndSpecificHeadTeacherId(4L));
@@ -205,6 +211,12 @@ class AbsenceCaseServiceTest {
         // then
         assertEquals(cases, result);
         verify(repository).findAll(example);
+    }
+
+    @Test
+    void getAllActiveCasesForHeadTeacherMethodShouldThrowIllegalArgumentExceptionForNullHeadTeacherId() {
+        assertThrows(IllegalArgumentException.class, () -> absenceCaseService.getAllActiveCasesForHeadTeacher(null));
+        verify(repository, never()).findAll((Example<AbsenceCase>) any());
     }
 
     @Test

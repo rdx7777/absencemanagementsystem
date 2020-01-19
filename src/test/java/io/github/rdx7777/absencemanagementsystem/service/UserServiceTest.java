@@ -9,6 +9,7 @@ import io.github.rdx7777.absencemanagementsystem.repository.UserRepository;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.data.domain.Example;
 
 @ExtendWith(MockitoExtension.class)
@@ -80,6 +82,23 @@ class UserServiceTest {
     }
 
     @Test
+    void addUserMethodShouldThrowExceptionWhenAnErrorOccursDuringAddingUserToDatabase() {
+        // given
+        User user = UserGenerator.getRandomEmployee();
+        when(repository.existsById(user.getId())).thenReturn(false);
+        doThrow(new NonTransientDataAccessException("") {
+            @Override
+            public String getMessage() {
+                return super.getMessage();
+            }
+        }).when(repository).save(user);
+
+        assertThrows(ServiceOperationException.class, () -> userService.addUser(user));
+        verify(repository).existsById(user.getId());
+        verify(repository).save(user);
+    }
+
+    @Test
     void shouldUpdateGivenUserInDatabase() throws ServiceOperationException {
         // given
         User userToUpdate = UserGenerator.getRandomEmployee();
@@ -127,6 +146,23 @@ class UserServiceTest {
     }
 
     @Test
+    void updateUserMethodShouldThrowExceptionWhenAnErrorOccursDuringUpdatingUserInDatabase() {
+        // given
+        User user = UserGenerator.getRandomEmployee();
+        when(repository.existsById(user.getId())).thenReturn(true);
+        doThrow(new NonTransientDataAccessException("") {
+            @Override
+            public String getMessage() {
+                return super.getMessage();
+            }
+        }).when(repository).save(user);
+
+        assertThrows(ServiceOperationException.class, () -> userService.updateUser(user));
+        verify(repository).existsById(user.getId());
+        verify(repository).save(user);
+    }
+
+    @Test
     void shouldReturnUserByGivenId() throws ServiceOperationException {
         // given
         User user = UserGenerator.getRandomEmployee();
@@ -145,6 +181,15 @@ class UserServiceTest {
     void getUserByIdMethodShouldThrowIllegalArgumentExceptionForNullUserId() {
         assertThrows(IllegalArgumentException.class, () -> userService.getUserById(null));
         verify(repository, never()).findById(1L);
+    }
+
+    @Test
+    void getUserByIdMethodShouldThrowExceptionWhenAnErrorOccursDuringGettingUserById() {
+        // given
+        doThrow(new NoSuchElementException()).when(repository).findById(1L);
+
+        assertThrows(ServiceOperationException.class, () -> userService.getUserById(1L));
+        verify(repository).findById(1L);
     }
 
     @Test
@@ -169,6 +214,20 @@ class UserServiceTest {
     }
 
     @Test
+    void getUserByEmailMethodShouldThrowExceptionWhenAnErrorOccursDuringGettingUserByEmail() {
+        // given
+        doThrow(new NonTransientDataAccessException("") {
+            @Override
+            public String getMessage() {
+                return super.getMessage();
+            }
+        }).when(repository).findUserByEmail("user@users.com");
+
+        assertThrows(ServiceOperationException.class, () -> userService.getUserByEmail("user@users.com"));
+        verify(repository).findUserByEmail("user@users.com");
+    }
+
+    @Test
     void shouldReturnAllUsers() throws ServiceOperationException {
         // given
         List<User> users = List.of(UserGenerator.getRandomEmployee(), UserGenerator.getRandomEmployee());
@@ -179,6 +238,20 @@ class UserServiceTest {
 
         // then
         assertEquals(users, result);
+        verify(repository).findAll();
+    }
+
+    @Test
+    void getAllUsersMethodShouldThrowExceptionWhenAnErrorOccursDuringGettingAllUsers() {
+        // given
+        doThrow(new NonTransientDataAccessException("") {
+            @Override
+            public String getMessage() {
+                return super.getMessage();
+            }
+        }).when(repository).findAll();
+
+        assertThrows(ServiceOperationException.class, () -> userService.getAllUsers());
         verify(repository).findAll();
     }
 
@@ -198,6 +271,20 @@ class UserServiceTest {
     }
 
     @Test
+    void getAllActiveUsersMethodShouldThrowExceptionWhenAnErrorOccursDuringGettingAllActiveUsers() {
+        // given
+        doThrow(new NonTransientDataAccessException("") {
+            @Override
+            public String getMessage() {
+                return super.getMessage();
+            }
+        }).when(repository).findAll((Example<User>) any());
+
+        assertThrows(ServiceOperationException.class, () -> userService.getAllActiveUsers());
+        verify(repository).findAll((Example<User>) any());
+    }
+
+    @Test
     void shouldDeleteUser() throws ServiceOperationException {
         // given
         doNothing().when(repository).deleteById(1L);
@@ -212,6 +299,20 @@ class UserServiceTest {
     @Test
     void deleteUserMethodShouldThrowIllegalArgumentExceptionForNullUserId() {
         assertThrows(IllegalArgumentException.class, () -> userService.deleteUser(null));
+    }
+
+    @Test
+    void deleteUserMethodShouldThrowExceptionWhenAnErrorOccursDuringDeletingUser() {
+        // given
+        doThrow(new NonTransientDataAccessException("") {
+            @Override
+            public String getMessage() {
+                return super.getMessage();
+            }
+        }).when(repository).deleteById(1L);
+
+        assertThrows(ServiceOperationException.class, () -> userService.deleteUser(1L));
+        verify(repository).deleteById(1L);
     }
 
     @Test
@@ -246,6 +347,20 @@ class UserServiceTest {
     }
 
     @Test
+    void userExistsMethodShouldThrowExceptionWhenAnErrorOccursDuringCheckingUserExists() {
+        // given
+        doThrow(new NonTransientDataAccessException("") {
+            @Override
+            public String getMessage() {
+                return super.getMessage();
+            }
+        }).when(repository).existsById(1L);
+
+        assertThrows(ServiceOperationException.class, () -> userService.userExists(1L));
+        verify(repository).existsById(1L);
+    }
+
+    @Test
     void shouldReturnNumberOfUsers() throws ServiceOperationException {
         // given
         when(repository.count()).thenReturn(10L);
@@ -255,6 +370,20 @@ class UserServiceTest {
 
         // then
         assertEquals(10L, result);
+        verify(repository).count();
+    }
+
+    @Test
+    void usersCountMethodShouldThrowExceptionWhenAnErrorOccursDuringGettingNumberOfUsers() {
+        // given
+        doThrow(new NonTransientDataAccessException("") {
+            @Override
+            public String getMessage() {
+                return super.getMessage();
+            }
+        }).when(repository).count();
+
+        assertThrows(ServiceOperationException.class, () -> userService.usersCount());
         verify(repository).count();
     }
 }

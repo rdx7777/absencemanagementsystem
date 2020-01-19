@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,7 +38,7 @@ public class UserController {
     }
 
     @PostMapping(produces = "application/json", consumes = "application/json")
-    public ResponseEntity<?> addUser(@RequestBody User user) throws ServiceOperationException {
+    public ResponseEntity<?> addUser(@RequestBody (required = false) User user) throws ServiceOperationException {
         if (user == null) {
             logger.error("Attempt to add null user.");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attempt to add null user.");
@@ -60,7 +61,7 @@ public class UserController {
     }
 
     @PutMapping(value = "/{id}", produces = "application/json", consumes = "application/json")
-    public ResponseEntity<?> updateUser(@PathVariable("id") Long id, @RequestBody User user) throws ServiceOperationException {
+    public ResponseEntity<?> updateUser(@PathVariable("id") Long id, @RequestBody (required = false) User user) throws ServiceOperationException {
         if (user == null) {
             logger.error("Attempt to update user providing null user.");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attempt to update user providing null user.");
@@ -112,6 +113,9 @@ public class UserController {
         }
         service.deleteUser(id);
         logger.debug("Deleted user with id {}.", id);
-        return ResponseEntity.noContent().build();
+//        return ResponseEntity.noContent().build();
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        return new ResponseEntity<>(httpHeaders, HttpStatus.NO_CONTENT);
     }
 }
