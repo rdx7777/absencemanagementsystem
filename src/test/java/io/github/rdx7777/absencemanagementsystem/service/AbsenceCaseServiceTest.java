@@ -10,6 +10,7 @@ import io.github.rdx7777.absencemanagementsystem.repository.AbsenceCaseRepositor
 
 import java.util.Collection;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.data.domain.Example;
 
 @ExtendWith(MockitoExtension.class)
@@ -81,6 +83,24 @@ class AbsenceCaseServiceTest {
     }
 
     @Test
+    void addCaseMethodShouldThrowExceptionWhenAnErrorOccursDuringAddingCaseToDatabase() {
+        // given
+        AbsenceCase aCase = AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayType();
+        when(repository.existsById(aCase.getId())).thenReturn(false);
+        doThrow(new NonTransientDataAccessException("") {
+            @Override
+            public String getMessage() {
+                return super.getMessage();
+            }
+        }).when(repository).save(aCase);
+
+        // then
+        assertThrows(ServiceOperationException.class, () -> absenceCaseService.addCase(aCase));
+        verify(repository).existsById(aCase.getId());
+        verify(repository).save(aCase);
+    }
+
+    @Test
     void shouldUpdateGivenCaseInDatabase() throws ServiceOperationException {
         // given
         AbsenceCase caseToUpdate = AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayType();
@@ -128,6 +148,24 @@ class AbsenceCaseServiceTest {
     }
 
     @Test
+    void updateUserMethodShouldThrowExceptionWhenAnErrorOccursDuringUpdatingUserInDatabase() {
+        // given
+        AbsenceCase aCase = AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayType();
+        when(repository.existsById(aCase.getId())).thenReturn(true);
+        doThrow(new NonTransientDataAccessException("") {
+            @Override
+            public String getMessage() {
+                return super.getMessage();
+            }
+        }).when(repository).save(aCase);
+
+        // then
+        assertThrows(ServiceOperationException.class, () -> absenceCaseService.updateCase(aCase));
+        verify(repository).existsById(aCase.getId());
+        verify(repository).save(aCase);
+    }
+
+    @Test
     void shouldReturnCaseByGivenId() throws ServiceOperationException {
         // given
         AbsenceCase aCase = AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayType();
@@ -149,6 +187,16 @@ class AbsenceCaseServiceTest {
     }
 
     @Test
+    void getCaseByIdMethodShouldThrowExceptionWhenAnErrorOccursDuringGettingCaseById() {
+        // given
+        doThrow(new NoSuchElementException()).when(repository).findById(1L);
+
+        // then
+        assertThrows(ServiceOperationException.class, () -> absenceCaseService.getCaseById(1L));
+        verify(repository).findById(1L);
+    }
+
+    @Test
     void shouldReturnAllCases() throws ServiceOperationException {
         // given
         List<AbsenceCase> cases = List.of(AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayType(), AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayType());
@@ -159,6 +207,21 @@ class AbsenceCaseServiceTest {
 
         // then
         assertEquals(cases, result);
+        verify(repository).findAll();
+    }
+
+    @Test
+    void getAllCasesMethodShouldThrowExceptionWhenAnErrorOccursDuringGettingAllCases() {
+        // given
+        doThrow(new NonTransientDataAccessException("") {
+            @Override
+            public String getMessage() {
+                return super.getMessage();
+            }
+        }).when(repository).findAll();
+
+        // then
+        assertThrows(ServiceOperationException.class, () -> absenceCaseService.getAllCases());
         verify(repository).findAll();
     }
 
@@ -175,6 +238,21 @@ class AbsenceCaseServiceTest {
         // then
         assertEquals(cases, result);
         verify(repository).findAll(example);
+    }
+
+    @Test
+    void getAllActiveCasesMethodShouldThrowExceptionWhenAnErrorOccursDuringGettingAllActiveCases() {
+        // given
+        doThrow(new NonTransientDataAccessException("") {
+            @Override
+            public String getMessage() {
+                return super.getMessage();
+            }
+        }).when(repository).findAll((Example<AbsenceCase>) any());
+
+        // then
+        assertThrows(ServiceOperationException.class, () -> absenceCaseService.getAllActiveCases());
+        verify(repository).findAll((Example<AbsenceCase>) any());
     }
 
     @Test
@@ -199,6 +277,21 @@ class AbsenceCaseServiceTest {
     }
 
     @Test
+    void getAllUserCasesMethodShouldThrowExceptionWhenAnErrorOccursDuringGettingAllUserCases() {
+        // given
+        doThrow(new NonTransientDataAccessException("") {
+            @Override
+            public String getMessage() {
+                return super.getMessage();
+            }
+        }).when(repository).findAll((Example<AbsenceCase>) any());
+
+        // then
+        assertThrows(ServiceOperationException.class, () -> absenceCaseService.getAllUserCases(1L));
+        verify(repository).findAll((Example<AbsenceCase>) any());
+    }
+
+    @Test
     void shouldReturnAllActiveCasesForHeadTeacher() throws ServiceOperationException {
         // given
         List<AbsenceCase> cases = List.of(AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayTypeAndSpecificHeadTeacherId(4L), AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayTypeAndSpecificHeadTeacherId(4L));
@@ -220,6 +313,21 @@ class AbsenceCaseServiceTest {
     }
 
     @Test
+    void getAllActiveCasesForHeadTeacherMethodShouldThrowExceptionWhenAnErrorOccursDuringGettingAllActiveCasesForHeadTeacher() {
+        // given
+        doThrow(new NonTransientDataAccessException("") {
+            @Override
+            public String getMessage() {
+                return super.getMessage();
+            }
+        }).when(repository).findAll((Example<AbsenceCase>) any());
+
+        // then
+        assertThrows(ServiceOperationException.class, () -> absenceCaseService.getAllActiveCasesForHeadTeacher(1L));
+        verify(repository).findAll((Example<AbsenceCase>) any());
+    }
+
+    @Test
     void shouldDeleteCase() throws ServiceOperationException {
         // given
         doNothing().when(repository).deleteById(1L);
@@ -234,6 +342,21 @@ class AbsenceCaseServiceTest {
     @Test
     void deleteCaseMethodShouldThrowIllegalArgumentExceptionForNullCaseId() {
         assertThrows(IllegalArgumentException.class, () -> absenceCaseService.deleteCase(null));
+    }
+
+    @Test
+    void deleteCaseMethodShouldThrowExceptionWhenAnErrorOccursDuringDeletingCase() {
+        // given
+        doThrow(new NonTransientDataAccessException("") {
+            @Override
+            public String getMessage() {
+                return super.getMessage();
+            }
+        }).when(repository).deleteById(1L);
+
+        // then
+        assertThrows(ServiceOperationException.class, () -> absenceCaseService.deleteCase(1L));
+        verify(repository).deleteById(1L);
     }
 
     @Test
@@ -268,6 +391,21 @@ class AbsenceCaseServiceTest {
     }
 
     @Test
+    void caseExistsMethodShouldThrowExceptionWhenAnErrorOccursDuringCheckingCaseExists() {
+        // given
+        doThrow(new NonTransientDataAccessException("") {
+            @Override
+            public String getMessage() {
+                return super.getMessage();
+            }
+        }).when(repository).existsById(1L);
+
+        // then
+        assertThrows(ServiceOperationException.class, () -> absenceCaseService.caseExists(1L));
+        verify(repository).existsById(1L);
+    }
+
+    @Test
     void shouldReturnNumberOfCases() throws ServiceOperationException {
         // given
         when(repository.count()).thenReturn(10L);
@@ -277,6 +415,21 @@ class AbsenceCaseServiceTest {
 
         // then
         assertEquals(10L, result);
+        verify(repository).count();
+    }
+
+    @Test
+    void casesCountMethodShouldThrowExceptionWhenAnErrorOccursDuringGettingNumberOfCases() {
+        // given
+        doThrow(new NonTransientDataAccessException("") {
+            @Override
+            public String getMessage() {
+                return super.getMessage();
+            }
+        }).when(repository).count();
+
+        // then
+        assertThrows(ServiceOperationException.class, () -> absenceCaseService.casesCount());
         verify(repository).count();
     }
 }

@@ -93,6 +93,7 @@ class UserServiceTest {
             }
         }).when(repository).save(user);
 
+        // then
         assertThrows(ServiceOperationException.class, () -> userService.addUser(user));
         verify(repository).existsById(user.getId());
         verify(repository).save(user);
@@ -157,6 +158,7 @@ class UserServiceTest {
             }
         }).when(repository).save(user);
 
+        // then
         assertThrows(ServiceOperationException.class, () -> userService.updateUser(user));
         verify(repository).existsById(user.getId());
         verify(repository).save(user);
@@ -188,6 +190,7 @@ class UserServiceTest {
         // given
         doThrow(new NoSuchElementException()).when(repository).findById(1L);
 
+        // then
         assertThrows(ServiceOperationException.class, () -> userService.getUserById(1L));
         verify(repository).findById(1L);
     }
@@ -223,6 +226,7 @@ class UserServiceTest {
             }
         }).when(repository).findUserByEmail("user@users.com");
 
+        // then
         assertThrows(ServiceOperationException.class, () -> userService.getUserByEmail("user@users.com"));
         verify(repository).findUserByEmail("user@users.com");
     }
@@ -251,6 +255,7 @@ class UserServiceTest {
             }
         }).when(repository).findAll();
 
+        // then
         assertThrows(ServiceOperationException.class, () -> userService.getAllUsers());
         verify(repository).findAll();
     }
@@ -280,6 +285,7 @@ class UserServiceTest {
             }
         }).when(repository).findAll((Example<User>) any());
 
+        // then
         assertThrows(ServiceOperationException.class, () -> userService.getAllActiveUsers());
         verify(repository).findAll((Example<User>) any());
     }
@@ -311,6 +317,7 @@ class UserServiceTest {
             }
         }).when(repository).deleteById(1L);
 
+        // then
         assertThrows(ServiceOperationException.class, () -> userService.deleteUser(1L));
         verify(repository).deleteById(1L);
     }
@@ -356,6 +363,7 @@ class UserServiceTest {
             }
         }).when(repository).existsById(1L);
 
+        // then
         assertThrows(ServiceOperationException.class, () -> userService.userExists(1L));
         verify(repository).existsById(1L);
     }
@@ -383,6 +391,7 @@ class UserServiceTest {
             }
         }).when(repository).count();
 
+        // then
         assertThrows(ServiceOperationException.class, () -> userService.usersCount());
         verify(repository).count();
     }
