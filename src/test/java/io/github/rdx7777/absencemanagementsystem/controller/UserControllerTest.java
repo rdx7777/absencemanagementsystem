@@ -349,7 +349,8 @@ class UserControllerTest {
 
         String url = "/api/users";
 
-        mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get(url)
+            .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(content().json(mapper.writeValueAsString(users)));

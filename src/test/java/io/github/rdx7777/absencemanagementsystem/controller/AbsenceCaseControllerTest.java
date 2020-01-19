@@ -14,6 +14,7 @@ import io.github.rdx7777.absencemanagementsystem.model.AbsenceCase;
 import io.github.rdx7777.absencemanagementsystem.model.User;
 import io.github.rdx7777.absencemanagementsystem.service.AbsenceCaseService;
 import io.github.rdx7777.absencemanagementsystem.service.EmailService;
+import io.github.rdx7777.absencemanagementsystem.service.ServiceOperationException;
 import io.github.rdx7777.absencemanagementsystem.service.UserService;
 
 import java.util.ArrayList;
@@ -86,6 +87,7 @@ class AbsenceCaseControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsBytes(null))
             .accept(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest());
 
         verify(caseService, never()).caseExists(any());
@@ -103,6 +105,7 @@ class AbsenceCaseControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsBytes(aCase))
             .accept(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isConflict());
 
         verify(caseService).caseExists(aCase.getId());
@@ -118,8 +121,9 @@ class AbsenceCaseControllerTest {
 
         mockMvc.perform(post(url)
             .contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsBytes(invalidCase)).accept(MediaType.APPLICATION_JSON))
-//            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .content(mapper.writeValueAsBytes(invalidCase))
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest());
 
         verify(caseService).caseExists(invalidCase.getId());
@@ -138,6 +142,25 @@ class AbsenceCaseControllerTest {
             .andExpect(status().isUnsupportedMediaType());
 
         verify(caseService, never()).addCase(caseToAdd);
+    }
+
+    @Test
+    void shouldReturnInternalServerErrorDuringAddingCaseWhenSomethingWentWrongOnServer() throws Exception {
+        AbsenceCase aCase = AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayType();
+        when(caseService.caseExists(aCase.getId())).thenReturn(false);
+        when(caseService.addCase(aCase)).thenThrow(new ServiceOperationException());
+
+        String url = "/api/cases";
+
+        mockMvc.perform(post(url)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(mapper.writeValueAsBytes(aCase))
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isInternalServerError());
+
+        verify(caseService).caseExists(aCase.getId());
+        verify(caseService).addCase(aCase);
     }
 
     @Test
@@ -175,6 +198,7 @@ class AbsenceCaseControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsBytes(null))
             .accept(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest());
 
         verify(caseService, never()).caseExists(any());
@@ -191,6 +215,7 @@ class AbsenceCaseControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsBytes(aCase))
             .accept(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest());
 
         verify(caseService, never()).caseExists(any());
@@ -208,16 +233,12 @@ class AbsenceCaseControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsBytes(aCase))
             .accept(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isNotFound());
 
         verify(caseService).caseExists(aCase.getId());
         verify(caseService, never()).updateCase(aCase);
     }
-
-//    @Test
-//    void shouldReturnBadRequestStatusDuringUpdatingCaseByNotExistingUser() {
-//
-//    }
 
     @Test
     void updateMethodShouldReturnBadRequestForInvalidCase() throws Exception {
@@ -230,6 +251,7 @@ class AbsenceCaseControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsBytes(invalidCase))
             .accept(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest());
 
         verify(caseService).caseExists(invalidCase.getId());
@@ -248,6 +270,25 @@ class AbsenceCaseControllerTest {
             .andExpect(status().isUnsupportedMediaType());
 
         verify(caseService, never()).updateCase(aCase);
+    }
+
+    @Test
+    void shouldReturnInternalServerErrorDuringUpdatingCaseWhenSomethingWentWrongOnServer() throws Exception {
+        AbsenceCase aCase = AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayType();
+        when(caseService.caseExists(aCase.getId())).thenReturn(true);
+        when(caseService.updateCase(aCase)).thenThrow(new ServiceOperationException());
+
+        String url = String.format("/api/cases?id=%d&userId=%d", aCase.getId(), 1L);
+
+        mockMvc.perform(put(url)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(mapper.writeValueAsBytes(aCase))
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isInternalServerError());
+
+        verify(caseService).caseExists(aCase.getId());
+        verify(caseService).updateCase(aCase);
     }
 
     @Test
@@ -275,6 +316,7 @@ class AbsenceCaseControllerTest {
 
         mockMvc.perform(get(url)
             .accept(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isNotFound());
 
         verify(caseService).getCaseById(id);
@@ -297,6 +339,21 @@ class AbsenceCaseControllerTest {
     }
 
     @Test
+    void shouldReturnInternalServerErrorDuringGettingCaseWhenSomethingWentWrongOnServer() throws Exception {
+        Long id = 1L;
+        when(caseService.getCaseById(id)).thenThrow(new ServiceOperationException());
+
+        String url = String.format("/api/cases/%d", id);
+
+        mockMvc.perform(get(url)
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isInternalServerError());
+
+        verify(caseService).getCaseById(id);
+    }
+
+    @Test
     void shouldReturnAllCases() throws Exception {
         Collection<AbsenceCase> cases = Arrays.asList(AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayType(),
             AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayType());
@@ -304,7 +361,8 @@ class AbsenceCaseControllerTest {
 
         String url = "/api/cases";
 
-        mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get(url)
+            .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(content().json(mapper.writeValueAsString(cases)));
@@ -340,6 +398,20 @@ class AbsenceCaseControllerTest {
     }
 
     @Test
+    void shouldReturnInternalServerErrorDuringGettingAllCasesWhenSomethingWentWrongOnServer() throws Exception {
+        when(caseService.getAllCases()).thenThrow(new ServiceOperationException());
+
+        String url = "/api/cases";
+
+        mockMvc.perform(get(url)
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isInternalServerError());
+
+        verify(caseService).getAllCases();
+    }
+
+    @Test
     void shouldReturnAllActiveCases() throws Exception {
         Collection<AbsenceCase> cases = Arrays.asList(AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayType(),
             AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayType());
@@ -347,10 +419,52 @@ class AbsenceCaseControllerTest {
 
         String url = "/api/cases/active";
 
-        mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get(url)
+            .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(content().json(mapper.writeValueAsString(cases)));
+
+        verify(caseService).getAllActiveCases();
+    }
+
+    @Test
+    void shouldReturnEmptyListOfActiveCasesWhenThereAreNotActiveCasesInTheDatabase() throws Exception {
+        Collection<AbsenceCase> cases = new ArrayList<>();
+        when(caseService.getAllActiveCases()).thenReturn(cases);
+
+        String url = "/api/cases/active";
+
+        mockMvc.perform(get(url)
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(content().json(mapper.writeValueAsString(cases)));
+
+        verify(caseService).getAllActiveCases();
+    }
+
+    @Test
+    void shouldReturnNotAcceptableStatusDuringGettingAllActiveCasesWithNotSupportedMediaType() throws Exception {
+        String url = "/api/cases/active";
+
+        mockMvc.perform(get(url)
+            .accept(MediaType.APPLICATION_XML))
+            .andExpect(status().isNotAcceptable());
+
+        verify(caseService, never()).getAllActiveCases();
+    }
+
+    @Test
+    void shouldReturnInternalServerErrorDuringGettingAllActiveCasesWhenSomethingWentWrongOnServer() throws Exception {
+        when(caseService.getAllActiveCases()).thenThrow(new ServiceOperationException());
+
+        String url = "/api/cases/active";
+
+        mockMvc.perform(get(url)
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isInternalServerError());
 
         verify(caseService).getAllActiveCases();
     }
@@ -363,12 +477,57 @@ class AbsenceCaseControllerTest {
 
         String url = String.format("/api/cases/user/%d", 1L);
 
-        mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get(url)
+            .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(content().json(mapper.writeValueAsString(cases)));
 
         verify(caseService).getAllUserCases(1L);
+    }
+
+    @Test
+    void shouldReturnEmptyListOfUserCasesWhenThereAreNotUserCasesInTheDatabase() throws Exception {
+        Long id = 1L;
+        Collection<AbsenceCase> cases = new ArrayList<>();
+        when(caseService.getAllUserCases(id)).thenReturn(cases);
+
+        String url = String.format("/api/cases/user/%d", id);
+
+        mockMvc.perform(get(url)
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(content().json(mapper.writeValueAsString(cases)));
+
+        verify(caseService).getAllUserCases(id);
+    }
+
+    @Test
+    void shouldReturnNotAcceptableStatusDuringGettingAllUserCasesWithNotSupportedMediaType() throws Exception {
+        Long id = 1L;
+        String url = String.format("/api/cases/user/%d", id);
+
+        mockMvc.perform(get(url)
+            .accept(MediaType.APPLICATION_XML))
+            .andExpect(status().isNotAcceptable());
+
+        verify(caseService, never()).getAllUserCases(id);
+    }
+
+    @Test
+    void shouldReturnInternalServerErrorDuringGettingAllUserCasesWhenSomethingWentWrongOnServer() throws Exception {
+        Long id = 1L;
+        when(caseService.getAllUserCases(id)).thenThrow(new ServiceOperationException());
+
+        String url = String.format("/api/cases/user/%d", id);
+
+        mockMvc.perform(get(url)
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isInternalServerError());
+
+        verify(caseService).getAllUserCases(id);
     }
 
     @Test
@@ -379,12 +538,57 @@ class AbsenceCaseControllerTest {
 
         String url = String.format("/api/cases/active/ht/%d", 1L);
 
-        mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get(url)
+            .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(content().json(mapper.writeValueAsString(cases)));
 
         verify(caseService).getAllActiveCasesForHeadTeacher(1L);
+    }
+
+    @Test
+    void shouldReturnEmptyListOfAllActiveCasesForHeadTeacherWhenThereAreNotActiveCasesForHeadTeacherInTheDatabase() throws Exception {
+        Long id = 1L;
+        Collection<AbsenceCase> cases = new ArrayList<>();
+        when(caseService.getAllActiveCasesForHeadTeacher(id)).thenReturn(cases);
+
+        String url = String.format("/api/cases/active/ht/%d", id);
+
+        mockMvc.perform(get(url)
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(content().json(mapper.writeValueAsString(cases)));
+
+        verify(caseService).getAllActiveCasesForHeadTeacher(id);
+    }
+
+    @Test
+    void shouldReturnNotAcceptableStatusDuringGettingAllActiveCasesForHeadTeacherWithNotSupportedMediaType() throws Exception {
+        Long id = 1L;
+        String url = String.format("/api/cases/active/ht/%d", id);
+
+        mockMvc.perform(get(url)
+            .accept(MediaType.APPLICATION_XML))
+            .andExpect(status().isNotAcceptable());
+
+        verify(caseService, never()).getAllActiveCasesForHeadTeacher(id);
+    }
+
+    @Test
+    void shouldReturnInternalServerErrorDuringGettingAllActiveCasesForHeadTeacherWhenSomethingWentWrongOnServer() throws Exception {
+        Long id = 1L;
+        when(caseService.getAllActiveCasesForHeadTeacher(id)).thenThrow(new ServiceOperationException());
+
+        String url = String.format("/api/cases/active/ht/%d", id);
+
+        mockMvc.perform(get(url)
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isInternalServerError());
+
+        verify(caseService).getAllActiveCasesForHeadTeacher(id);
     }
 
     @Test
@@ -415,5 +619,22 @@ class AbsenceCaseControllerTest {
 
         verify(caseService).caseExists(1L);
         verify(caseService, never()).deleteCase(1L);
+    }
+
+    @Test
+    void shouldReturnInternalServerErrorDuringRemovingCaseWhenSomethingWentWrongOnServer() throws Exception {
+        Long id = 1L;
+        when(caseService.caseExists(id)).thenReturn(true);
+        doThrow(ServiceOperationException.class).when(caseService).deleteCase(id);
+
+        String url = String.format("/api/cases/%d", id);
+
+        mockMvc.perform(delete(url)
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isInternalServerError());
+
+        verify(caseService).caseExists(id);
+        verify(caseService).deleteCase(id);
     }
 }

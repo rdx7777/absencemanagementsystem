@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,7 +47,7 @@ public class AbsenceCaseController {
     }
 
     @PostMapping(produces = "application/json", consumes = "application/json")
-    public ResponseEntity<?> addCase(@RequestBody AbsenceCase aCase) throws ServiceOperationException {
+    public ResponseEntity<?> addCase(@RequestBody (required = false) AbsenceCase aCase) throws ServiceOperationException {
         if (aCase == null) {
             logger.error("Attempt to add null case.");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attempt to add null case.");
@@ -83,7 +84,7 @@ public class AbsenceCaseController {
     @PutMapping(params = {"id", "userId"}, produces = "application/json", consumes = "application/json") // "api/cases?id=%d&userId=%d"
     public ResponseEntity<?> updateCase(@RequestParam(name = "id") Long id,
                                         @RequestParam(name = "userId") Long editingUserId,
-                                        @RequestBody AbsenceCase aCase) throws ServiceOperationException {
+                                        @RequestBody (required = false) AbsenceCase aCase) throws ServiceOperationException {
         if (aCase == null) {
             logger.error("Attempt to update case providing null case.");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attempt to update case providing null case.");
@@ -101,6 +102,7 @@ public class AbsenceCaseController {
             logger.error("Attempt to update invalid case.");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attempt to update invalid case.");
         }
+        AbsenceCase updatedCase = caseService.updateCase(aCase);
         logger.debug("Updated case with id {} by .", aCase.getId());
         Optional<User> headTeacher = userService.getUserById(aCase.getHeadTeacherId());
         if (headTeacher.isEmpty()) {
@@ -112,7 +114,6 @@ public class AbsenceCaseController {
             logger.error("Attempt to send email with details of user, who does not exist in database.");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attempt to send email with details of user, who does not exist in database.");
         }
-        AbsenceCase updatedCase = caseService.updateCase(aCase);
         sendEmail(editingUserId, headTeacher.get(), user.get(), updatedCase);
         return ResponseEntity.ok(updatedCase);
     }
@@ -191,6 +192,8 @@ public class AbsenceCaseController {
         }
         caseService.deleteCase(id);
         logger.debug("Deleted case with id {}.", id);
-        return ResponseEntity.noContent().build();
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        return new ResponseEntity<>(httpHeaders, HttpStatus.NO_CONTENT);
     }
 }
