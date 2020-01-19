@@ -113,7 +113,6 @@ public class UserController {
         }
         service.deleteUser(id);
         logger.debug("Deleted user with id {}.", id);
-//        return ResponseEntity.noContent().build();
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         return new ResponseEntity<>(httpHeaders, HttpStatus.NO_CONTENT);
