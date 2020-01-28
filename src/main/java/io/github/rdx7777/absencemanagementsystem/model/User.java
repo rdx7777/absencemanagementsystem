@@ -5,8 +5,13 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
+
+import org.springframework.context.annotation.Primary;
 
 @Entity
+@Primary
+@Table(name = "users")
 public class User {
 
     @Id

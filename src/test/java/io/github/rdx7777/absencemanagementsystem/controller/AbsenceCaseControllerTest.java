@@ -12,6 +12,7 @@ import io.github.rdx7777.absencemanagementsystem.generators.AbsenceCaseGenerator
 import io.github.rdx7777.absencemanagementsystem.generators.UserGenerator;
 import io.github.rdx7777.absencemanagementsystem.model.AbsenceCase;
 import io.github.rdx7777.absencemanagementsystem.model.User;
+import io.github.rdx7777.absencemanagementsystem.repository.UserRepository;
 import io.github.rdx7777.absencemanagementsystem.service.AbsenceCaseService;
 import io.github.rdx7777.absencemanagementsystem.service.EmailService;
 import io.github.rdx7777.absencemanagementsystem.service.ServiceOperationException;
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
+import javax.sql.DataSource;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -45,6 +47,12 @@ class AbsenceCaseControllerTest {
 
     @MockBean
     private EmailService emailService;
+
+    @MockBean
+    private DataSource dataSource;
+
+    @MockBean
+    private UserRepository repository;
 
     @Autowired
     private MockMvc mockMvc;

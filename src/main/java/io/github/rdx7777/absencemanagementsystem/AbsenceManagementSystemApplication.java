@@ -9,5 +9,4 @@ public class AbsenceManagementSystemApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(AbsenceManagementSystemApplication.class, args);
 	}
-
 }

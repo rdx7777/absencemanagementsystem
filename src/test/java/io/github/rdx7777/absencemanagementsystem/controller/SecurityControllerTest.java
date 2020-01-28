@@ -11,9 +11,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.github.rdx7777.absencemanagementsystem.generators.UserGenerator;
 import io.github.rdx7777.absencemanagementsystem.model.User;
+import io.github.rdx7777.absencemanagementsystem.repository.UserRepository;
 import io.github.rdx7777.absencemanagementsystem.service.UserService;
 
 import java.util.Optional;
+import javax.sql.DataSource;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,6 +35,12 @@ class SecurityControllerTest {
 
     @MockBean
     private UserService userService;
+
+    @MockBean
+    private DataSource dataSource;
+
+    @MockBean
+    private UserRepository repository;
 
     @Autowired
     private MockMvc mockMvc;
