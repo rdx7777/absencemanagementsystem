@@ -14,6 +14,7 @@ public class UserGenerator {
         String jobTitle = WordGenerator.getRandomWord();
         Boolean isActive = true;
         Position position = Position.Employee;
+        String role = WordGenerator.getRandomWord();
 
         return User.builder()
             .withId(id)
@@ -24,6 +25,7 @@ public class UserGenerator {
             .withJobTitle(jobTitle)
             .withIsActive(isActive)
             .withPosition(position)
+            .withRole(role)
             .build();
     }
 
@@ -35,6 +37,7 @@ public class UserGenerator {
         String jobTitle = WordGenerator.getRandomWord();
         Boolean isActive = true;
         Position position = Position.Employee;
+        String role = WordGenerator.getRandomWord();
 
         return User.builder()
             .withName(name)
@@ -44,6 +47,7 @@ public class UserGenerator {
             .withJobTitle(jobTitle)
             .withIsActive(isActive)
             .withPosition(position)
+            .withRole(role)
             .build();
     }
 
@@ -55,6 +59,7 @@ public class UserGenerator {
         String jobTitle = WordGenerator.getRandomWord();
         Boolean isActive = true;
         Position position = Position.Employee;
+        String role = WordGenerator.getRandomWord();
 
         return User.builder()
             .withId(id)
@@ -65,6 +70,7 @@ public class UserGenerator {
             .withJobTitle(jobTitle)
             .withIsActive(isActive)
             .withPosition(position)
+            .withRole(role)
             .build();
     }
 
@@ -77,6 +83,7 @@ public class UserGenerator {
         String jobTitle = WordGenerator.getRandomWord();
         Boolean isActive = true;
         Position position = Position.CoverSupervisor;
+        String role = WordGenerator.getRandomWord();
 
         return User.builder()
             .withId(id)
@@ -87,6 +94,7 @@ public class UserGenerator {
             .withJobTitle(jobTitle)
             .withIsActive(isActive)
             .withPosition(position)
+            .withRole(role)
             .build();
     }
 
@@ -99,6 +107,7 @@ public class UserGenerator {
         String jobTitle = WordGenerator.getRandomWord();
         Boolean isActive = true;
         Position position = Position.HeadTeacher;
+        String role = WordGenerator.getRandomWord();
 
         return User.builder()
             .withId(id)
@@ -109,6 +118,7 @@ public class UserGenerator {
             .withJobTitle(jobTitle)
             .withIsActive(isActive)
             .withPosition(position)
+            .withRole(role)
             .build();
     }
 
@@ -121,6 +131,7 @@ public class UserGenerator {
         String jobTitle = WordGenerator.getRandomWord();
         Boolean isActive = true;
         Position position = Position.HumanResourcesSupervisor;
+        String role = WordGenerator.getRandomWord();
 
         return User.builder()
             .withId(id)
@@ -131,6 +142,7 @@ public class UserGenerator {
             .withJobTitle(jobTitle)
             .withIsActive(isActive)
             .withPosition(position)
+            .withRole(role)
             .build();
     }
 }

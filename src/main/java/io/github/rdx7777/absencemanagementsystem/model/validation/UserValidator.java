@@ -23,6 +23,7 @@ public class UserValidator extends Validator {
         addResultOfValidation(result, validateJobTitle(user.getJobTitle()));
         addResultOfValidation(result, validateIsActive(user.getIsActive()));
         addResultOfValidation(result, validatePosition(user.getPosition()));
+        addResultOfValidation(result, validateRole(user.getRole()));
 
         return result;
     }
@@ -98,6 +99,18 @@ public class UserValidator extends Validator {
         if (position == null) {
             return "Position cannot be null.";
         }
+        return null;
+    }
+
+    private static String validateRole(String role) {
+        if (role == null) {
+            return "Role cannot be null.";
+        }
+
+        if (role.trim().isEmpty()) {
+            return "Role must contain at least 1 character.";
+        }
+
         return null;
     }
 }

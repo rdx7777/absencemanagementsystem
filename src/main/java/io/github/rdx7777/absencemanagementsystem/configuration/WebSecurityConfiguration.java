@@ -3,6 +3,8 @@ package io.github.rdx7777.absencemanagementsystem.configuration;
 import io.github.rdx7777.absencemanagementsystem.model.User;
 import io.github.rdx7777.absencemanagementsystem.repository.UserRepository;
 
+import java.util.Collection;
+import java.util.stream.Collectors;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -47,10 +49,15 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             .withSurname("Lynn")
             .withEmail("jack@test.com")
             .withPassword("$2a$10$u3AJC2e8fQ7bapCZh6I6Re4siOLimyBkPp.E//Ae07CSdW1SrRrFu")
-            .withJobTitle("ROLE_USER")
+            .withJobTitle("Math teacher")
             .withIsActive(true)
+            .withRole("USER")
             .build();
-        repository.save(user);
+        Collection<String> userEmails = repository.findAll().stream().map(User::getEmail).collect(Collectors.toList());
+        if (userEmails.contains(user.getEmail())) {
+            repository.deleteById(repository.findUserByEmail(user.getEmail()).get().getId());
+            repository.save(user);
+        }
     }
 
 //    @Override
@@ -70,7 +77,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 //            .usersByUsernameQuery("SELECT email, passwordHash, active FROM users WHERE email=?")
 //            .authoritiesByUsernameQuery("SELECT email, authority FROM authorities WHERE email=?")
             .usersByUsernameQuery("SELECT email, password, is_active FROM users WHERE email=?")
-            .authoritiesByUsernameQuery("SELECT email, job_title FROM users WHERE email=?")
+            .authoritiesByUsernameQuery("SELECT email, role FROM users WHERE email=?")
             .passwordEncoder(passwordEncoder());
 
         auth.inMemoryAuthentication()

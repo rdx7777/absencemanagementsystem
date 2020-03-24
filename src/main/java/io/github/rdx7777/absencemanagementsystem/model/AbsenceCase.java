@@ -52,7 +52,7 @@ public class AbsenceCase {
         isCaseResolved = null;
     }
 
-    private AbsenceCase(AbsenceCase.Builder builder) {
+    private AbsenceCase(Builder builder) {
         id = builder.id;
         userId = builder.userId;
         headTeacherId = builder.headTeacherId;

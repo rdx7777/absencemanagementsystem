@@ -30,6 +30,7 @@ class UserValidatorTest {
             .withJobTitle("Math Teacher")
             .withIsActive(true)
             .withPosition(Position.Employee)
+            .withRole("ADMIN")
             .build();
     }
 
@@ -182,5 +183,28 @@ class UserValidatorTest {
         List<String> resultOfValidation = UserValidator.validate(userWithNullPosition);
 
         assertEquals(Arrays.asList("Position cannot be null."), resultOfValidation);
+    }
+
+    @ParameterizedTest
+    @MethodSource("SetOfRolesAndValidationResults")
+    void shouldValidateRole(String role, List<String> expected) {
+        User userWithVariableRole = User.builder()
+            .withUser(correctUser)
+            .withRole(role)
+            .build();
+
+        List<String> resultOfValidation = UserValidator.validate(userWithVariableRole);
+
+        assertEquals(expected, resultOfValidation);
+    }
+
+    private static Stream<Arguments> SetOfRolesAndValidationResults() {
+        return Stream.of(
+            Arguments.of(null, Arrays.asList("Role cannot be null.")),
+            Arguments.of("", Arrays.asList("Role must contain at least 1 character.")),
+            Arguments.of("     ", Arrays.asList("Role must contain at least 1 character.")),
+            Arguments.of("Johnson", Arrays.asList()),
+            Arguments.of("Drake", Arrays.asList())
+        );
     }
 }

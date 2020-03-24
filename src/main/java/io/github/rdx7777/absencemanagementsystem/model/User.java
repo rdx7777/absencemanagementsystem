@@ -27,6 +27,7 @@ public class User {
     private String jobTitle;
     private Boolean isActive;
     private Position position;
+    private String role;
 
     /**
      * for JPA (Hibernate)
@@ -41,6 +42,7 @@ public class User {
         jobTitle = null;
         isActive = null;
         position = null;
+        role = null;
     }
 
     private User(Builder builder) {
@@ -52,6 +54,7 @@ public class User {
         jobTitle = builder.jobTitle;
         isActive = builder.isActive;
         position = builder.position;
+        role = builder.role;
     }
 
     public static User.Builder builder() {
@@ -90,6 +93,10 @@ public class User {
         return position;
     }
 
+    public String getRole() {
+        return role;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -102,12 +109,13 @@ public class User {
             Objects.equals(password, user.password) &&
             Objects.equals(jobTitle, user.jobTitle) &&
             Objects.equals(isActive, user.isActive) &&
-            position == user.position;
+            position == user.position &&
+            Objects.equals(role, user.role);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, surname, email, password, jobTitle, isActive, position);
+        return Objects.hash(id, name, surname, email, password, jobTitle, isActive, position, role);
     }
 
     @Override
@@ -119,8 +127,9 @@ public class User {
             ", email='" + email + '\'' +
             ", password='" + password + '\'' +
             ", jobTitle='" + jobTitle + '\'' +
-            ", getIsActive=" + isActive +
+            ", isActive=" + isActive +
             ", position=" + position +
+            ", role='" + role + '\'' +
             '}';
     }
 
@@ -133,6 +142,7 @@ public class User {
         private String jobTitle;
         private Boolean isActive;
         private Position position;
+        private String role;
 
         public Builder withUser(User user) {
             this.id = user.getId();
@@ -143,6 +153,7 @@ public class User {
             this.jobTitle = user.getJobTitle();
             this.isActive = user.getIsActive();
             this.position = user.getPosition();
+            this.role = user.getRole();
             return this;
         }
 
@@ -183,6 +194,11 @@ public class User {
 
         public Builder withPosition(Position position) {
             this.position = position;
+            return this;
+        }
+
+        public Builder withRole(String role) {
+            this.role = role;
             return this;
         }
 
