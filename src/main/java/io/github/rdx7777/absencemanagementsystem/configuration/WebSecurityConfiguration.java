@@ -1,10 +1,5 @@
 package io.github.rdx7777.absencemanagementsystem.configuration;
 
-import io.github.rdx7777.absencemanagementsystem.model.User;
-import io.github.rdx7777.absencemanagementsystem.repository.UserRepository;
-
-import java.util.Collection;
-import java.util.stream.Collectors;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -24,17 +19,14 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final DataSource dataSource;
 
-    private final UserRepository repository;
-
     @Value("${spring.security.user.name}")
     private String adminName;
 
     @Value("${spring.security.user.password}")
     private String adminPassword;
 
-    public WebSecurityConfiguration(DataSource dataSource, UserRepository repository) {
+    public WebSecurityConfiguration(DataSource dataSource) {
         this.dataSource = dataSource;
-        this.repository = repository;
     }
 
     @Bean
@@ -42,40 +34,10 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    public void setTestUser() {
-        User user = User.builder()
-            .withName("Jack")
-            .withSurname("Lynn")
-            .withEmail("jack@test.com")
-            .withPassword("$2a$10$u3AJC2e8fQ7bapCZh6I6Re4siOLimyBkPp.E//Ae07CSdW1SrRrFu")
-            .withJobTitle("Math teacher")
-            .withIsActive(true)
-            .withRole("USER")
-            .build();
-        Collection<String> userEmails = repository.findAll().stream().map(User::getEmail).collect(Collectors.toList());
-        if (userEmails.contains(user.getEmail())) {
-            repository.deleteById(repository.findUserByEmail(user.getEmail()).get().getId());
-            repository.save(user);
-        }
-    }
-
-//    @Override
-//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//        auth.inMemoryAuthentication()
-//            .withUser(adminName).password(passwordEncoder().encode(adminPassword)).roles("ADMIN")
-//            .and().withUser("user").password(passwordEncoder().encode("user")).roles("USER")
-//            .and().withUser("cs_supervisor").password(passwordEncoder().encode("cs")).roles("CS_SUPERVISOR")
-//            .and().withUser("head_teacher").password(passwordEncoder().encode("ht")).roles("HEAD_TEACHER")
-//            .and().withUser("hr_supervisor").password(passwordEncoder().encode("hr")).roles("HR_SUPERVISOR");
-//    }
-
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.jdbcAuthentication()
             .dataSource(dataSource)
-//            .usersByUsernameQuery("SELECT email, passwordHash, active FROM users WHERE email=?")
-//            .authoritiesByUsernameQuery("SELECT email, authority FROM authorities WHERE email=?")
             .usersByUsernameQuery("SELECT email, password, is_active FROM users WHERE email=?")
             .authoritiesByUsernameQuery("SELECT email, role FROM users WHERE email=?")
             .passwordEncoder(passwordEncoder());
@@ -111,9 +73,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             .cors()
             .disable()
             .csrf()
-            .disable() // umożliwia dostęp poprzez klientów innych, niż przeglądarki
-        // = wyłączenie opcji Spring Security zapobiegającej atakom CSRF
-        // działa pod endpointem "/logout"
+            .disable()
         ;
     }
 }

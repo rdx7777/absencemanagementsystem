@@ -28,8 +28,8 @@ public class SecurityController {
         this.service = service;
     }
 
-    @GetMapping
-    @ResponseBody
+//    @GetMapping
+//    @ResponseBody
     public Long getLoggedUserId(Authentication authentication) throws ServiceOperationException {
         String email = authentication.getName();
         logger.info("Logged user email: " + email);
@@ -51,5 +51,19 @@ public class SecurityController {
         System.out.println("Principal: " + principal);
         authorities.forEach(System.out::println);
 */
+    }
+
+    @GetMapping
+    @ResponseBody
+    public User getLoggedUser(Authentication authentication) throws ServiceOperationException {
+        String email = authentication.getName();
+        logger.info("Logged user email: " + email);
+        Optional<User> loggedUser = service.getUserByEmail(email);
+        if (loggedUser.isEmpty()) {
+            logger.error("Logged user does not exist in user database.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Logged user does not exist in user database.");
+        } else {
+            return loggedUser.get();
+        }
     }
 }
