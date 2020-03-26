@@ -2,10 +2,12 @@ package io.github.rdx7777.absencemanagementsystem.model;
 
 import java.time.LocalDate;
 import java.util.Objects;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class AbsenceCase {
@@ -14,29 +16,31 @@ public class AbsenceCase {
 //    @GeneratedValue(generator = "inc")
 //    @GenericGenerator(name = "inc", strategy = "increment")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private final Long id;
 
-    private Long userId;
-    private Long headTeacherId;
-    private LocalDate startDate;
-    private LocalDate endDate;
-    private PartDayType partDayType;
-    private String absenceReason;
-    private String userComment; // option, must not be validated
-    private Boolean isCoverRequired;
-    private Boolean isCoverProvided;
-    private String coverSupervisorComment; // option, must not be validated
-    private Boolean isApprovedByHeadTeacher;
-    private Boolean isAbsencePaid;
-    private String headTeacherComment; // option, must not be validated
-    private String hrSupervisorComment; // option, must not be validated
-    private Boolean isCaseResolved;
+    @ManyToOne(cascade = CascadeType.ALL)
+    private final User user;
+    @ManyToOne(cascade = CascadeType.ALL)
+    private final User headTeacher;
+    private final LocalDate startDate;
+    private final LocalDate endDate;
+    private final PartDayType partDayType;
+    private final String absenceReason;
+    private final String userComment; // option, must not be validated
+    private final Boolean isCoverRequired;
+    private final Boolean isCoverProvided;
+    private final String coverSupervisorComment; // option, must not be validated
+    private final Boolean isApprovedByHeadTeacher;
+    private final Boolean isAbsencePaid;
+    private final String headTeacherComment; // option, must not be validated
+    private final String hrSupervisorComment; // option, must not be validated
+    private final Boolean isCaseResolved;
 
     @SuppressWarnings("unused")
     private AbsenceCase() {
         id = null;
-        userId = null;
-        headTeacherId = null;
+        user = null;
+        headTeacher = null;
         startDate = null;
         endDate = null;
         partDayType = null;
@@ -54,8 +58,8 @@ public class AbsenceCase {
 
     private AbsenceCase(Builder builder) {
         id = builder.id;
-        userId = builder.userId;
-        headTeacherId = builder.headTeacherId;
+        user = builder.user;
+        headTeacher = builder.headTeacher;
         startDate = builder.startDate;
         endDate = builder.endDate;
         partDayType = builder.partDayType;
@@ -79,12 +83,12 @@ public class AbsenceCase {
         return id;
     }
 
-    public Long getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public Long getHeadTeacherId() {
-        return headTeacherId;
+    public User getHeadTeacher() {
+        return headTeacher;
     }
 
     public LocalDate getStartDate() {
@@ -145,8 +149,8 @@ public class AbsenceCase {
         if (!(o instanceof AbsenceCase)) return false;
         AbsenceCase aCase = (AbsenceCase) o;
         return Objects.equals(id, aCase.id) &&
-            Objects.equals(userId, aCase.userId) &&
-            Objects.equals(headTeacherId, aCase.headTeacherId) &&
+            Objects.equals(user, aCase.user) &&
+            Objects.equals(headTeacher, aCase.headTeacher) &&
             Objects.equals(startDate, aCase.startDate) &&
             Objects.equals(endDate, aCase.endDate) &&
             partDayType == aCase.partDayType &&
@@ -164,15 +168,15 @@ public class AbsenceCase {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, userId, headTeacherId, startDate, endDate, partDayType, absenceReason, userComment, isCoverRequired, isCoverProvided, coverSupervisorComment, isApprovedByHeadTeacher, isAbsencePaid, headTeacherComment, hrSupervisorComment, isCaseResolved);
+        return Objects.hash(id, user, headTeacher, startDate, endDate, partDayType, absenceReason, userComment, isCoverRequired, isCoverProvided, coverSupervisorComment, isApprovedByHeadTeacher, isAbsencePaid, headTeacherComment, hrSupervisorComment, isCaseResolved);
     }
 
     @Override
     public String toString() {
         return "AbsenceCase{" +
             "id=" + id +
-            ", userId=" + userId +
-            ", headTeacherId=" + headTeacherId +
+            ", userId=" + user +
+            ", headTeacherId=" + headTeacher +
             ", startDate=" + startDate +
             ", endDate=" + endDate +
             ", partDayType=" + partDayType +
@@ -192,8 +196,8 @@ public class AbsenceCase {
     public static class Builder {
 
         private Long id;
-        private Long userId;
-        private Long headTeacherId;
+        private User user;
+        private User headTeacher;
         private LocalDate startDate;
         private LocalDate endDate;
         private PartDayType partDayType;
@@ -210,8 +214,8 @@ public class AbsenceCase {
 
         public Builder withCase(AbsenceCase aCase) {
             this.id = aCase.getId();
-            this.userId = aCase.getUserId();
-            this.headTeacherId = aCase.getHeadTeacherId();
+            this.user = aCase.getUser();
+            this.headTeacher = aCase.getHeadTeacher();
             this.startDate = aCase.getStartDate();
             this.endDate = aCase.getEndDate();
             this.partDayType = aCase.getPartDayType();
@@ -233,13 +237,13 @@ public class AbsenceCase {
             return this;
         }
 
-        public Builder withUserId(Long userId) {
-            this.userId = userId;
+        public Builder withUser(User user) {
+            this.user = user;
             return this;
         }
 
-        public Builder withHeadTeacherId(Long headTeacherId) {
-            this.headTeacherId = headTeacherId;
+        public Builder withHeadTeacher(User headTeacher) {
+            this.headTeacher = headTeacher;
             return this;
         }
 

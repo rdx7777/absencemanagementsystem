@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import io.github.rdx7777.absencemanagementsystem.model.Position;
 import io.github.rdx7777.absencemanagementsystem.model.User;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -37,7 +37,7 @@ class UserValidatorTest {
     @Test
     void shouldValidateUser() {
         List<String> resultOfValidation = UserValidator.validate(null);
-        assertEquals(Arrays.asList("User cannot be null."), resultOfValidation);
+        assertEquals(Collections.singletonList("User cannot be null."), resultOfValidation);
     }
 
     @ParameterizedTest
@@ -55,11 +55,11 @@ class UserValidatorTest {
 
     private static Stream<Arguments> SetOfNamesAndValidationResults() {
         return Stream.of(
-            Arguments.of(null, Arrays.asList("Name cannot be null.")),
-            Arguments.of("", Arrays.asList("Name must contain at least 1 character.")),
-            Arguments.of("     ", Arrays.asList("Name must contain at least 1 character.")),
-            Arguments.of("Mary", Arrays.asList()),
-            Arguments.of("John", Arrays.asList())
+            Arguments.of(null, Collections.singletonList("Name cannot be null.")),
+            Arguments.of("", Collections.singletonList("Name must contain at least 1 character.")),
+            Arguments.of("     ", Collections.singletonList("Name must contain at least 1 character.")),
+            Arguments.of("Mary", Collections.emptyList()),
+            Arguments.of("John", Collections.emptyList())
         );
     }
 
@@ -78,11 +78,11 @@ class UserValidatorTest {
 
     private static Stream<Arguments> SetOfSurnamesAndValidationResults() {
         return Stream.of(
-            Arguments.of(null, Arrays.asList("Surname cannot be null.")),
-            Arguments.of("", Arrays.asList("Surname must contain at least 1 character.")),
-            Arguments.of("     ", Arrays.asList("Surname must contain at least 1 character.")),
-            Arguments.of("Johnson", Arrays.asList()),
-            Arguments.of("Drake", Arrays.asList())
+            Arguments.of(null, Collections.singletonList("Surname cannot be null.")),
+            Arguments.of("", Collections.singletonList("Surname must contain at least 1 character.")),
+            Arguments.of("     ", Collections.singletonList("Surname must contain at least 1 character.")),
+            Arguments.of("Johnson", Collections.emptyList()),
+            Arguments.of("Drake", Collections.emptyList())
         );
     }
 
@@ -101,17 +101,17 @@ class UserValidatorTest {
 
     private static Stream<Arguments> SetOfEmailsAndValidationResults() {
         return Stream.of(
-            Arguments.of(null, Arrays.asList("Email cannot be null.")),
-            Arguments.of("", Arrays.asList("Email does not match correct email pattern.")),
-            Arguments.of("     ", Arrays.asList("Email does not match correct email pattern.")),
-            Arguments.of("alice.springfield.gmail.com     ", Arrays.asList("Email does not match correct email pattern.")),
-            Arguments.of("john.doe@yahoo,us", Arrays.asList("Email does not match correct email pattern.")),
-            Arguments.of("@gmail.com", Arrays.asList("Email does not match correct email pattern.")),
-            Arguments.of("john>smith@gmail.com", Arrays.asList("Email does not match correct email pattern.")),
-            Arguments.of("alice.springfield@platform.u", Arrays.asList("Email does not match correct email pattern.")),
-            Arguments.of("John.Smith@gmail.com", Arrays.asList()),
-            Arguments.of("johnsmith@gmail.com", Arrays.asList()),
-            Arguments.of("john-smith@yahoo.us", Arrays.asList())
+            Arguments.of(null, Collections.singletonList("Email cannot be null.")),
+            Arguments.of("", Collections.singletonList("Email does not match correct email pattern.")),
+            Arguments.of("     ", Collections.singletonList("Email does not match correct email pattern.")),
+            Arguments.of("alice.springfield.gmail.com     ", Collections.singletonList("Email does not match correct email pattern.")),
+            Arguments.of("john.doe@yahoo,us", Collections.singletonList("Email does not match correct email pattern.")),
+            Arguments.of("@gmail.com", Collections.singletonList("Email does not match correct email pattern.")),
+            Arguments.of("john>smith@gmail.com", Collections.singletonList("Email does not match correct email pattern.")),
+            Arguments.of("alice.springfield@platform.u", Collections.singletonList("Email does not match correct email pattern.")),
+            Arguments.of("John.Smith@gmail.com", Collections.emptyList()),
+            Arguments.of("johnsmith@gmail.com", Collections.emptyList()),
+            Arguments.of("john-smith@yahoo.us", Collections.emptyList())
         );
     }
 
@@ -130,11 +130,11 @@ class UserValidatorTest {
 
     private static Stream<Arguments> SetOfPasswordsAndValidationResults() {
         return Stream.of(
-            Arguments.of(null, Arrays.asList("Password cannot be null.")),
-            Arguments.of("", Arrays.asList("Password must contain at least 1 character.")),
-            Arguments.of("     ", Arrays.asList("Password must contain at least 1 character.")),
-            Arguments.of("r5678$ikn^bg(yu", Arrays.asList()),
-            Arguments.of("pass123", Arrays.asList())
+            Arguments.of(null, Collections.singletonList("Password cannot be null.")),
+            Arguments.of("", Collections.singletonList("Password must contain at least 1 character.")),
+            Arguments.of("     ", Collections.singletonList("Password must contain at least 1 character.")),
+            Arguments.of("r5678$ikn^bg(yu", Collections.emptyList()),
+            Arguments.of("pass123", Collections.emptyList())
         );
     }
 
@@ -153,11 +153,11 @@ class UserValidatorTest {
 
     private static Stream<Arguments> SetOfJobTitlesAndValidationResults() {
         return Stream.of(
-            Arguments.of(null, Arrays.asList("Job title cannot be null.")),
-            Arguments.of("", Arrays.asList("Job title must contain at least 1 character.")),
-            Arguments.of("     ", Arrays.asList("Job title must contain at least 1 character.")),
-            Arguments.of("Math teacher", Arrays.asList()),
-            Arguments.of("IT administrator", Arrays.asList())
+            Arguments.of(null, Collections.singletonList("Job title cannot be null.")),
+            Arguments.of("", Collections.singletonList("Job title must contain at least 1 character.")),
+            Arguments.of("     ", Collections.singletonList("Job title must contain at least 1 character.")),
+            Arguments.of("Math teacher", Collections.emptyList()),
+            Arguments.of("IT administrator", Collections.emptyList())
         );
     }
 
@@ -170,7 +170,7 @@ class UserValidatorTest {
 
         List<String> resultOfValidation = UserValidator.validate(userWithNullIsActiveIndex);
 
-        assertEquals(Arrays.asList("Is active index cannot be null."), resultOfValidation);
+        assertEquals(Collections.singletonList("Is active index cannot be null."), resultOfValidation);
     }
 
     @Test
@@ -182,7 +182,7 @@ class UserValidatorTest {
 
         List<String> resultOfValidation = UserValidator.validate(userWithNullPosition);
 
-        assertEquals(Arrays.asList("Position cannot be null."), resultOfValidation);
+        assertEquals(Collections.singletonList("Position cannot be null."), resultOfValidation);
     }
 
     @ParameterizedTest
@@ -200,11 +200,11 @@ class UserValidatorTest {
 
     private static Stream<Arguments> SetOfRolesAndValidationResults() {
         return Stream.of(
-            Arguments.of(null, Arrays.asList("Role cannot be null.")),
-            Arguments.of("", Arrays.asList("Role must contain at least 1 character.")),
-            Arguments.of("     ", Arrays.asList("Role must contain at least 1 character.")),
-            Arguments.of("Johnson", Arrays.asList()),
-            Arguments.of("Drake", Arrays.asList())
+            Arguments.of(null, Collections.singletonList("Role cannot be null.")),
+            Arguments.of("", Collections.singletonList("Role must contain at least 1 character.")),
+            Arguments.of("     ", Collections.singletonList("Role must contain at least 1 character.")),
+            Arguments.of("Johnson", Collections.emptyList()),
+            Arguments.of("Drake", Collections.emptyList())
         );
     }
 }

@@ -2,6 +2,7 @@ package io.github.rdx7777.absencemanagementsystem.generators;
 
 import io.github.rdx7777.absencemanagementsystem.model.AbsenceCase;
 import io.github.rdx7777.absencemanagementsystem.model.PartDayType;
+import io.github.rdx7777.absencemanagementsystem.model.User;
 
 import java.time.LocalDate;
 
@@ -9,8 +10,8 @@ public class AbsenceCaseGenerator {
 
     public static AbsenceCase getRandomCaseWithMorningPartDayType() {
         Long id = IdGenerator.getNextId();
-        Long userId = IdGenerator.getNextId();
-        Long headTeacherId = IdGenerator.getNextId();
+        User user = UserGenerator.getRandomEmployee();
+        User headTeacher = UserGenerator.getRandomHeadTeacher();
         LocalDate startDate = LocalDate.now();
         LocalDate endDate = LocalDate.now();
         PartDayType type = PartDayType.Morning;
@@ -27,8 +28,8 @@ public class AbsenceCaseGenerator {
 
         return AbsenceCase.builder()
             .withId(id)
-            .withUserId(userId)
-            .withHeadTeacherId(headTeacherId)
+            .withUser(user)
+            .withHeadTeacher(headTeacher)
             .withStartDate(startDate)
             .withEndDate(endDate)
             .withPartDayType(type)
@@ -47,8 +48,8 @@ public class AbsenceCaseGenerator {
 
     public static AbsenceCase getRandomCaseWithAfternoonPartDayType() {
         Long id = IdGenerator.getNextId();
-        Long userId = IdGenerator.getNextId();
-        Long headTeacherId = IdGenerator.getNextId();
+        User user = UserGenerator.getRandomEmployee();
+        User headTeacher = UserGenerator.getRandomHeadTeacher();
         LocalDate startDate = LocalDate.now();
         LocalDate endDate = LocalDate.now();
         PartDayType type = PartDayType.Afternoon;
@@ -65,8 +66,8 @@ public class AbsenceCaseGenerator {
 
         return AbsenceCase.builder()
             .withId(id)
-            .withUserId(userId)
-            .withHeadTeacherId(headTeacherId)
+            .withUser(user)
+            .withHeadTeacher(headTeacher)
             .withStartDate(startDate)
             .withEndDate(endDate)
             .withPartDayType(type)
@@ -85,8 +86,8 @@ public class AbsenceCaseGenerator {
 
     public static AbsenceCase getRandomCaseWithAllDayPartDayType() {
         Long id = IdGenerator.getNextId();
-        Long userId = IdGenerator.getNextId();
-        Long headTeacherId = IdGenerator.getNextId();
+        User user = UserGenerator.getRandomEmployee();
+        User headTeacher = UserGenerator.getRandomHeadTeacher();
         LocalDate startDate = LocalDate.now();
         LocalDate endDate = startDate.plusDays(2);
         PartDayType partDayType = PartDayType.AllDay;
@@ -103,8 +104,8 @@ public class AbsenceCaseGenerator {
 
         return AbsenceCase.builder()
             .withId(id)
-            .withUserId(userId)
-            .withHeadTeacherId(headTeacherId)
+            .withUser(user)
+            .withHeadTeacher(headTeacher)
             .withStartDate(startDate)
             .withEndDate(endDate)
             .withPartDayType(partDayType)
@@ -122,8 +123,8 @@ public class AbsenceCaseGenerator {
     }
 
     public static AbsenceCase getRandomCaseWithAllDayPartDayTypeAndSpecificId(Long id) {
-        Long userId = IdGenerator.getNextId();
-        Long headTeacherId = IdGenerator.getNextId();
+        User user = UserGenerator.getRandomEmployee();
+        User headTeacher = UserGenerator.getRandomHeadTeacher();
         LocalDate startDate = LocalDate.now();
         LocalDate endDate = startDate.plusDays(2);
         PartDayType type = PartDayType.AllDay;
@@ -140,8 +141,8 @@ public class AbsenceCaseGenerator {
 
         return AbsenceCase.builder()
             .withId(id)
-            .withUserId(userId)
-            .withHeadTeacherId(headTeacherId)
+            .withUser(user)
+            .withHeadTeacher(headTeacher)
             .withStartDate(startDate)
             .withEndDate(endDate)
             .withPartDayType(type)
@@ -159,8 +160,8 @@ public class AbsenceCaseGenerator {
     }
 
     public static AbsenceCase getRandomCaseWithAllDayPartDayTypeAndNullId() {
-        Long userId = IdGenerator.getNextId();
-        Long headTeacherId = IdGenerator.getNextId();
+        User user = UserGenerator.getRandomEmployee();
+        User headTeacher = UserGenerator.getRandomHeadTeacher();
         LocalDate startDate = LocalDate.now();
         LocalDate endDate = startDate.plusDays(2);
         PartDayType type = PartDayType.AllDay;
@@ -176,8 +177,8 @@ public class AbsenceCaseGenerator {
         Boolean isCaseResolved = false;
 
         return AbsenceCase.builder()
-            .withUserId(userId)
-            .withHeadTeacherId(headTeacherId)
+            .withUser(user)
+            .withHeadTeacher(headTeacher)
             .withStartDate(startDate)
             .withEndDate(endDate)
             .withPartDayType(type)
@@ -196,7 +197,7 @@ public class AbsenceCaseGenerator {
 
     public static AbsenceCase getRandomCaseWithAllDayPartDayTypeAndSpecificUserId(Long userId) {
         Long id = IdGenerator.getNextId();
-        Long headTeacherId = IdGenerator.getNextId();
+        User headTeacher = UserGenerator.getRandomHeadTeacher();
         LocalDate startDate = LocalDate.now();
         LocalDate endDate = startDate.plusDays(2);
         PartDayType type = PartDayType.AllDay;
@@ -213,8 +214,8 @@ public class AbsenceCaseGenerator {
 
         return AbsenceCase.builder()
             .withId(id)
-            .withUserId(userId)
-            .withHeadTeacherId(headTeacherId)
+            .withUser(UserGenerator.getRandomEmployeeWithSpecificId(userId))
+            .withHeadTeacher(headTeacher)
             .withStartDate(startDate)
             .withEndDate(endDate)
             .withPartDayType(type)
@@ -233,7 +234,7 @@ public class AbsenceCaseGenerator {
 
     public static AbsenceCase getRandomCaseWithAllDayPartDayTypeAndSpecificHeadTeacherId(Long headTeacherId) {
         Long id = IdGenerator.getNextId();
-        Long userId = IdGenerator.getNextId();
+        User user = UserGenerator.getRandomEmployee();
         LocalDate startDate = LocalDate.now();
         LocalDate endDate = startDate.plusDays(2);
         PartDayType type = PartDayType.AllDay;
@@ -250,8 +251,8 @@ public class AbsenceCaseGenerator {
 
         return AbsenceCase.builder()
             .withId(id)
-            .withUserId(userId)
-            .withHeadTeacherId(headTeacherId)
+            .withUser(user)
+            .withHeadTeacher(UserGenerator.getRandomHeadTeacherWithSpecificId(headTeacherId))
             .withStartDate(startDate)
             .withEndDate(endDate)
             .withPartDayType(type)

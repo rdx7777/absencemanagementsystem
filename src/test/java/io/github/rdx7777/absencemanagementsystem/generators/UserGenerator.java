@@ -122,6 +122,29 @@ public class UserGenerator {
             .build();
     }
 
+    public static User getRandomHeadTeacherWithSpecificId(Long id) {
+        String name = WordGenerator.getRandomWord();
+        String surname = WordGenerator.getRandomWord();
+        String email = RegexWordGenerator.getRandomRegexWord("[a-z]{3}\\@[a-z]{3}\\.[a-z]{3}");
+        String password = WordGenerator.getRandomWord();
+        String jobTitle = WordGenerator.getRandomWord();
+        Boolean isActive = true;
+        Position position = Position.HeadTeacher;
+        String role = WordGenerator.getRandomWord();
+
+        return User.builder()
+            .withId(id)
+            .withName(name)
+            .withSurname(surname)
+            .withEmail(email)
+            .withPassword(password)
+            .withJobTitle(jobTitle)
+            .withIsActive(isActive)
+            .withPosition(position)
+            .withRole(role)
+            .build();
+    }
+
     public static User getRandomHumanResourcesSupervisor() {
         Long id = IdGenerator.getNextId();
         String name = WordGenerator.getRandomWord();

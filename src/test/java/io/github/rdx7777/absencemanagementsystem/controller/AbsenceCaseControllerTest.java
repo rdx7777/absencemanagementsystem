@@ -68,8 +68,8 @@ class AbsenceCaseControllerTest {
         when(caseService.addCase(caseToAdd)).thenReturn(addedCase);
         User headTeacher = UserGenerator.getRandomHeadTeacher();
         User user = UserGenerator.getRandomEmployee();
-        when(userService.getUserById(caseToAdd.getHeadTeacherId())).thenReturn(Optional.of(headTeacher));
-        when(userService.getUserById(caseToAdd.getUserId())).thenReturn(Optional.of(user));
+        when(userService.getUserById(caseToAdd.getHeadTeacher().getId())).thenReturn(Optional.of(headTeacher));
+        when(userService.getUserById(caseToAdd.getUser().getId())).thenReturn(Optional.of(user));
         doNothing().when(emailService).sendEmailToCoverSupervisor(headTeacher, user, addedCase);
 
         String url = "/api/cases";
@@ -122,7 +122,7 @@ class AbsenceCaseControllerTest {
 
     @Test
     void addMethodShouldReturnBadRequestForInvalidCase() throws Exception {
-        AbsenceCase invalidCase = AbsenceCase.builder().withId(1L).withUserId(null).build();
+        AbsenceCase invalidCase = AbsenceCase.builder().withId(1L).withUser(null).build();
         when(caseService.caseExists(invalidCase.getId())).thenReturn(false);
 
         String url = "/api/cases";
@@ -178,8 +178,8 @@ class AbsenceCaseControllerTest {
         when(caseService.updateCase(aCase)).thenReturn(aCase);
         User headTeacher = UserGenerator.getRandomHeadTeacher();
         User user = UserGenerator.getRandomEmployee();
-        when(userService.getUserById(aCase.getHeadTeacherId())).thenReturn(Optional.of(headTeacher));
-        when(userService.getUserById(aCase.getUserId())).thenReturn(Optional.of(user));
+        when(userService.getUserById(aCase.getHeadTeacher().getId())).thenReturn(Optional.of(headTeacher));
+        when(userService.getUserById(aCase.getUser().getId())).thenReturn(Optional.of(user));
         when(userService.getUserById(any())).thenReturn(Optional.of(headTeacher));
         doNothing().when(emailService).sendEmailToHumanResourcesSupervisor(headTeacher, user, aCase);
 
@@ -250,7 +250,7 @@ class AbsenceCaseControllerTest {
 
     @Test
     void updateMethodShouldReturnBadRequestForInvalidCase() throws Exception {
-        AbsenceCase invalidCase = AbsenceCase.builder().withId(1L).withUserId(null).build();
+        AbsenceCase invalidCase = AbsenceCase.builder().withId(1L).withUser(null).build();
         when(caseService.caseExists(invalidCase.getId())).thenReturn(true);
 
         String url = String.format("/api/cases?id=%d&userId=%d", invalidCase.getId(), 1L);

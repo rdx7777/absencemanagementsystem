@@ -64,12 +64,12 @@ public class AbsenceCaseController {
         }
         AbsenceCase addedCase = caseService.addCase(aCase);
         logger.debug("New case added with id: {}.", addedCase.getId());
-        Optional<User> headTeacher = userService.getUserById(aCase.getHeadTeacherId());
+        Optional<User> headTeacher = userService.getUserById(aCase.getHeadTeacher().getId());
         if (headTeacher.isEmpty()) {
             logger.error("Attempt to send email to Cover Supervisor with details of Head Teacher, who does not exist in database.");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attempt to send email to Cover Supervisor with details of Head Teacher, who does not exist in database.");
         }
-        Optional<User> user = userService.getUserById(aCase.getUserId());
+        Optional<User> user = userService.getUserById(aCase.getUser().getId());
         if (user.isEmpty()) {
             logger.error("Attempt to send email to Cover Supervisor with details of user, who does not exist in database.");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attempt to send email to Cover Supervisor with details of user, who does not exist in database.");
@@ -104,12 +104,12 @@ public class AbsenceCaseController {
         }
         AbsenceCase updatedCase = caseService.updateCase(aCase);
         logger.debug("Updated case with id {} by .", aCase.getId());
-        Optional<User> headTeacher = userService.getUserById(aCase.getHeadTeacherId());
+        Optional<User> headTeacher = userService.getUserById(aCase.getHeadTeacher().getId());
         if (headTeacher.isEmpty()) {
             logger.error("Attempt to send email with details of Head Teacher, who does not exist in database.");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attempt to send email with details of Head Teacher, who does not exist in database.");
         }
-        Optional<User> user = userService.getUserById(aCase.getUserId());
+        Optional<User> user = userService.getUserById(aCase.getUser().getId());
         if (user.isEmpty()) {
             logger.error("Attempt to send email with details of user, who does not exist in database.");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attempt to send email with details of user, who does not exist in database.");

@@ -2,6 +2,7 @@ package io.github.rdx7777.absencemanagementsystem.model.validation;
 
 import io.github.rdx7777.absencemanagementsystem.model.AbsenceCase;
 import io.github.rdx7777.absencemanagementsystem.model.PartDayType;
+import io.github.rdx7777.absencemanagementsystem.model.User;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -17,9 +18,9 @@ public class AbsenceCaseValidator extends Validator {
 
         List<String> result = new ArrayList<>();
 
-        addResultOfValidation(result, validateUserId(aCase.getUserId()));
+        addResultOfValidation(result, validateUser(aCase.getUser()));
 
-        addResultOfValidation(result, validateHeadTeacherId(aCase.getHeadTeacherId()));
+        addResultOfValidation(result, validateHeadTeacher(aCase.getHeadTeacher()));
 
         String resultOfValidationStartDate = validateStartDate(aCase.getStartDate());
         addResultOfValidation(result, resultOfValidationStartDate);
@@ -48,27 +49,17 @@ public class AbsenceCaseValidator extends Validator {
         return result;
     }
 
-    private static String validateUserId(Long userId) {
-        if (userId == null) {
-            return "User id cannot be null.";
+    private static String validateUser(User user) {
+        if (user == null) {
+            return "User cannot be null.";
         }
-
-        if (!(userId > 0)) {
-            return "User id cannot be lower than or equal to zero.";
-        }
-
         return null;
     }
 
-    private static String validateHeadTeacherId(Long headTeacherId) {
-        if (headTeacherId == null) {
-            return "Head Teacher id cannot be null.";
+    private static String validateHeadTeacher(User headTeacher) {
+        if (headTeacher == null) {
+            return "Head Teacher cannot be null.";
         }
-
-        if (!(headTeacherId > 0)) {
-            return "Head Teacher id cannot be lower than or equal to zero.";
-        }
-
         return null;
     }
 

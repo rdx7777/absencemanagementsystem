@@ -40,16 +40,28 @@ class CaseList extends Component {
         }
 
         const caseList = cases.map(aCase => {
+            var isProvided;
+            if (aCase.isCoverProvided) {
+                isProvided='yes'
+            } else {
+                isProvided='no'
+            }
+            var isResolved;
+            if (aCase.isCaseResolved) {
+                isResolved='yes'
+            } else {
+                isResolved='no'
+            }
             return <tr key={aCase.id}>
                 <td style={{whiteSpace: 'nowrap'}}>{aCase.id}</td>
-                <td>{aCase.userId}</td>
-                <td>{aCase.headTeacherId}</td>
+                <td>{aCase.user.name || ''} {aCase.user.surname || ''}</td>
+                <td>{aCase.headTeacher.name || ''} {aCase.headTeacher.surname || ''}</td>
                 <td>{new Intl.DateTimeFormat('en-US', {year: 'numeric', month: '2-digit', day: '2-digit'})
                     .format(new Date(aCase.startDate))}</td>
                 <td>{new Intl.DateTimeFormat('en-US', {year: 'numeric', month: '2-digit', day: '2-digit'})
                     .format(new Date(aCase.endDate))}</td>
-                <td>{aCase.isCoverProvided}</td>
-                <td>{aCase.isCaseResolved}</td>
+                <td>{isProvided}</td>
+                <td>{isResolved}</td>
                 <td>
                     <ButtonGroup>
                         <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}} size="sm" color="primary" tag={Link} to={"/cases/" + aCase.id}>Edit Case</Button>
@@ -70,14 +82,14 @@ class CaseList extends Component {
                     <Table className="mt-4">
                         <thead>
                         <tr>
-                            <th width="5%">Case id</th>
-                            <th width="10%">User id</th>
-                            <th width="10%">Head Teacher id</th>
+                            <th width="10%">Case id</th>
+                            <th width="15%">User</th>
+                            <th width="15%">Head Teacher</th>
                             <th width="5%">Start date</th>
                             <th width="5%">End date</th>
-                            <th>Cover provided?</th>
-                            <th>Case resolved?</th>
-                            <th width="10%">Actions</th>
+                            <th width="10%">Cover provided?</th>
+                            <th width="10%">Case resolved?</th>
+                            <th width="15%">Actions</th>
                         </tr>
                         </thead>
                         <tbody>

@@ -1,6 +1,7 @@
 package io.github.rdx7777.absencemanagementsystem.service;
 
 import io.github.rdx7777.absencemanagementsystem.model.AbsenceCase;
+import io.github.rdx7777.absencemanagementsystem.model.User;
 import io.github.rdx7777.absencemanagementsystem.repository.AbsenceCaseRepository;
 
 import java.util.Collection;
@@ -102,9 +103,10 @@ public class AbsenceCaseService {
             logger.error("Attempt to get absence case for user id providing null id.");
             throw new IllegalArgumentException("User id cannot be null.");
         }
-        Example<AbsenceCase> example = Example.of(new AbsenceCase.Builder().withUserId(userId).build());
+        User userExample = User.builder().withId(userId).build();
+        Example<AbsenceCase> caseExample = Example.of(new AbsenceCase.Builder().withUser(userExample).build());
         try {
-            return repository.findAll(example);
+            return repository.findAll(caseExample);
         } catch (NonTransientDataAccessException e) {
             String message = "An error occurred during getting all absence cases for user id: " + userId + ".";
             logger.error(message, e);
@@ -117,9 +119,10 @@ public class AbsenceCaseService {
             logger.error("Attempt to get absence case for head teacher id providing null id.");
             throw new IllegalArgumentException("Head teacher id cannot be null.");
         }
-        Example<AbsenceCase> example = Example.of(new AbsenceCase.Builder().withHeadTeacherId(headTeacherId).withIsCaseResolved(false).build());
+        User headTeacherExample = User.builder().withId(headTeacherId).build();
+        Example<AbsenceCase> caseExample = Example.of(new AbsenceCase.Builder().withHeadTeacher(headTeacherExample).withIsCaseResolved(false).build());
         try {
-            return repository.findAll(example);
+            return repository.findAll(caseExample);
         } catch (NonTransientDataAccessException e) {
             String message = "An error occurred during getting all absence cases for head teacher id: " + headTeacherId + ".";
             logger.error(message, e);

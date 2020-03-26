@@ -18,16 +18,16 @@ public class User {
 //    @GeneratedValue(generator = "inc")
 //    @GenericGenerator(name = "inc", strategy = "increment")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private final Long id;
 
-    private String name;
-    private String surname;
-    private String email;
-    private String password;
-    private String jobTitle;
-    private Boolean isActive;
-    private Position position;
-    private String role;
+    private final String name;
+    private final String surname;
+    private final String email;
+    private final String password;
+    private final String jobTitle;
+    private final Boolean isActive;
+    private final Position position;
+    private final String role;
 
     /**
      * for JPA (Hibernate)

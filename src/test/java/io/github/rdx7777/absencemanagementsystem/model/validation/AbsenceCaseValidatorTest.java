@@ -4,9 +4,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import io.github.rdx7777.absencemanagementsystem.model.AbsenceCase;
 import io.github.rdx7777.absencemanagementsystem.model.PartDayType;
+import io.github.rdx7777.absencemanagementsystem.model.Position;
+import io.github.rdx7777.absencemanagementsystem.model.User;
 
 import java.time.LocalDate;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -18,14 +20,28 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 class AbsenceCaseValidatorTest {
 
-    private AbsenceCase correctCase;
+    private static AbsenceCase correctCase;
+    private static User correctUser;
+    private static User correctHeadTeacher;
 
     @BeforeEach
     void setup() {
+        correctUser = User.builder()
+            .withId(100L)
+            .withName("Alice")
+            .withSurname("Springfield")
+            .withEmail("alice.springfield@gmail.com")
+            .withPassword("pass")
+            .withJobTitle("Math Teacher")
+            .withIsActive(true)
+            .withPosition(Position.Employee)
+            .withRole("ADMIN")
+            .build();
+        correctHeadTeacher = User.builder().withUser(correctUser).withId(200L).withPosition(Position.HeadTeacher).build();
         correctCase = AbsenceCase.builder()
             .withId(1000L)
-            .withUserId(1000L)
-            .withHeadTeacherId(1000L)
+            .withUser(correctUser)
+            .withHeadTeacher(correctHeadTeacher)
             .withStartDate(LocalDate.of(2019, 01, 01))
             .withEndDate(LocalDate.of(2099, 12, 31))
             .withPartDayType(PartDayType.AllDay)
@@ -45,67 +61,46 @@ class AbsenceCaseValidatorTest {
     @Test
     void shouldValidateCase() {
         List<String> resultOfValidation = AbsenceCaseValidator.validate(null);
-        assertEquals(Arrays.asList("AbsenceCase cannot be null."), resultOfValidation);
+        assertEquals(Collections.singletonList("AbsenceCase cannot be null."), resultOfValidation);
     }
 
     @ParameterizedTest
-    @MethodSource("SetOfUserIdsAndValidationResults")
-    void shouldValidateUserId(Long userId, List<String> expected) {
-//        AbsenceCase caseWithVariableUserId = AbsenceCase.builder()
-//            .withId(1L)
-//            .withUserId(userId)
-//            .withHeadTeacherId(10L)
-//            .withStartDate(LocalDate.of(2019, 10, 10))
-//            .withEndDate(LocalDate.of(2019, 10, 12))
-//            .withPartDayType(PartDayType.AllDay)
-//            .withAbsenceReason("Sickness.")
-//            .withUserComment("Flu.")
-//            .withIsCoverRequired(true)
-//            .withIsCoverProvided(true)
-//            .withCoverSupervisorComment("Cover teacher name: John Lennon.")
-//            .withIsApprovedByHeadTeacher(true)
-//            .withIsAbsencePaid(true)
-//            .withHeadTeacherComment("No comment.")
-//            .withHrSupervisorComment("No comment.")
-//            .withIsCaseResolved(true)
-//            .build();
-
-        AbsenceCase caseWithVariableUserId = AbsenceCase.builder()
+    @MethodSource("SetOfUsersAndValidationResults")
+    void shouldValidateUser(User user, List<String> expected) {
+        AbsenceCase caseWithVariableUser = AbsenceCase.builder()
             .withCase(correctCase)
-            .withUserId(userId)
+            .withUser(user)
             .build();
 
-        List<String> resultOfValidation = AbsenceCaseValidator.validate(caseWithVariableUserId);
+        List<String> resultOfValidation = AbsenceCaseValidator.validate(caseWithVariableUser);
 
         assertEquals(expected, resultOfValidation);
     }
 
-    private static Stream<Arguments> SetOfUserIdsAndValidationResults() {
+    private static Stream<Arguments> SetOfUsersAndValidationResults() {
         return Stream.of(
-            Arguments.of(null, Arrays.asList("User id cannot be null.")),
-            Arguments.of(-1L, Arrays.asList("User id cannot be lower than or equal to zero.")),
-            Arguments.of(1L, Arrays.asList())
+            Arguments.of(null, Collections.singletonList("User cannot be null.")),
+            Arguments.of(correctUser, Collections.emptyList())
         );
     }
 
     @ParameterizedTest
-    @MethodSource("SetOfHeadTeacherIdsAndValidationResults")
-    void shouldValidateHeadTeacherId(Long headTeacherId, List<String> expected) {
-        AbsenceCase caseWithVariableHeadTeacherId = AbsenceCase.builder()
+    @MethodSource("SetOfHeadTeachersAndValidationResults")
+    void shouldValidateHeadTeacherId(User headTeacher, List<String> expected) {
+        AbsenceCase caseWithVariableHeadTeacher = AbsenceCase.builder()
             .withCase(correctCase)
-            .withHeadTeacherId(headTeacherId)
+            .withHeadTeacher(headTeacher)
             .build();
 
-        List<String> resultOfValidation = AbsenceCaseValidator.validate(caseWithVariableHeadTeacherId);
+        List<String> resultOfValidation = AbsenceCaseValidator.validate(caseWithVariableHeadTeacher);
 
         assertEquals(expected, resultOfValidation);
     }
 
-    private static Stream<Arguments> SetOfHeadTeacherIdsAndValidationResults() {
+    private static Stream<Arguments> SetOfHeadTeachersAndValidationResults() {
         return Stream.of(
-            Arguments.of(null, Arrays.asList("Head Teacher id cannot be null.")),
-            Arguments.of(-1L, Arrays.asList("Head Teacher id cannot be lower than or equal to zero.")),
-            Arguments.of(1L, Arrays.asList())
+            Arguments.of(null, Collections.singletonList("Head Teacher cannot be null.")),
+            Arguments.of(correctHeadTeacher, Collections.emptyList())
         );
     }
 
@@ -124,9 +119,9 @@ class AbsenceCaseValidatorTest {
 
     private static Stream<Arguments> SetOfStartDatesAndValidationResults() {
         return Stream.of(
-            Arguments.of(null, Arrays.asList("Start date cannot be null.")),
-            Arguments.of(LocalDate.of(2019, 01, 10), Arrays.asList()),
-            Arguments.of(LocalDate.now(), Arrays.asList())
+            Arguments.of(null, Collections.singletonList("Start date cannot be null.")),
+            Arguments.of(LocalDate.of(2019, 1, 10), Collections.emptyList()),
+            Arguments.of(LocalDate.now(), Collections.emptyList())
         );
     }
 
@@ -145,9 +140,9 @@ class AbsenceCaseValidatorTest {
 
     private static Stream<Arguments> SetOfEndDatesAndValidationResults() {
         return Stream.of(
-            Arguments.of(null, Arrays.asList("End date cannot be null.")),
-            Arguments.of(LocalDate.of(2020, 01, 15), Arrays.asList()),
-            Arguments.of(LocalDate.now(), Arrays.asList())
+            Arguments.of(null, Collections.singletonList("End date cannot be null.")),
+            Arguments.of(LocalDate.of(2020, 1, 15), Collections.emptyList()),
+            Arguments.of(LocalDate.now(), Collections.emptyList())
         );
     }
 
@@ -168,17 +163,17 @@ class AbsenceCaseValidatorTest {
     private static Stream<Arguments> setOfRelationsBetweenStartDateEndDateAndValidationResults() {
         return Stream.of(
             Arguments.of(LocalDate.of(2019, 10, 15), LocalDate.of(2019, 10, 10),
-                Arrays.asList("Start date must be earlier than end date.")),
-            Arguments.of(LocalDate.of(2020, 01, 15), LocalDate.of(2019, 12, 31),
-                Arrays.asList("Start date must be earlier than end date.")),
+                Collections.singletonList("Start date must be earlier than end date.")),
+            Arguments.of(LocalDate.of(2020, 1, 15), LocalDate.of(2019, 12, 31),
+                Collections.singletonList("Start date must be earlier than end date.")),
             Arguments.of(LocalDate.now(), LocalDate.now().minusDays(2),
-                Arrays.asList("Start date must be earlier than end date.")),
+                Collections.singletonList("Start date must be earlier than end date.")),
             Arguments.of(LocalDate.of(2019, 10, 15), LocalDate.of(2019, 10, 25),
-                Arrays.asList()),
-            Arguments.of(LocalDate.of(2025, 05, 11), LocalDate.of(2026, 02, 13),
-                Arrays.asList()),
+                Collections.emptyList()),
+            Arguments.of(LocalDate.of(2025, 5, 11), LocalDate.of(2026, 2, 13),
+                Collections.emptyList()),
             Arguments.of(LocalDate.now(), LocalDate.now().plusDays(2),
-                Arrays.asList())
+                Collections.emptyList())
         );
     }
 
@@ -191,7 +186,7 @@ class AbsenceCaseValidatorTest {
 
         List<String> resultOfValidation = AbsenceCaseValidator.validate(caseWithNullPartDayType);
 
-        assertEquals(Arrays.asList("Part day type cannot be null."), resultOfValidation);
+        assertEquals(Collections.singletonList("Part day type cannot be null."), resultOfValidation);
     }
 
     @ParameterizedTest
@@ -209,11 +204,11 @@ class AbsenceCaseValidatorTest {
 
     private static Stream<Arguments> SetOfAbsenceReasonsAndValidationResults() {
         return Stream.of(
-            Arguments.of(null, Arrays.asList("Absence reason cannot be null.")),
-            Arguments.of("", Arrays.asList("Absence reason must contain at least 1 character.")),
-            Arguments.of("     ", Arrays.asList("Absence reason must contain at least 1 character.")),
-            Arguments.of("Winter holiday.", Arrays.asList()),
-            Arguments.of("Child sickness.", Arrays.asList())
+            Arguments.of(null, Collections.singletonList("Absence reason cannot be null.")),
+            Arguments.of("", Collections.singletonList("Absence reason must contain at least 1 character.")),
+            Arguments.of("     ", Collections.singletonList("Absence reason must contain at least 1 character.")),
+            Arguments.of("Winter holiday.", Collections.emptyList()),
+            Arguments.of("Child sickness.", Collections.emptyList())
         );
     }
 
@@ -226,7 +221,7 @@ class AbsenceCaseValidatorTest {
 
         List<String> resultOfValidation = AbsenceCaseValidator.validate(caseWithNullIsCoverRequiredIndex);
 
-        assertEquals(Arrays.asList("Is cover required index cannot be null."), resultOfValidation);
+        assertEquals(Collections.singletonList("Is cover required index cannot be null."), resultOfValidation);
     }
 
     @Test
@@ -238,7 +233,7 @@ class AbsenceCaseValidatorTest {
 
         List<String> resultOfValidation = AbsenceCaseValidator.validate(caseWithNullIsCoverProvidedIndex);
 
-        assertEquals(Arrays.asList("Is cover provided index cannot be null."), resultOfValidation);
+        assertEquals(Collections.singletonList("Is cover provided index cannot be null."), resultOfValidation);
     }
 
     @Test
@@ -250,7 +245,7 @@ class AbsenceCaseValidatorTest {
 
         List<String> resultOfValidation = AbsenceCaseValidator.validate(caseWithNullIsApprovedByHeadTeacherIndex);
 
-        assertEquals(Arrays.asList("Is approved by Head Teacher index cannot be null."), resultOfValidation);
+        assertEquals(Collections.singletonList("Is approved by Head Teacher index cannot be null."), resultOfValidation);
     }
 
     @Test
@@ -262,7 +257,7 @@ class AbsenceCaseValidatorTest {
 
         List<String> resultOfValidation = AbsenceCaseValidator.validate(caseWithNullIsAbsencePaidIndex);
 
-        assertEquals(Arrays.asList("Is absence paid index cannot be null."), resultOfValidation);
+        assertEquals(Collections.singletonList("Is absence paid index cannot be null."), resultOfValidation);
     }
 
     @Test
@@ -274,6 +269,6 @@ class AbsenceCaseValidatorTest {
 
         List<String> resultOfValidation = AbsenceCaseValidator.validate(caseWithNullIsCaseResolvedIndex);
 
-        assertEquals(Arrays.asList("Is case resolved index cannot be null."), resultOfValidation);
+        assertEquals(Collections.singletonList("Is case resolved index cannot be null."), resultOfValidation);
     }
 }
