@@ -28,8 +28,8 @@ public class SecurityController {
         this.service = service;
     }
 
-//    @GetMapping
-//    @ResponseBody
+    /*@GetMapping
+    @ResponseBody
     public Long getLoggedUserId(Authentication authentication) throws ServiceOperationException {
         String email = authentication.getName();
         logger.info("Logged user email: " + email);
@@ -41,17 +41,7 @@ public class SecurityController {
             Long loggedUserId = loggedUser.get().getId();
             return loggedUserId;
         }
-/*
-        Object details = authentication.getDetails();
-        Object credentials = authentication.getCredentials();
-        Object principal = authentication.getPrincipal();
-        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-        System.out.println("Details: " + details);
-        System.out.println("Credentials: " + credentials);
-        System.out.println("Principal: " + principal);
-        authorities.forEach(System.out::println);
-*/
-    }
+    }*/
 
     @GetMapping
     @ResponseBody
@@ -67,3 +57,14 @@ public class SecurityController {
         }
     }
 }
+
+/*
+        Object details = authentication.getDetails();
+        Object credentials = authentication.getCredentials();
+        Object principal = authentication.getPrincipal();
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+        System.out.println("Details: " + details);
+        System.out.println("Credentials: " + credentials);
+        System.out.println("Principal: " + principal);
+        authorities.forEach(System.out::println);
+*/
