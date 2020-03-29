@@ -4,11 +4,12 @@ import io.github.rdx7777.absencemanagementsystem.model.AbsenceCase;
 import io.github.rdx7777.absencemanagementsystem.model.PartDayType;
 import io.github.rdx7777.absencemanagementsystem.model.Position;
 import io.github.rdx7777.absencemanagementsystem.model.User;
-import io.github.rdx7777.absencemanagementsystem.repository.AbsenceCaseRepository;
-import io.github.rdx7777.absencemanagementsystem.repository.UserRepository;
+import io.github.rdx7777.absencemanagementsystem.service.AbsenceCaseService;
+import io.github.rdx7777.absencemanagementsystem.service.UserService;
 
 import java.time.LocalDate;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -17,19 +18,40 @@ import org.springframework.stereotype.Component;
 @Component
 public class Initializer implements CommandLineRunner {
 
-    private final AbsenceCaseRepository caseRepository;
-    private final UserRepository userRepository;
+//    private final AbsenceCaseRepository caseRepository;
+//    private final UserRepository userRepository;
+//
+//    @Autowired
+//    public Initializer(AbsenceCaseRepository caseRepository, UserRepository userRepository) {
+//        this.caseRepository = caseRepository;
+//        this.userRepository = userRepository;
+//    }
+
+    private final AbsenceCaseService caseService;
+    private final UserService userService;
 
     @Autowired
-    public Initializer(AbsenceCaseRepository caseRepository, UserRepository userRepository) {
-        this.caseRepository = caseRepository;
-        this.userRepository = userRepository;
+    public Initializer(AbsenceCaseService caseService, UserService userService) {
+        this.caseService = caseService;
+        this.userService = userService;
     }
 
     @Override
     public void run(String... strings) throws Exception {
 //        caseRepository.deleteAll();
 //        userRepository.deleteAll();
+        List<AbsenceCase> caseList = new ArrayList<>(caseService.getAllCases());
+        if (caseList.size() > 0) {
+            for (AbsenceCase absenceCase : caseList) {
+                caseService.deleteCase(absenceCase.getId());
+            }
+        }
+        List<User> userList = new ArrayList<>(userService.getAllUsers());
+        if (userList.size() > 0) {
+            for (User user : userList) {
+                userService.deleteUser(user.getId());
+            }
+        }
         User firstUser = User.builder()
             .withName("Alice")
             .withSurname("Springfield")
@@ -130,7 +152,10 @@ public class Initializer implements CommandLineRunner {
             .withIsAbsencePaid(true)
             .withIsCaseResolved(true)
             .build();
-        caseRepository.saveAll(Arrays.asList(firstCase, secondCase, thirdCase));
-        userRepository.saveAll(Arrays.asList(thirdUser, sixthUser));
+        caseService.addCase(firstCase);
+        caseService.addCase(secondCase);
+        caseService.addCase(thirdCase);
+//        caseRepository.saveAll(Arrays.asList(firstCase, secondCase, thirdCase));
+//        userRepository.saveAll(Arrays.asList(thirdUser, sixthUser));
     }
 }

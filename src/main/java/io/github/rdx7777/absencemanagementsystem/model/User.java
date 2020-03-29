@@ -8,16 +8,12 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import org.springframework.context.annotation.Primary;
-
 @Entity
-@Primary
+//@Primary
 @Table(name = "users", uniqueConstraints={@UniqueConstraint(columnNames={"email"})})
 public class User {
 
     @Id
-//    @GeneratedValue(generator = "inc")
-//    @GenericGenerator(name = "inc", strategy = "increment")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private final Long id;
 
