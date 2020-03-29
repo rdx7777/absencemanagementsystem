@@ -38,8 +38,6 @@ public class Initializer implements CommandLineRunner {
 
     @Override
     public void run(String... strings) throws Exception {
-//        caseRepository.deleteAll();
-//        userRepository.deleteAll();
         List<AbsenceCase> caseList = new ArrayList<>(caseService.getAllCases());
         if (caseList.size() > 0) {
             for (AbsenceCase absenceCase : caseList) {
@@ -155,7 +153,26 @@ public class Initializer implements CommandLineRunner {
         caseService.addCase(firstCase);
         caseService.addCase(secondCase);
         caseService.addCase(thirdCase);
-//        caseRepository.saveAll(Arrays.asList(firstCase, secondCase, thirdCase));
-//        userRepository.saveAll(Arrays.asList(thirdUser, sixthUser));
+        userService.addUser(thirdUser);
+        userService.addUser(sixthUser);
+
+        /*User seventhUser = User.builder()
+            .withName("Kris")
+            .withSurname("Colombo")
+            .withEmail("radek_j@wp.pl")
+            .withPassword("$2a$10$u3AJC2e8fQ7bapCZh6I6Re4siOLimyBkPp.E//Ae07CSdW1SrRrFu") // password: test
+            .withJobTitle("Science Teacher")
+            .withIsActive(true)
+            .withPosition(Position.Employee)
+            .withRole("ROLE_USER")
+            .build();
+        List<AbsenceCase> list = new ArrayList<>(caseService.getAllCases());
+        Long id = list.get(0).getId();
+        AbsenceCase updatedThirdCase = AbsenceCase.builder()
+            .withCase(thirdCase)
+            .withId(id)
+            .withUser(secondUser)
+            .build();
+        caseService.updateCase(updatedThirdCase);*/
     }
 }

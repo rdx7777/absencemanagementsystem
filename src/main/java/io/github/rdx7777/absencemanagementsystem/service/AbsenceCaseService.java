@@ -3,6 +3,7 @@ package io.github.rdx7777.absencemanagementsystem.service;
 import io.github.rdx7777.absencemanagementsystem.model.AbsenceCase;
 import io.github.rdx7777.absencemanagementsystem.model.User;
 import io.github.rdx7777.absencemanagementsystem.repository.AbsenceCaseRepository;
+import io.github.rdx7777.absencemanagementsystem.repository.UserRepository;
 
 import java.util.Collection;
 import java.util.NoSuchElementException;
@@ -20,9 +21,11 @@ public class AbsenceCaseService {
     private final Logger logger = LoggerFactory.getLogger(AbsenceCaseService.class);
 
     private final AbsenceCaseRepository repository;
+    private final UserRepository userRepository;
 
-    public AbsenceCaseService(AbsenceCaseRepository repository) {
+    public AbsenceCaseService(AbsenceCaseRepository repository, UserRepository userRepository) {
         this.repository = repository;
+        this.userRepository = userRepository;
     }
 
     public AbsenceCase addCase(AbsenceCase aCase) throws ServiceOperationException {
@@ -36,6 +39,14 @@ public class AbsenceCaseService {
             throw new ServiceOperationException("Absence case already exists in database.");
         }
         try {
+            Optional<User> user = userRepository.findUserByEmail(aCase.getUser().getEmail());
+            if (user.isEmpty()) {
+                userRepository.save(aCase.getUser());
+            }
+            Optional<User> headTeacher = userRepository.findUserByEmail(aCase.getHeadTeacher().getEmail());
+            if (headTeacher.isEmpty()) {
+                userRepository.save(aCase.getHeadTeacher());
+            }
             return repository.save(aCase);
         } catch (NonTransientDataAccessException e) {
             String message = "An error occurred during adding absence case.";

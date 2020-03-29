@@ -8,6 +8,7 @@ import io.github.rdx7777.absencemanagementsystem.generators.AbsenceCaseGenerator
 import io.github.rdx7777.absencemanagementsystem.model.AbsenceCase;
 import io.github.rdx7777.absencemanagementsystem.model.User;
 import io.github.rdx7777.absencemanagementsystem.repository.AbsenceCaseRepository;
+import io.github.rdx7777.absencemanagementsystem.repository.UserRepository;
 
 import java.util.Collection;
 import java.util.List;
@@ -28,6 +29,9 @@ class AbsenceCaseServiceTest {
     @Mock
     AbsenceCaseRepository repository;
 
+    @Mock
+    UserRepository userRepository;
+
     @InjectMocks
     AbsenceCaseService absenceCaseService;
 
@@ -36,6 +40,8 @@ class AbsenceCaseServiceTest {
         // given
         AbsenceCase caseToAdd = AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayType();
         AbsenceCase addedCase = AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayType();
+        when(userRepository.findUserByEmail(caseToAdd.getUser().getEmail())).thenReturn(Optional.of(caseToAdd.getUser()));
+        when(userRepository.findUserByEmail(caseToAdd.getHeadTeacher().getEmail())).thenReturn(Optional.of(caseToAdd.getHeadTeacher()));
         when(repository.existsById(caseToAdd.getId())).thenReturn(false);
         when(repository.save(caseToAdd)).thenReturn(addedCase);
 
@@ -53,6 +59,8 @@ class AbsenceCaseServiceTest {
         // given
         AbsenceCase caseToAdd = AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayTypeAndNullId();
         AbsenceCase addedCase = AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayType();
+        when(userRepository.findUserByEmail(caseToAdd.getUser().getEmail())).thenReturn(Optional.of(caseToAdd.getUser()));
+        when(userRepository.findUserByEmail(caseToAdd.getHeadTeacher().getEmail())).thenReturn(Optional.of(caseToAdd.getHeadTeacher()));
         when(repository.save(caseToAdd)).thenReturn(addedCase);
 
         // when

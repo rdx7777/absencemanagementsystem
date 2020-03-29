@@ -6,11 +6,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 
 @Entity
-//@Primary
-@Table(name = "users", uniqueConstraints={@UniqueConstraint(columnNames={"email"})})
+@Table(name = "users")
 public class User {
 
     @Id
