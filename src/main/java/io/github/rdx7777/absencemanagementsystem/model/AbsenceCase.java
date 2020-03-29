@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -13,15 +14,14 @@ import javax.persistence.ManyToOne;
 public class AbsenceCase {
 
     @Id
-//    @GeneratedValue(generator = "inc")
-//    @GenericGenerator(name = "inc", strategy = "increment")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private final Long id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     private final User user;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     private final User headTeacher;
+
     private final LocalDate startDate;
     private final LocalDate endDate;
     private final PartDayType partDayType;
@@ -37,7 +37,7 @@ public class AbsenceCase {
     private final Boolean isCaseResolved;
 
     @SuppressWarnings("unused")
-    private AbsenceCase() {
+    public AbsenceCase() {
         id = null;
         user = null;
         headTeacher = null;

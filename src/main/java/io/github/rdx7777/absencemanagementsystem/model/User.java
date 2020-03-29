@@ -6,12 +6,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import org.springframework.context.annotation.Primary;
 
 @Entity
 @Primary
-@Table(name = "users")
+@Table(name = "users", uniqueConstraints={@UniqueConstraint(columnNames={"email"})})
 public class User {
 
     @Id
@@ -33,7 +34,7 @@ public class User {
      * for JPA (Hibernate)
      */
     @SuppressWarnings("unused")
-    private User() {
+    public User() {
         id = null;
         name = null;
         surname = null;
