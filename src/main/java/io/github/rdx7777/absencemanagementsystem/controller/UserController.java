@@ -105,6 +105,12 @@ public class UserController {
         return ResponseEntity.ok(service.getAllActiveUsers());
     }
 
+    @GetMapping(value = "/headteachers", produces = "application/json")
+    public ResponseEntity<?> getHeadTeachers() throws ServiceOperationException {
+        logger.info("Attempt to get all Head Teachers.");
+        return ResponseEntity.ok(service.getHeadTeachers());
+    }
+
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable("id") Long id) throws ServiceOperationException {
         if (!service.userExists(id)) {

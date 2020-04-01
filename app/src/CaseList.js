@@ -64,7 +64,8 @@ class CaseList extends Component {
                 <td>{isResolved}</td>
                 <td>
                     <ButtonGroup>
-                        <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}} size="sm" color="primary" tag={Link} to={"/cases/" + aCase.id}>Edit Case</Button>
+                        <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}} size="sm" color="primary"
+                                tag={Link} to={"/cases/" + aCase.id}>Edit Case</Button>
                         <Button size="sm" color="danger" onClick={() => this.remove(aCase.id)}>Delete Case</Button>
                     </ButtonGroup>
                 </td>
@@ -76,7 +77,7 @@ class CaseList extends Component {
                 <AppNavBar/>
                 <Container fluid>
                     <div className="float-right">
-                        <Button color="success" tag={Link} to="/cases">Add Case</Button>
+                        <Button color="success" tag={Link} to="/cases/new">Add Case</Button>
                     </div>
                     <h3>Absence Case List</h3>
                     <Table className="mt-4">

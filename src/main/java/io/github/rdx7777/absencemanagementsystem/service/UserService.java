@@ -1,5 +1,6 @@
 package io.github.rdx7777.absencemanagementsystem.service;
 
+import io.github.rdx7777.absencemanagementsystem.model.Position;
 import io.github.rdx7777.absencemanagementsystem.model.User;
 import io.github.rdx7777.absencemanagementsystem.repository.UserRepository;
 
@@ -106,6 +107,17 @@ public class UserService {
             return repository.findAll(example);
         } catch (NonTransientDataAccessException e) {
             String message = "An error occurred during getting all active users.";
+            logger.error(message, e);
+            throw new ServiceOperationException(message, e);
+        }
+    }
+
+    public Collection<User> getHeadTeachers() throws ServiceOperationException {
+        Example<User> example = Example.of(new User.Builder().withPosition(Position.HeadTeacher).build());
+        try {
+            return repository.findAll(example);
+        } catch (NonTransientDataAccessException e) {
+            String message = "An error occurred during getting Head Teachers.";
             logger.error(message, e);
             throw new ServiceOperationException(message, e);
         }
