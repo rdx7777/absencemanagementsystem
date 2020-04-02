@@ -54,14 +54,14 @@ class CaseEdit extends Component {
         this.setState({aCase});
     }
 
-/*    handleMultiChange(selectedOptions) {
-        this.setState({
-            aCase: {
-                ...this.state.aCase,
-                headTeacher: selectedOptions
-            }
-        })
-    }*/
+    /*    handleMultiChange(selectedOptions) {
+            this.setState({
+                aCase: {
+                    ...this.state.aCase,
+                    headTeacher: selectedOptions
+                }
+            })
+        }*/
 
     async handleSubmit(event) {
         event.preventDefault();
@@ -81,13 +81,13 @@ class CaseEdit extends Component {
     render() {
         const {aCase, users, headTeachers} = this.state;
         const title = <h2>{aCase.id ? 'Edit Case' : 'Add Case'}</h2>;
-        var user = users.map(user =>
-            <option key={user.id}>
+        const user = users.map(user =>
+            <option value="id" key={user.id}>
                 {user.name} {user.surname}
             </option>
         );
-        var headTeacher = headTeachers.map(headTeacher =>
-            <option key={headTeacher.id}>
+        const headTeacher = headTeachers.map(headTeacher =>
+            <option value="id" key={headTeacher.id}>
                 {headTeacher.name} {headTeacher.surname}
             </option>
         );
@@ -113,12 +113,6 @@ class CaseEdit extends Component {
                                 (default: {aCase.headTeacher.name} {aCase.headTeacher.surname})</Label>
                             <Input type="select" name="headTeacher" id="headTeacher" value={aCase.headTeacher}
                                    onChange={this.handleChange}>
-                                {/*onChange={e => this.setState({headTeacher})}>*/}
-                                {/*onChange={e => {
-                                       let aCase = {...this.state.aCase};
-                                       aCase[headTeacher] = getAttributeById(e.target.value);
-                                       this.setState({aCase});
-                                   }}>*/}
                                 {headTeacher}
                             </Input>
                         </FormGroup>
