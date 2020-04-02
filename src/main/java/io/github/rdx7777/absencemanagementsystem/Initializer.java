@@ -18,15 +18,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class Initializer implements CommandLineRunner {
 
-//    private final AbsenceCaseRepository caseRepository;
-//    private final UserRepository userRepository;
-//
-//    @Autowired
-//    public Initializer(AbsenceCaseRepository caseRepository, UserRepository userRepository) {
-//        this.caseRepository = caseRepository;
-//        this.userRepository = userRepository;
-//    }
-
     private final AbsenceCaseService caseService;
     private final UserService userService;
 
@@ -155,24 +146,5 @@ public class Initializer implements CommandLineRunner {
         caseService.addCase(thirdCase);
         userService.addUser(thirdUser);
         userService.addUser(sixthUser);
-
-        /*User seventhUser = User.builder()
-            .withName("Kris")
-            .withSurname("Colombo")
-            .withEmail("radek_j@wp.pl")
-            .withPassword("$2a$10$u3AJC2e8fQ7bapCZh6I6Re4siOLimyBkPp.E//Ae07CSdW1SrRrFu") // password: test
-            .withJobTitle("Science Teacher")
-            .withIsActive(true)
-            .withPosition(Position.Employee)
-            .withRole("ROLE_USER")
-            .build();
-        List<AbsenceCase> list = new ArrayList<>(caseService.getAllCases());
-        Long id = list.get(0).getId();
-        AbsenceCase updatedThirdCase = AbsenceCase.builder()
-            .withCase(thirdCase)
-            .withId(id)
-            .withUser(secondUser)
-            .build();
-        caseService.updateCase(updatedThirdCase);*/
     }
 }

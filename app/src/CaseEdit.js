@@ -7,7 +7,7 @@ class CaseEdit extends Component {
 
     emptyCase = {
         user: '',
-        headTeacher: '', /*add full specification ?????*/
+        headTeacher: '',
         startDate: '',
         endDate: '',
         partDayType: '',
@@ -30,7 +30,6 @@ class CaseEdit extends Component {
             users: [],
             headTeachers: []
         };
-        /*this.getHeadTeachers = this.getHeadTeachers.bind(this);*/
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
@@ -55,6 +54,15 @@ class CaseEdit extends Component {
         this.setState({aCase});
     }
 
+/*    handleMultiChange(selectedOptions) {
+        this.setState({
+            aCase: {
+                ...this.state.aCase,
+                headTeacher: selectedOptions
+            }
+        })
+    }*/
+
     async handleSubmit(event) {
         event.preventDefault();
         const {aCase} = this.state;
@@ -73,12 +81,12 @@ class CaseEdit extends Component {
     render() {
         const {aCase, users, headTeachers} = this.state;
         const title = <h2>{aCase.id ? 'Edit Case' : 'Add Case'}</h2>;
-        const user = users.map(user =>
+        var user = users.map(user =>
             <option key={user.id}>
                 {user.name} {user.surname}
             </option>
         );
-        const headTeacher = headTeachers.map(headTeacher =>
+        var headTeacher = headTeachers.map(headTeacher =>
             <option key={headTeacher.id}>
                 {headTeacher.name} {headTeacher.surname}
             </option>
@@ -92,9 +100,8 @@ class CaseEdit extends Component {
                     <div className="row">
                         <FormGroup className="col-md-4 mb-3">
                             {/*<Label for="userName">User: {aCase.user.name} {aCase.user.surname}</Label>*/}
-                            <Label for="user">Select User</Label>
-                            <Input type="select" name="user" id="user"
-                                   value={aCase.user}
+                            <Label for="user">Select User (default: {aCase.user.name} {aCase.user.surname})</Label>
+                            <Input type="select" name="user" id="user" defaultValue={aCase.user}
                                    onChange={this.handleChange}>
                                 {user}
                             </Input>
@@ -102,15 +109,16 @@ class CaseEdit extends Component {
                     </div>
                     <div className="row">
                         <FormGroup className="col-md-4 mb-3">
-                            <Label for="headTeacher">Select Head Teacher</Label>
-                            <Input type="select" name="headTeacher" id="headTeacher"
-                                   value={aCase.headTeacher}
+                            <Label for="headTeacher">Select Head Teacher
+                                (default: {aCase.headTeacher.name} {aCase.headTeacher.surname})</Label>
+                            <Input type="select" name="headTeacher" id="headTeacher" value={aCase.headTeacher}
                                    onChange={this.handleChange}>
-                                {/*{headTeachers.map(headTeacher =>
-                                <option key={headTeacher.id}>
-                                    {headTeacher.name} {headTeacher.surname}
-                                </option>
-                            )}*/}
+                                {/*onChange={e => this.setState({headTeacher})}>*/}
+                                {/*onChange={e => {
+                                       let aCase = {...this.state.aCase};
+                                       aCase[headTeacher] = getAttributeById(e.target.value);
+                                       this.setState({aCase});
+                                   }}>*/}
                                 {headTeacher}
                             </Input>
                         </FormGroup>
@@ -126,18 +134,12 @@ class CaseEdit extends Component {
                         </FormGroup>
                         <FormGroup className="col-md-2 mb-3">
                             <Label for="partDayType">Part Day Type</Label>
-                            {/*<Input type="select" name="partDayType" id="partDayType" value={aCase.partDayType}
+                            <Input type="select" name="partDayType" id="partDayType" value={aCase.partDayType}
                                    onChange={this.handleChange}>
                                 <option value="Morning">Morning</option>
                                 <option value="Afternoon">Afternoon</option>
-                                <option value="All day">All day</option>
-                            </Input>*/}
-                            <select name="partDayType" id="partDayType" value={aCase.partDayType}
-                                   onChange={this.handleChange}>
-                                <option value="Morning">Morning</option>
-                                <option value="Afternoon">Afternoon</option>
-                                <option value="All day">All day</option>
-                            </select>
+                                <option value="AllDay">All day</option>
+                            </Input>
                         </FormGroup>
                     </div>
                     <div className="row">
