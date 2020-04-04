@@ -48,14 +48,15 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             .roles("ADMIN");
     }
 
+//    TODO: change hasAnyRole to hasRole in lines 57-59
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
             .authorizeRequests()
             .antMatchers(HttpMethod.GET, "/api/users", "/api/users/*").hasAnyRole("CS_SUPERVISOR", "HEAD_TEACHER", "HR_SUPERVISOR", "ADMIN")
-            .antMatchers(HttpMethod.POST, "/api/users").hasRole("ADMIN")
-            .antMatchers(HttpMethod.PUT, "/api/users/*").hasRole("ADMIN")
-            .antMatchers(HttpMethod.DELETE, "/api/users/*").hasRole("ADMIN")
+            .antMatchers(HttpMethod.POST, "/api/users").hasAnyRole("HEAD_TEACHER", "ADMIN")/*.hasRole("ADMIN")*/
+            .antMatchers(HttpMethod.PUT, "/api/users/*").hasAnyRole("HEAD_TEACHER", "ADMIN")/*.hasRole("ADMIN")*/
+            .antMatchers(HttpMethod.DELETE, "/api/users/*").hasAnyRole("HEAD_TEACHER", "ADMIN")/*.hasRole("ADMIN")*/
             .antMatchers(HttpMethod.GET, "/api/cases", "/api/cases/", "/api/cases/active", "/api/cases/active/", "/api/cases/active/ht/*", "/api/cases/active/ht/*/").hasAnyRole("CS_SUPERVISOR", "HEAD_TEACHER", "HR_SUPERVISOR", "ADMIN")
             .antMatchers(HttpMethod.GET, "/api/cases/{%d}").hasAnyRole("USER", "CS_SUPERVISOR", "HEAD_TEACHER", "HR_SUPERVISOR", "ADMIN")
             .antMatchers(HttpMethod.GET, "/api/cases/user").hasAnyRole("USER", "CS_SUPERVISOR", "HEAD_TEACHER", "HR_SUPERVISOR", "ADMIN")

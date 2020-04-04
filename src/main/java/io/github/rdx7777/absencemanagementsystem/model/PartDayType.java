@@ -4,7 +4,7 @@ public enum PartDayType {
 
     Morning("Morning"),
     Afternoon("Afternoon"),
-    AllDay("All_day");
+    AllDay("All Day");
 
     private final String typeDescription;
 

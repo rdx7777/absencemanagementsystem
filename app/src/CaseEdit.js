@@ -111,7 +111,7 @@ class CaseEdit extends Component {
                         <FormGroup className="col-md-4 mb-3">
                             <Label for="headTeacher">Select Head Teacher
                                 (default: {aCase.headTeacher.name} {aCase.headTeacher.surname})</Label>
-                            <Input type="select" name="headTeacher" id="headTeacher" value={aCase.headTeacher}
+                            <Input type="select" name="headTeacher" id="headTeacher" defaultValue={aCase.headTeacher}
                                    onChange={this.handleChange}>
                                 {headTeacher}
                             </Input>
@@ -185,7 +185,7 @@ class CaseEdit extends Component {
                             </Input>
                         </FormGroup>
                         <FormGroup className="col-md-2 mb-3">
-                            <Label for="isAbsencePaid">Absence Paind</Label>
+                            <Label for="isAbsencePaid">Absence Paid</Label>
                             <Input type="select" name="isAbsencePaid" id="isAbsencePaid"
                                    value={aCase.isAbsencePaid}
                                    onChange={this.handleChange}>
@@ -193,7 +193,7 @@ class CaseEdit extends Component {
                                 <option value="true">yes</option>
                             </Input>
                         </FormGroup>
-                        <FormGroup className="col-md-6 mb-3">
+                        <FormGroup className="col-md-6 mb-1">
                             <Label for="headTeacherComment">Head Teacher Comment</Label>
                             <Input type="textarea" name="headTeacherComment" id="headTeacherComment"
                                    value={aCase.headTeacherComment}
