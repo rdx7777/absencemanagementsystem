@@ -13,6 +13,9 @@ import io.github.rdx7777.absencemanagementsystem.generators.UserGenerator;
 import io.github.rdx7777.absencemanagementsystem.model.AbsenceCase;
 import io.github.rdx7777.absencemanagementsystem.model.User;
 import io.github.rdx7777.absencemanagementsystem.repository.UserRepository;
+import io.github.rdx7777.absencemanagementsystem.security.jwt.AuthEntryPointJwt;
+import io.github.rdx7777.absencemanagementsystem.security.jwt.JwtUtils;
+import io.github.rdx7777.absencemanagementsystem.security.services.UserDetailsServiceImpl;
 import io.github.rdx7777.absencemanagementsystem.service.AbsenceCaseService;
 import io.github.rdx7777.absencemanagementsystem.service.EmailService;
 import io.github.rdx7777.absencemanagementsystem.service.ServiceOperationException;
@@ -22,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
-import javax.sql.DataSource;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -49,10 +51,16 @@ class AbsenceCaseControllerTest {
     private EmailService emailService;
 
     @MockBean
-    private DataSource dataSource;
+    private UserRepository repository;
 
     @MockBean
-    private UserRepository repository;
+    private UserDetailsServiceImpl userDetailsService;
+
+    @MockBean
+    private AuthEntryPointJwt authEntryPointJwt;
+
+    @MockBean
+    private JwtUtils jwtUtils;
 
     @Autowired
     private MockMvc mockMvc;

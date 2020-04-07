@@ -19,17 +19,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/cases")
 public class AbsenceCaseController {
@@ -47,6 +41,7 @@ public class AbsenceCaseController {
     }
 
     @PostMapping(produces = "application/json", consumes = "application/json")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER') or hasRole('CS_SUPERVISOR') or hasRole('HEAD_TEACHER') or hasRole('HR_SUPERVISOR')")
     public ResponseEntity<?> addCase(@RequestBody (required = false) AbsenceCase aCase) throws ServiceOperationException {
         if (aCase == null) {
             logger.error("Attempt to add null case.");
@@ -82,6 +77,7 @@ public class AbsenceCaseController {
     }
 
     @PutMapping(params = {"id", "userId"}, produces = "application/json", consumes = "application/json") // "api/cases?id=%d&userId=%d"
+    @PreAuthorize("hasRole('ADMIN') or hasRole('CS_SUPERVISOR') or hasRole('HEAD_TEACHER') or hasRole('HR_SUPERVISOR')")
     public ResponseEntity<?> updateCase(@RequestParam(name = "id") Long id,
                                         @RequestParam(name = "userId") Long editingUserId,
                                         @RequestBody (required = false) AbsenceCase aCase) throws ServiceOperationException {
@@ -139,6 +135,7 @@ public class AbsenceCaseController {
     }
 
     @GetMapping(value = "/{id}", produces = "application/json")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER') or hasRole('CS_SUPERVISOR') or hasRole('HEAD_TEACHER') or hasRole('HR_SUPERVISOR')")
     public ResponseEntity<?> getCase(@PathVariable("id") Long id) throws ServiceOperationException {
         Optional<AbsenceCase> aCase = caseService.getCaseById(id);
         if (aCase.isEmpty()) {
@@ -149,12 +146,14 @@ public class AbsenceCaseController {
     }
 
     @GetMapping(produces = "application/json")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('CS_SUPERVISOR') or hasRole('HEAD_TEACHER') or hasRole('HR_SUPERVISOR')")
     public ResponseEntity<?> getAllCases() throws ServiceOperationException {
         logger.info("Attempt to get all cases.");
         return ResponseEntity.ok(caseService.getAllCases());
     }
 
     @GetMapping(value = "/active", produces = "application/json")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('CS_SUPERVISOR') or hasRole('HEAD_TEACHER') or hasRole('HR_SUPERVISOR')")
     public ResponseEntity<?> getAllActiveCases() throws ServiceOperationException {
         logger.info("Attempt to get all active cases.");
         return ResponseEntity.ok(caseService.getAllActiveCases());
@@ -173,18 +172,21 @@ public class AbsenceCaseController {
     }*/
 
     @GetMapping(value = "/user/{id}", produces = "application/json")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER') or hasRole('CS_SUPERVISOR') or hasRole('HEAD_TEACHER') or hasRole('HR_SUPERVISOR')")
     public ResponseEntity<?> getAllUserCases(@PathVariable("id") Long id) throws ServiceOperationException {
         logger.info("Attempt to get all user cases.");
         return ResponseEntity.ok(caseService.getAllUserCases(id));
     }
 
     @GetMapping(value = "/active/ht/{id}", produces = "application/json")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('CS_SUPERVISOR') or hasRole('HEAD_TEACHER') or hasRole('HR_SUPERVISOR')")
     public ResponseEntity<?> getAllActiveCasesForHeadTeacher(@PathVariable("id") Long id) throws ServiceOperationException {
         logger.info("Attempt to get all active cases for Head Teacher with id {}.", id);
         return ResponseEntity.ok(caseService.getAllActiveCasesForHeadTeacher(id));
     }
 
     @DeleteMapping(value = "/{id}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('HEAD_TEACHER')")
     public ResponseEntity<?> deleteCase(@PathVariable("id") Long id) throws ServiceOperationException {
         if (!caseService.caseExists(id)) {
             logger.error("Attempt to delete not existing case.");

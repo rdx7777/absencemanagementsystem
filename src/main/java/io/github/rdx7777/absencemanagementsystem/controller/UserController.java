@@ -15,6 +15,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -38,6 +41,7 @@ public class UserController {
     }
 
     @PostMapping(produces = "application/json", consumes = "application/json")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('HEAD_TEACHER')")
     public ResponseEntity<?> addUser(@RequestBody (required = false) User user) throws ServiceOperationException {
         if (user == null) {
             logger.error("Attempt to add null user.");
@@ -61,6 +65,7 @@ public class UserController {
     }
 
     @PutMapping(value = "/{id}", produces = "application/json", consumes = "application/json")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('HEAD_TEACHER')")
     public ResponseEntity<?> updateUser(@PathVariable("id") Long id, @RequestBody (required = false) User user) throws ServiceOperationException {
         if (user == null) {
             logger.error("Attempt to update user providing null user.");
@@ -84,6 +89,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/{id}", produces = "application/json")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('CS_SUPERVISOR') or hasRole('HEAD_TEACHER') or hasRole('HR_SUPERVISOR')")
     public ResponseEntity<?> getUser(@PathVariable("id") Long id) throws ServiceOperationException {
         Optional<User> user = service.getUserById(id);
         if (user.isEmpty()) {
@@ -94,24 +100,28 @@ public class UserController {
     }
 
     @GetMapping(produces = "application/json")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('CS_SUPERVISOR') or hasRole('HEAD_TEACHER') or hasRole('HR_SUPERVISOR')")
     public ResponseEntity<?> getAllUsers() throws ServiceOperationException {
         logger.info("Attempt to get all users.");
         return ResponseEntity.ok(service.getAllUsers());
     }
 
     @GetMapping(value = "/active", produces = "application/json")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('CS_SUPERVISOR') or hasRole('HEAD_TEACHER') or hasRole('HR_SUPERVISOR')")
     public ResponseEntity<?> getAllActiveUsers() throws ServiceOperationException {
         logger.info("Attempt to get all active users.");
         return ResponseEntity.ok(service.getAllActiveUsers());
     }
 
     @GetMapping(value = "/headteachers", produces = "application/json")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('CS_SUPERVISOR') or hasRole('HEAD_TEACHER') or hasRole('HR_SUPERVISOR')")
     public ResponseEntity<?> getHeadTeachers() throws ServiceOperationException {
         logger.info("Attempt to get all Head Teachers.");
         return ResponseEntity.ok(service.getHeadTeachers());
     }
 
     @DeleteMapping(value = "/{id}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('HEAD_TEACHER')")
     public ResponseEntity<?> deleteUser(@PathVariable("id") Long id) throws ServiceOperationException {
         if (!service.userExists(id)) {
             logger.error("Attempt to delete not existing user.");

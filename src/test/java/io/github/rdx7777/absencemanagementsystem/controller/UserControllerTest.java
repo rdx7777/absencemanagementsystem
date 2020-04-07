@@ -10,6 +10,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.rdx7777.absencemanagementsystem.generators.UserGenerator;
 import io.github.rdx7777.absencemanagementsystem.model.User;
 import io.github.rdx7777.absencemanagementsystem.repository.UserRepository;
+import io.github.rdx7777.absencemanagementsystem.security.jwt.AuthEntryPointJwt;
+import io.github.rdx7777.absencemanagementsystem.security.jwt.JwtUtils;
+import io.github.rdx7777.absencemanagementsystem.security.services.UserDetailsServiceImpl;
 import io.github.rdx7777.absencemanagementsystem.service.ServiceOperationException;
 import io.github.rdx7777.absencemanagementsystem.service.UserService;
 
@@ -17,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
-import javax.sql.DataSource;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,7 +40,13 @@ class UserControllerTest {
     private UserService userService;
 
     @MockBean
-    private DataSource dataSource;
+    private UserDetailsServiceImpl userDetailsService;
+
+    @MockBean
+    private AuthEntryPointJwt authEntryPointJwt;
+
+    @MockBean
+    private JwtUtils jwtUtils;
 
     @MockBean
     private UserRepository repository;
