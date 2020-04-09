@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Link, withRouter} from 'react-router-dom';
 import {Button, Container, Form, FormGroup, Input, Label} from 'reactstrap';
-import AppNavBar from './AppNavBar';
+import authHeader from "../auth/AuthHeader";
 
 class CaseEdit extends Component {
 
@@ -35,10 +35,10 @@ class CaseEdit extends Component {
     }
 
     async componentDidMount() {
-        const headTeachers = await (await fetch('/api/users/headteachers')).json();
-        const users = await (await fetch('/api/users')).json();
+        const headTeachers = await (await fetch('/api/users/headteachers', {headers: authHeader()})).json();
+        const users = await (await fetch('/api/users', {headers: authHeader()})).json();
         if (this.props.match.params.id !== 'new') {
-            const aCase = await (await fetch(`/api/cases/${this.props.match.params.id}`)).json();
+            const aCase = await (await fetch(`/api/cases/${this.props.match.params.id}`, {headers: authHeader()})).json();
             this.setState({aCase: aCase, users: users, headTeachers: headTeachers});
         } else {
             this.setState({users: users, headTeachers: headTeachers})
@@ -54,28 +54,19 @@ class CaseEdit extends Component {
         this.setState({aCase});
     }
 
-    /*    handleMultiChange(selectedOptions) {
-            this.setState({
-                aCase: {
-                    ...this.state.aCase,
-                    headTeacher: selectedOptions
-                }
-            })
-        }*/
-
     async handleSubmit(event) {
         event.preventDefault();
         const {aCase} = this.state;
+        const headers = new Headers(authHeader());
+        headers.set('Accept', 'application/json');
+        headers.set('Content-Type', 'application/json');
 
         await fetch('/api/cases' + (aCase.id ? '?id=' + aCase.id + '&userId=' + aCase.user.id : ''), {
             method: (aCase.id) ? 'PUT' : 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
+            headers: headers,
             body: JSON.stringify(aCase)
         });
-        this.props.history.push('/cases');
+        this.props.history.goBack();
     }
 
     render() {
@@ -93,7 +84,6 @@ class CaseEdit extends Component {
         );
 
         return <div>
-            <AppNavBar/>
             <Container>
                 {title}
                 <Form onSubmit={this.handleSubmit}>
@@ -109,6 +99,7 @@ class CaseEdit extends Component {
                     </div>
                     <div className="row">
                         <FormGroup className="col-md-4 mb-3">
+                            {/*<Label for="headTeacher">Head Teacher: {aCase.headTeacher.name} {aCase.headTeacher.surname}</Label>*/}
                             <Label for="headTeacher">Select Head Teacher
                                 (default: {aCase.headTeacher.name} {aCase.headTeacher.surname})</Label>
                             <Input type="select" name="headTeacher" id="headTeacher" defaultValue={aCase.headTeacher}

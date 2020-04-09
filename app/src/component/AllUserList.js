@@ -1,9 +1,9 @@
 import React, {Component} from "react";
-import {Button, ButtonGroup, Container, Table} from "reactstrap";
+import {Button, Container, Table} from "reactstrap";
 import {Link} from "react-router-dom";
-import AppNavBar from "./AppNavBar";
+import authHeader from "../auth/AuthHeader";
 
-class UserList extends Component {
+class AllUserList extends Component {
 
     constructor(props) {
         super(props);
@@ -14,18 +14,19 @@ class UserList extends Component {
     componentDidMount() {
         this.setState({isLoading: true});
 
-        fetch('api/users')
+        fetch('api/users', {headers: authHeader()})
             .then(response => response.json())
             .then(data => this.setState({users: data, isLoading: false}));
     }
 
     async remove(id) {
+        const headers = new Headers(authHeader());
+        headers.set('Accept', 'application/json');
+        headers.set('Content-Type', 'application/json');
+
         await fetch(`/api/users/${id}`, {
             method: 'DELETE',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
+            headers: headers
         }).then(() => {
             let updatedUsers = [...this.state.users].filter(i => i.id !== id);
             this.setState({users: updatedUsers});
@@ -54,36 +55,33 @@ class UserList extends Component {
                 <td>{user.email}</td>
                 <td>{user.jobTitle}</td>
                 <td>{isActive}</td>
-                <td>{user.position}</td>
+                {/*<td>{user.position}</td>*/}
                 <td>{role}</td>
                 <td>
-                    <ButtonGroup>
-                        <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}} size="sm"
-                                color="primary"
-                                tag={Link} to={"/users/" + user.id}>Edit User</Button>
-                        <Button size="sm" color="danger" onClick={() => this.remove(user.id)}>Delete User</Button>
-                    </ButtonGroup>
+                    <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
+                            size="sm" color="primary" tag={Link} to={"/users/" + user.id}>Edit</Button>
+                    <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
+                            size="sm" color="danger" onClick={() => this.remove(user.id)}>Delete</Button>
                 </td>
             </tr>
         });
 
         return (
             <div>
-                <AppNavBar/>
                 <Container fluid>
                     <div className="float-right">
                         <Button color="success" tag={Link} to="/users/new">Add User</Button>
                     </div>
-                    <h3>User List</h3>
+                    <h3>Users</h3>
                     <Table className="mt-4">
                         <thead>
                         <tr>
                             <th width="5%">Id</th>
-                            <th width="15%">Name & surname</th>
-                            <th width="15%">Email</th>
-                            <th width="10%">Job title</th>
+                            <th width="15%">Name & Surname</th>
+                            <th width="20%">Email</th>
+                            <th width="20%">Job Title</th>
                             <th width="5%">Active?</th>
-                            <th width="5%">User position</th>
+                            {/*<th width="5%">User position</th>*/}
                             <th width="10%">Authorisation</th>
                             <th width="15%">Actions</th>
                         </tr>
@@ -98,4 +96,4 @@ class UserList extends Component {
     }
 }
 
-export default UserList;
+export default AllUserList;

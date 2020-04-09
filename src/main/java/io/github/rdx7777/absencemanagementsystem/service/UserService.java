@@ -113,7 +113,7 @@ public class UserService {
     }
 
     public Collection<User> getHeadTeachers() throws ServiceOperationException {
-        Example<User> example = Example.of(new User.Builder().withPosition(Position.HeadTeacher).build());
+        Example<User> example = Example.of(new User.Builder().withIsActive(true).withPosition(Position.HeadTeacher).build());
         try {
             return repository.findAll(example);
         } catch (NonTransientDataAccessException e) {

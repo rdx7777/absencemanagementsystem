@@ -101,6 +101,16 @@ public class Initializer implements CommandLineRunner {
             .withPosition(Position.HumanResourcesSupervisor)
             .withRole("ROLE_HR_SUPERVISOR")
             .build();
+        User admin = User.builder()
+            .withName("Rdx")
+            .withSurname("J")
+            .withEmail("radek.jerzynski@gmail.com")
+            .withPassword("$2a$10$u3AJC2e8fQ7bapCZh6I6Re4siOLimyBkPp.E//Ae07CSdW1SrRrFu") // password: test
+            .withJobTitle("Admin")
+            .withIsActive(true)
+            .withPosition(Position.Employee)
+            .withRole("ROLE_ADMIN")
+            .build();
         AbsenceCase firstCase = AbsenceCase.builder()
             .withUser(firstUser)
             .withHeadTeacher(fourthUser)
@@ -146,5 +156,6 @@ public class Initializer implements CommandLineRunner {
         caseService.addCase(thirdCase);
         userService.addUser(thirdUser);
         userService.addUser(sixthUser);
+        userService.addUser(admin);
     }
 }

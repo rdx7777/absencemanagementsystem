@@ -34,7 +34,9 @@ public class EmailService {
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
+            // TODO: solve sending email FROM - sender cannot be taken from properties
             helper.setFrom(mailProperties.getUsername());
+            // TODO: solve sending email to Cover Supervisor (below) - supervisor as this method argument
             helper.setTo(mailProperties.getProperties().get("to_cover_supervisor")); // permanent settings
             helper.setSubject("New case in Absence Management System - action required");
             helper.setText("Dear Cover Supervisor, you have new case to deal with." + "\n"
@@ -58,9 +60,9 @@ public class EmailService {
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
+            // TODO: solve sending email FROM - sender cannot be taken from properties
             helper.setFrom(mailProperties.getUsername());
-            helper.setTo(mailProperties.getProperties().get("to_head_teacher")); // temporary
-//            helper.setTo(headTeacherEmail);
+            helper.setTo(headTeacherEmail);
             helper.setSubject("New case in Absence Management System - action required");
             helper.setText("Dear Head Teacher, you have new case to deal with." + "\n"
                 + "Absence case id: " + aCase.getId() + "\n"
@@ -87,7 +89,9 @@ public class EmailService {
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
+            // TODO: solve sending email FROM - sender cannot be taken from properties
             helper.setFrom(mailProperties.getUsername());
+            // TODO: solve sending email to HR supervisor (below) - supervisor as this method argument
             helper.setTo(mailProperties.getProperties().get("to_hr_supervisor")); // permanent settings
             helper.setSubject("New case in Absence Management System - action required");
             helper.setText("Dear HR Supervisor, you have new case to deal with." + "\n"
@@ -119,9 +123,9 @@ public class EmailService {
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
+            // TODO: solve sending email FROM - sender cannot be taken from properties
             helper.setFrom(mailProperties.getUsername());
-            helper.setTo(mailProperties.getProperties().get("to_user")); // temporary
-//            helper.setTo(userEmail);
+            helper.setTo(userEmail);
             helper.setSubject("Your case in Absence Management System is finished");
             helper.setText("Dear User, your case is finally resolved." + "\n"
                 + "Absence case id: " + aCase.getId() + "\n"

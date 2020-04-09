@@ -41,7 +41,7 @@ public class UserController {
     }
 
     @PostMapping(produces = "application/json", consumes = "application/json")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('HEAD_TEACHER')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> addUser(@RequestBody (required = false) User user) throws ServiceOperationException {
         if (user == null) {
             logger.error("Attempt to add null user.");
@@ -65,7 +65,7 @@ public class UserController {
     }
 
     @PutMapping(value = "/{id}", produces = "application/json", consumes = "application/json")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('HEAD_TEACHER')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> updateUser(@PathVariable("id") Long id, @RequestBody (required = false) User user) throws ServiceOperationException {
         if (user == null) {
             logger.error("Attempt to update user providing null user.");
@@ -89,7 +89,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/{id}", produces = "application/json")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('CS_SUPERVISOR') or hasRole('HEAD_TEACHER') or hasRole('HR_SUPERVISOR')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER') or hasRole('CS_SUPERVISOR') or hasRole('HEAD_TEACHER') or hasRole('HR_SUPERVISOR')")
     public ResponseEntity<?> getUser(@PathVariable("id") Long id) throws ServiceOperationException {
         Optional<User> user = service.getUserById(id);
         if (user.isEmpty()) {
@@ -114,14 +114,14 @@ public class UserController {
     }
 
     @GetMapping(value = "/headteachers", produces = "application/json")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('CS_SUPERVISOR') or hasRole('HEAD_TEACHER') or hasRole('HR_SUPERVISOR')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER') or hasRole('CS_SUPERVISOR') or hasRole('HEAD_TEACHER') or hasRole('HR_SUPERVISOR')")
     public ResponseEntity<?> getHeadTeachers() throws ServiceOperationException {
         logger.info("Attempt to get all Head Teachers.");
         return ResponseEntity.ok(service.getHeadTeachers());
     }
 
     @DeleteMapping(value = "/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('HEAD_TEACHER')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteUser(@PathVariable("id") Long id) throws ServiceOperationException {
         if (!service.userExists(id)) {
             logger.error("Attempt to delete not existing user.");

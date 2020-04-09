@@ -1,7 +1,7 @@
 import React, {Component} from "react";
-import AppNavBar from "./AppNavBar";
 import {Button, Container, Form, FormGroup, Input, Label} from "reactstrap";
 import {Link, withRouter} from "react-router-dom";
+import authHeader from "../auth/AuthHeader";
 
 class UserEdit extends Component {
 
@@ -27,7 +27,7 @@ class UserEdit extends Component {
 
     async componentDidMount() {
         if (this.props.match.params.id !== 'new') {
-            const user = await (await fetch(`/api/users/${this.props.match.params.id}`)).json();
+            const user = await (await fetch(`/api/users/${this.props.match.params.id}`, {headers: authHeader()})).json();
             this.setState({user: user});
         }
     }
@@ -44,13 +44,13 @@ class UserEdit extends Component {
     async handleSubmit(event) {
         event.preventDefault();
         const {user} = this.state;
+        const headers = new Headers(authHeader());
+        headers.set('Accept', 'application/json');
+        headers.set('Content-Type', 'application/json');
 
         await fetch('/api/users' + (user.id ? '/' + user.id : ''), {
             method: (user.id) ? 'PUT' : 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
+            headers: headers,
             body: JSON.stringify(user)
         });
         this.props.history.push('/users');
@@ -61,7 +61,6 @@ class UserEdit extends Component {
         const title = <h2>{user.id ? 'Edit User' : 'Add User'}</h2>;
 
         return <div>
-            <AppNavBar/>
             <Container>
                 {title}
                 <Form onSubmit={this.handleSubmit}>
@@ -111,7 +110,7 @@ class UserEdit extends Component {
                             <Label for="position">Position</Label>
                             <Input type="select" name="position" id="position" value={user.position}
                                    onChange={this.handleChange}>
-                                <option value=""></option>
+                                <option value=""/>
                                 <option value="Employee">Employee</option>
                                 <option value="CoverSupervisor">Cover Supervisor</option>
                                 <option value="HeadTeacher">Head Teacher</option>
@@ -122,7 +121,7 @@ class UserEdit extends Component {
                             <Label for="role">Authorisation</Label>
                             <Input type="select" name="role" id="role" value={user.role}
                                    onChange={this.handleChange}>
-                                <option value=""></option>
+                                <option value=""/>
                                 <option value="ROLE_USER">authorisation: user</option>
                                 <option value="ROLE_CS_SUPERVISOR">authorisation: cover supervisor</option>
                                 <option value="ROLE_HEAD_TEACHER">authorisation: head teacher</option>
