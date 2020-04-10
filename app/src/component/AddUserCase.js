@@ -33,6 +33,7 @@ class AddUserCase extends Component {
             headTeachers: []
         };
         this.handleChange = this.handleChange.bind(this);
+        this.handleHeadTeacherChange = this.handleHeadTeacherChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
@@ -44,7 +45,6 @@ class AddUserCase extends Component {
 
         aCase.id = null;
         aCase.user = user;
-        aCase.headTeacher = user; // temporary, because form isn't working with head teachers list
         aCase.isCoverProvided = false;
         aCase.isApprovedByHeadTeacher = false;
         aCase.isAbsencePaid = false;
@@ -59,6 +59,14 @@ class AddUserCase extends Component {
         const name = target.name;
         let aCase = {...this.state.aCase};
         aCase[name] = value;
+        this.setState({aCase});
+    }
+
+    handleHeadTeacherChange(event) {
+        const {headTeachers} = this.state;
+        const index = event.target.value;
+        let aCase = {...this.state.aCase};
+        aCase.headTeacher = headTeachers[index];
         this.setState({aCase});
     }
 
@@ -80,8 +88,11 @@ class AddUserCase extends Component {
     render() {
         const {aCase, headTeachers} = this.state;
         const title = <h2>Add Case</h2>;
-        const headTeacher = headTeachers.map(headTeacher =>
-            <option value="id" key={headTeacher.id}>
+        const currentUser = AuthService.getCurrentUser();
+        const headTeacher = headTeachers
+            .filter(ht => !(ht.id === currentUser.id))
+            .map((headTeacher, index) =>
+            <option key={index} value={index}>
                 {headTeacher.name} {headTeacher.surname}
             </option>
         );
@@ -97,13 +108,14 @@ class AddUserCase extends Component {
                     </div>
                     <div className="row">
 
-                        {/*<FormGroup className="col-md-4 mb-3">
+                        <FormGroup className="col-md-4 mb-3">
                             <Label for="headTeacher">Select Head Teacher</Label>
                             <Input type="select" name="headTeacher" id="headTeacher" defaultValue={aCase.headTeacher}
-                                   onChange={this.handleChange}>
+                                   onChange={this.handleHeadTeacherChange}>
+                                <option/>
                                 {headTeacher}
                             </Input>
-                        </FormGroup>*/}
+                        </FormGroup>
 
                         <FormGroup className="col-md-2 mb-3">
                             <Label for="startDate">Start Date</Label>

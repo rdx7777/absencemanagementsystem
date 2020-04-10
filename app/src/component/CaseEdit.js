@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Link, withRouter} from 'react-router-dom';
 import {Button, Container, Form, FormGroup, Input, Label} from 'reactstrap';
 import authHeader from "../auth/AuthHeader";
+import AuthService from "../auth/AuthService";
 
 class CaseEdit extends Component {
 
@@ -31,6 +32,8 @@ class CaseEdit extends Component {
             headTeachers: []
         };
         this.handleChange = this.handleChange.bind(this);
+        this.handleUserChange = this.handleUserChange.bind(this);
+        this.handleHeadTeacherChange = this.handleHeadTeacherChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
@@ -54,6 +57,22 @@ class CaseEdit extends Component {
         this.setState({aCase});
     }
 
+    handleUserChange(event) {
+        const {users} = this.state;
+        const index = event.target.value;
+        let aCase = {...this.state.aCase};
+        aCase.user = users[index];
+        this.setState({aCase});
+    }
+
+    handleHeadTeacherChange(event) {
+        const {headTeachers} = this.state;
+        const index = event.target.value;
+        let aCase = {...this.state.aCase};
+        aCase.headTeacher = headTeachers[index];
+        this.setState({aCase});
+    }
+
     async handleSubmit(event) {
         event.preventDefault();
         const {aCase} = this.state;
@@ -72,13 +91,16 @@ class CaseEdit extends Component {
     render() {
         const {aCase, users, headTeachers} = this.state;
         const title = <h2>{aCase.id ? 'Edit Case' : 'Add Case'}</h2>;
-        const user = users.map(user =>
-            <option value="id" key={user.id}>
+        const currentUser = AuthService.getCurrentUser();
+        const user = users.map((user, index) =>
+            <option key={index} value={index}>
                 {user.name} {user.surname}
             </option>
         );
-        const headTeacher = headTeachers.map(headTeacher =>
-            <option value="id" key={headTeacher.id}>
+        const headTeacher = headTeachers
+            .filter(ht => !(ht.id === currentUser.id))
+            .map((headTeacher, index) =>
+            <option key={index} value={index}>
                 {headTeacher.name} {headTeacher.surname}
             </option>
         );
@@ -89,21 +111,21 @@ class CaseEdit extends Component {
                 <Form onSubmit={this.handleSubmit}>
                     <div className="row">
                         <FormGroup className="col-md-4 mb-3">
-                            {/*<Label for="userName">User: {aCase.user.name} {aCase.user.surname}</Label>*/}
                             <Label for="user">Select User (default: {aCase.user.name} {aCase.user.surname})</Label>
                             <Input type="select" name="user" id="user" defaultValue={aCase.user}
-                                   onChange={this.handleChange}>
+                                   onChange={this.handleUserChange}>
+                                <option/>
                                 {user}
                             </Input>
                         </FormGroup>
                     </div>
                     <div className="row">
                         <FormGroup className="col-md-4 mb-3">
-                            {/*<Label for="headTeacher">Head Teacher: {aCase.headTeacher.name} {aCase.headTeacher.surname}</Label>*/}
                             <Label for="headTeacher">Select Head Teacher
                                 (default: {aCase.headTeacher.name} {aCase.headTeacher.surname})</Label>
                             <Input type="select" name="headTeacher" id="headTeacher" defaultValue={aCase.headTeacher}
-                                   onChange={this.handleChange}>
+                                   onChange={this.handleHeadTeacherChange}>
+                                <option/>
                                 {headTeacher}
                             </Input>
                         </FormGroup>
@@ -121,6 +143,7 @@ class CaseEdit extends Component {
                             <Label for="partDayType">Part Day Type</Label>
                             <Input type="select" name="partDayType" id="partDayType" value={aCase.partDayType}
                                    onChange={this.handleChange}>
+                                <option/>
                                 <option value="Morning">Morning</option>
                                 <option value="Afternoon">Afternoon</option>
                                 <option value="AllDay">All day</option>
@@ -145,6 +168,7 @@ class CaseEdit extends Component {
                             <Input type="select" name="isCoverRequired" id="isCoverRequired"
                                    value={aCase.isCoverRequired}
                                    onChange={this.handleChange}>
+                                <option/>
                                 <option value="false">no</option>
                                 <option value="true">yes</option>
                             </Input>
@@ -154,6 +178,7 @@ class CaseEdit extends Component {
                             <Input type="select" name="isCoverProvided" id="isCoverProvided"
                                    value={aCase.isCoverProvided}
                                    onChange={this.handleChange}>
+                                <option/>
                                 <option value="false">no</option>
                                 <option value="true">yes</option>
                             </Input>
@@ -171,6 +196,7 @@ class CaseEdit extends Component {
                             <Input type="select" name="isApprovedByHeadTeacher" id="isApprovedByHeadTeacher"
                                    value={aCase.isApprovedByHeadTeacher}
                                    onChange={this.handleChange}>
+                                <option/>
                                 <option value="false">no</option>
                                 <option value="true">yes</option>
                             </Input>
@@ -180,6 +206,7 @@ class CaseEdit extends Component {
                             <Input type="select" name="isAbsencePaid" id="isAbsencePaid"
                                    value={aCase.isAbsencePaid}
                                    onChange={this.handleChange}>
+                                <option/>
                                 <option value="false">no</option>
                                 <option value="true">yes</option>
                             </Input>
@@ -203,6 +230,7 @@ class CaseEdit extends Component {
                             <Input type="select" name="isCaseResolved" id="isCaseResolved"
                                    value={aCase.isCaseResolved}
                                    onChange={this.handleChange}>
+                                <option/>
                                 <option value="false">no</option>
                                 <option value="true">yes</option>
                             </Input>
