@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
-import {Link, withRouter} from 'react-router-dom';
 import {Button, Container, Form, FormGroup, Input, Label} from 'reactstrap';
 import AuthService from "../auth/AuthService";
 import authHeader from "../auth/AuthHeader";
+import {Link} from "react-router-dom";
 
-class AddUserCase extends Component {
+export default class AddUserCase extends Component {
 
     emptyCase = {
         id: '',
@@ -41,6 +41,8 @@ class AddUserCase extends Component {
         const currentUser = AuthService.getCurrentUser();
         const user = await (await fetch(`/api/users/${currentUser.id}`, {headers: authHeader()})).json();
         const headTeachers = await (await fetch('/api/users/headteachers', {headers: authHeader()})).json();
+        const filteredHeadTeachers = headTeachers.filter(u => !(u.id === currentUser.id));
+
         const {aCase} = this.state;
 
         aCase.id = null;
@@ -50,7 +52,7 @@ class AddUserCase extends Component {
         aCase.isAbsencePaid = false;
         aCase.isCaseResolved = false;
 
-        this.setState({aCase: aCase, user: user, headTeachers: headTeachers});
+        this.setState({aCase: aCase, user: user, headTeachers: filteredHeadTeachers});
     }
 
     handleChange(event) {
@@ -107,7 +109,6 @@ class AddUserCase extends Component {
                         </FormGroup>
                     </div>
                     <div className="row">
-
                         <FormGroup className="col-md-4 mb-3">
                             <Label for="headTeacher">Select Head Teacher</Label>
                             <Input type="select" name="headTeacher" id="headTeacher" defaultValue={aCase.headTeacher}
@@ -116,7 +117,6 @@ class AddUserCase extends Component {
                                 {headTeacher}
                             </Input>
                         </FormGroup>
-
                         <FormGroup className="col-md-2 mb-3">
                             <Label for="startDate">Start Date</Label>
                             <Input type="text" name="startDate" id="startDate" value={aCase.startDate} placeholder="YYYY-MM-DD"
@@ -171,5 +171,3 @@ class AddUserCase extends Component {
         </div>
     }
 }
-
-export default withRouter(AddUserCase);

@@ -1,101 +1,75 @@
-import {Button, ListGroup, ListGroupItem} from "reactstrap";
-import {Link} from "react-router-dom";
-import React from "react";
+import React, {Component} from 'react';
+import {Button, Container, ListGroup, ListGroupItem, ListGroupItemHeading} from "reactstrap";
+import {Link, withRouter} from "react-router-dom";
 
-export default function caseDetails(aCase, returnAddress) {
+class CaseDetails extends Component {
 
-    var isCoverRequired;
-    if (aCase.isCoverRequired) {isCoverRequired='yes'} else {isCoverRequired='no'}
-    var isCoverProvided;
-    if (aCase.isCoverProvided) {isCoverProvided='yes'} else {isCoverProvided='no'}
-    var isAbsenceApproved;
-    if (aCase.isApprovedByHeadTeacher) {isAbsenceApproved='yes'} else {isAbsenceApproved='no'}
-    var isAbsencePaid;
-    if (aCase.isAbsencePaid) {isAbsencePaid='yes'} else {isAbsencePaid='no'}
-    var isCaseResolved;
-    if (aCase.isCaseResolved) {isCaseResolved='yes'} else {isCaseResolved='no'}
+    constructor(props) {
+        super(props);
+    }
 
-    return (
-        <div>
-            <ListGroup>
-                <h2>Case details</h2>
-                <ListGroupItem>Case id: {aCase.id}</ListGroupItem>
-                <ListGroupItem>User: aCase.user.name aCase.user.surname</ListGroupItem>
-                <ListGroupItem>Head Teacher: aCase.headTeacher.name aCase.headTeacher.surname</ListGroupItem>
-                <ListGroupItem>Start Date {aCase.startDate}</ListGroupItem>
-                <ListGroupItem>End Date {aCase.endDate}</ListGroupItem>
-                <ListGroupItem>Part Day Type: {aCase.partDayType}</ListGroupItem>
-                <ListGroupItem>Absence Reason: {aCase.absenceReason}</ListGroupItem>
-                <ListGroupItem>User Comment: {aCase.userComment}</ListGroupItem>
-                <ListGroupItem>Cover Required: {isCoverRequired}</ListGroupItem>
-                <ListGroupItem>Cover Provided: {isCoverProvided}</ListGroupItem>
-                <ListGroupItem>Cover Supervisor Comment: {aCase.coverSupervisorComment}</ListGroupItem>
-                <ListGroupItem>Absence Approved: {isAbsenceApproved}</ListGroupItem>
-                <ListGroupItem>Absence Paid: {isAbsencePaid}</ListGroupItem>
-                <ListGroupItem>Head Teacher Comment: {aCase.headTeacherComment}</ListGroupItem>
-                <ListGroupItem>HR Supervisor Comment: {aCase.hrSupervisorComment}</ListGroupItem>
-                <ListGroupItem>Case Resolved: {isCaseResolved}</ListGroupItem>
-                <Button color="secondary" tag={Link} to={returnAddress}>Back to Case List</Button>
-            </ListGroup>
-        </div>
-    );
+    render() {
+        const aCase = this.props.location.state.aCase;
+        const returnAddress = this.props.location.state.returnAddress;
+        var isCoverRequired;
+        if (aCase.isCoverRequired) {isCoverRequired = 'YES'} else {isCoverRequired = 'NO'}
+        var isCoverProvided;
+        if (aCase.isCoverProvided) {isCoverProvided = 'YES'} else {isCoverProvided = 'NO'}
+        var isAbsenceApproved;
+        if (aCase.isApprovedByHeadTeacher) {isAbsenceApproved = 'YES'} else {isAbsenceApproved = 'NO'}
+        var isAbsencePaid;
+        if (aCase.isAbsencePaid) {isAbsencePaid = 'YES'} else {isAbsencePaid = 'NO'}
+        var isCaseResolved;
+        if (aCase.isCaseResolved) {isCaseResolved = 'YES'} else {isCaseResolved = 'NO'}
+
+        return (
+            <div>
+                <Container fluid>
+                    <ListGroup>
+                        <ListGroupItemHeading>Case details</ListGroupItemHeading>
+                        <div className="row">
+                            <ListGroupItem className="rounded block-example border border-dark col-md-2 mb-1">Case id:  {aCase.id}</ListGroupItem>
+                            <ListGroupItem className="rounded block-example border border-dark col-md-4 mb-1">User:  {aCase.user.name} {aCase.user.surname}</ListGroupItem>
+                            <ListGroupItem className="rounded block-example border border-dark col-md-6 mb-1">User title:  {aCase.user.jobTitle}</ListGroupItem>
+                        </div>
+                        <div className="row">
+                            <ListGroupItem className="rounded block-example border border-dark col-md-5 mb-1">Head Teacher:  {aCase.headTeacher.name} {aCase.headTeacher.surname}</ListGroupItem>
+                            <ListGroupItem className="rounded block-example border border-dark col-md-7 mb-1">Head Teacher title:  {aCase.headTeacher.jobTitle}</ListGroupItem>
+                        </div>
+                        <div className="row">
+                            <ListGroupItem className="rounded block-example border border-dark col-md-4 mb-1">Start date:  {aCase.startDate}</ListGroupItem>
+                            <ListGroupItem className="rounded block-example border border-dark col-md-4 mb-1">End date:  {aCase.endDate}</ListGroupItem>
+                            <ListGroupItem className="rounded block-example border border-dark col-md-4 mb-1">Part day type:  {aCase.partDayType}</ListGroupItem>
+                        </div>
+                        <div className="row">
+                            <ListGroupItem className="rounded block-example border border-dark col-md-12 mb-1">Absence reason:  {aCase.absenceReason}</ListGroupItem>
+                        </div>
+                        <div className="row">
+                            <ListGroupItem className="rounded block-example border border-dark col-md-12 mb-1">User comment:  {aCase.userComment}</ListGroupItem>
+                        </div>
+                        <div className="row">
+                            <ListGroupItem className="rounded block-example border border-dark col-md-2 mb-1">Cover required: {isCoverRequired}</ListGroupItem>
+                            <ListGroupItem className="rounded block-example border border-dark col-md-2 mb-1">Cover provided: {isCoverProvided}</ListGroupItem>
+                            <ListGroupItem className="rounded block-example border border-dark col-md-8 mb-1">Cover Supervisor comment:  {aCase.coverSupervisorComment}</ListGroupItem>
+                        </div>
+                        <div className="row">
+                            <ListGroupItem className="rounded block-example border border-dark col-md-3 mb-1">Absence approved: {isAbsenceApproved}</ListGroupItem>
+                            <ListGroupItem className="rounded block-example border border-dark col-md-2 mb-1">Absence paid: {isAbsencePaid}</ListGroupItem>
+                            <ListGroupItem className="rounded block-example border border-dark col-md-7 mb-1">Head Teacher comment:  {aCase.headTeacherComment}</ListGroupItem>
+                        </div>
+                        <div className="row">
+                            <ListGroupItem className="rounded block-example border border-dark col-md-10 mb-2">HR Supervisor comment:  {aCase.hrSupervisorComment}</ListGroupItem>
+                            <ListGroupItem className="rounded block-example border border-dark col-md-2 mb-2">Case resolved: {isCaseResolved}</ListGroupItem>
+                        </div>
+                    </ListGroup>
+                    <div className="float-right">
+                        <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
+                                color="primary" tag={Link} to={returnAddress}>Back to list</Button>
+                    </div>
+                </Container>
+            </div>
+        );
+    }
 }
 
-// import React, {Component} from 'react';
-// import {Link} from 'react-router-dom';
-// import {Button} from 'reactstrap';
-// import { ListGroup, ListGroupItem } from 'reactstrap';
-// import authHeader from "./auth/AuthHeader";
-//
-// export default class CaseDetails extends Component {
-//
-//     constructor(props) {
-//         super(props);
-//         this.state = {
-//             aCase: undefined
-//         };
-//     }
-//
-//     componentDidMount() {
-//         fetch(`/api/cases/${this.props.match.params.id}`, {headers: authHeader()})
-//             .then(response => response.json())
-//             .then(data => this.setState({aCase: data}));
-//     }
-//
-//     render() {
-//         const {aCase} = this.state;
-//         var isCoverRequired;
-//         if (aCase.isCoverRequired) {isCoverRequired='yes'} else {isCoverRequired='no'}
-//         var isCoverProvided;
-//         if (aCase.isCoverProvided) {isCoverProvided='yes'} else {isCoverProvided='no'}
-//         var isAbsenceApproved;
-//         if (aCase.isApprovedByHeadTeacher) {isAbsenceApproved='yes'} else {isAbsenceApproved='no'}
-//         var isAbsencePaid;
-//         if (aCase.isAbsencePaid) {isAbsencePaid='yes'} else {isAbsencePaid='no'}
-//         var isCaseResolved;
-//         if (aCase.isCaseResolved) {isCaseResolved='yes'} else {isCaseResolved='no'}
-//
-//         return (
-//             <ListGroup>
-//                 <h2>Case details</h2>
-//                 <ListGroupItem>Case id: {aCase.id}</ListGroupItem>
-//                 <ListGroupItem>User: {aCase.user.name} {aCase.user.surname}</ListGroupItem>
-//                 <ListGroupItem>Head Teacher: {aCase.headTeacher.name} {aCase.headTeacher.surname}</ListGroupItem>
-//                 <ListGroupItem>Start Date {aCase.startDate}</ListGroupItem>
-//                 <ListGroupItem>End Date {aCase.endDate}</ListGroupItem>
-//                 <ListGroupItem>Part Day Type: {aCase.partDayType}</ListGroupItem>
-//                 <ListGroupItem>Absence Reason: {aCase.absenceReason}</ListGroupItem>
-//                 <ListGroupItem>User Comment: {aCase.userComment}</ListGroupItem>
-//                 <ListGroupItem>Cover Required: {isCoverRequired}</ListGroupItem>
-//                 <ListGroupItem>Cover Provided: {isCoverProvided}</ListGroupItem>
-//                 <ListGroupItem>Cover Supervisor Comment: {aCase.coverSupervisorComment}</ListGroupItem>
-//                 <ListGroupItem>Absence Approved: {isAbsenceApproved}</ListGroupItem>
-//                 <ListGroupItem>Absence Paid: {isAbsencePaid}</ListGroupItem>
-//                 <ListGroupItem>Head Teacher Comment: {aCase.headTeacherComment}</ListGroupItem>
-//                 <ListGroupItem>HR Supervisor Comment: {aCase.hrSupervisorComment}</ListGroupItem>
-//                 <ListGroupItem>Case Resolved: {isCaseResolved}</ListGroupItem>
-//                 <Button color="secondary" tag={Link} to="/cases">Back to Case List</Button>
-//             </ListGroup>
-//         );
-//     }
-// }
+export default withRouter(CaseDetails);

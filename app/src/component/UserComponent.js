@@ -1,19 +1,18 @@
 import React, {Component} from "react";
 import AuthService from "../auth/AuthService";
 import {Button, ButtonGroup, Container, ListGroup, ListGroupItem, Table} from "reactstrap";
-import {Link} from "react-router-dom";
-// import caseDetails from "./CaseDetails";
+import {Link, withRouter} from "react-router-dom";
 import authHeader from "../auth/AuthHeader";
 
-export default class UserComponent extends Component {
+class UserComponent extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
             cases: [],
             isLoading: true,
+            seen: false
         };
-        this.caseDetails = this.caseDetails.bind(this);
     }
 
     componentDidMount() {
@@ -23,45 +22,6 @@ export default class UserComponent extends Component {
         fetch('api/cases/user/' + id, {headers: authHeader()})
             .then(response => response.json())
             .then(data => this.setState({cases: data, isLoading: false}));
-    }
-
-    caseDetails(aCase, returnAddress) {
-
-        var isCoverRequired;
-        if (aCase.isCoverRequired) {isCoverRequired='yes'} else {isCoverRequired='no'}
-        var isCoverProvided;
-        if (aCase.isCoverProvided) {isCoverProvided='yes'} else {isCoverProvided='no'}
-        var isAbsenceApproved;
-        if (aCase.isApprovedByHeadTeacher) {isAbsenceApproved='yes'} else {isAbsenceApproved='no'}
-        var isAbsencePaid;
-        if (aCase.isAbsencePaid) {isAbsencePaid='yes'} else {isAbsencePaid='no'}
-        var isCaseResolved;
-        if (aCase.isCaseResolved) {isCaseResolved='yes'} else {isCaseResolved='no'}
-
-        return (
-            <div>
-                <ListGroup>
-                    <h2>Case details</h2>
-                    <ListGroupItem>Case id: {aCase.id}</ListGroupItem>
-                    <ListGroupItem>User: {aCase.user.name} {aCase.user.surname}</ListGroupItem>
-                    <ListGroupItem>Head Teacher: {aCase.headTeacher.name} {aCase.headTeacher.surname}</ListGroupItem>
-                    <ListGroupItem>Start Date {aCase.startDate}</ListGroupItem>
-                    <ListGroupItem>End Date {aCase.endDate}</ListGroupItem>
-                    <ListGroupItem>Part Day Type: {aCase.partDayType}</ListGroupItem>
-                    <ListGroupItem>Absence Reason: {aCase.absenceReason}</ListGroupItem>
-                    <ListGroupItem>User Comment: {aCase.userComment}</ListGroupItem>
-                    <ListGroupItem>Cover Required: {isCoverRequired}</ListGroupItem>
-                    <ListGroupItem>Cover Provided: {isCoverProvided}</ListGroupItem>
-                    <ListGroupItem>Cover Supervisor Comment: {aCase.coverSupervisorComment}</ListGroupItem>
-                    <ListGroupItem>Absence Approved: {isAbsenceApproved}</ListGroupItem>
-                    <ListGroupItem>Absence Paid: {isAbsencePaid}</ListGroupItem>
-                    <ListGroupItem>Head Teacher Comment: {aCase.headTeacherComment}</ListGroupItem>
-                    <ListGroupItem>HR Supervisor Comment: {aCase.hrSupervisorComment}</ListGroupItem>
-                    <ListGroupItem>Case Resolved: {isCaseResolved}</ListGroupItem>
-                    <Button color="secondary" tag={Link} to={returnAddress}>Back to Case List</Button>
-                </ListGroup>
-            </div>
-        );
     }
 
     render() {
@@ -88,49 +48,15 @@ export default class UserComponent extends Component {
                 <td>{aCase.absenceReason}</td>
                 <td>{isResolved}</td>
                 <td>
-                    <ButtonGroup>
-                        {/*<Button size="sm" color="primary" onClick={() => caseDetails(aCase, "/user")}>Details</Button>*/}
-                        <Button size="sm" color="primary" onClick={() => {this.caseDetails(aCase, "/user")
-
-                                // var isCoverRequired;
-                                // if (aCase.isCoverRequired) {isCoverRequired = 'yes'} else {isCoverRequired = 'no'}
-                                // var isCoverProvided;
-                                // if (aCase.isCoverProvided) {isCoverProvided = 'yes'} else {isCoverProvided = 'no'}
-                                // var isAbsenceApproved;
-                                // if (aCase.isApprovedByHeadTeacher) {isAbsenceApproved = 'yes'} else {isAbsenceApproved = 'no'}
-                                // var isAbsencePaid;
-                                // if (aCase.isAbsencePaid) {isAbsencePaid = 'yes'} else {isAbsencePaid = 'no'}
-                                // var isCaseResolved;
-                                // if (aCase.isCaseResolved) {isCaseResolved = 'yes'} else {isCaseResolved = 'no'}
-                                // return (
-                                //     <div>
-                                //         <container>
-                                //             <ListGroup>
-                                //                 <h2>Case details</h2>
-                                //                 {/*<ListGroupItem>Case id: {aCase.id}</ListGroupItem>*/}
-                                //                 {/*<ListGroupItem>User: {aCase.user.name} {aCase.user.surname}</ListGroupItem>*/}
-                                //                 {/*<ListGroupItem>Head Teacher: {aCase.headTeacher.name} {aCase.headTeacher.surname}</ListGroupItem>*/}
-                                //                 {/*<ListGroupItem>Start Date {aCase.startDate}</ListGroupItem>*/}
-                                //                 {/*<ListGroupItem>End Date {aCase.endDate}</ListGroupItem>*/}
-                                //                 {/*<ListGroupItem>Part Day Type: {aCase.partDayType}</ListGroupItem>*/}
-                                //                 {/*<ListGroupItem>Absence Reason: {aCase.absenceReason}</ListGroupItem>*/}
-                                //                 {/*<ListGroupItem>User Comment: {aCase.userComment}</ListGroupItem>*/}
-                                //                 {/*<ListGroupItem>Cover Required: {isCoverRequired}</ListGroupItem>*/}
-                                //                 {/*<ListGroupItem>Cover Provided: {isCoverProvided}</ListGroupItem>*/}
-                                //                 {/*<ListGroupItem>Cover Supervisor Comment: {aCase.coverSupervisorComment}</ListGroupItem>*/}
-                                //                 {/*<ListGroupItem>Absence Approved: {isAbsenceApproved}</ListGroupItem>*/}
-                                //                 {/*<ListGroupItem>Absence Paid: {isAbsencePaid}</ListGroupItem>*/}
-                                //                 {/*<ListGroupItem>Head Teacher Comment: {aCase.headTeacherComment}</ListGroupItem>*/}
-                                //                 {/*<ListGroupItem>HR Supervisor Comment: {aCase.hrSupervisorComment}</ListGroupItem>*/}
-                                //                 {/*<ListGroupItem>Case Resolved: {isCaseResolved}</ListGroupItem>*/}
-                                //                 <Button color="secondary" tag={Link} to={"/user"}>Back to Case List</Button>
-                                //             </ListGroup>
-                                //         </container>
-                                //     </div>
-                                // );
-                            }
-                        }>Details</Button>
-                    </ButtonGroup>
+                    <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
+                            size="sm" color="primary"
+                            onClick={() => this.props.history.push({
+                                pathname: '/case_details',
+                                search: '?query=abc',
+                                state: {aCase: aCase, returnAddress: '/user'}
+                                })}>
+                    Details</Button>
+                    {/*<CaseDetailsOldVer aCase={aCase}/>*/}
                 </td>
             </tr>
         });
@@ -139,10 +65,8 @@ export default class UserComponent extends Component {
             <div>
                 <Container fluid>
                     <div className="float-right">
-                        {/*<ButtonGroup>*/}
-                            <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
-                                    color="success" tag={Link} to="/add_user_case">Add Your Case</Button>
-                        {/*</ButtonGroup>*/}
+                        <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
+                                color="success" tag={Link} to="/add_user_case">Add Your Case</Button>
                     </div>
                     <h3>Your Absence Cases</h3>
                     <Table className="mt-4">
@@ -166,3 +90,5 @@ export default class UserComponent extends Component {
         );
     }
 }
+
+export default withRouter(UserComponent);

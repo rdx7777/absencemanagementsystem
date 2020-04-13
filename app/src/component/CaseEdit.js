@@ -40,11 +40,13 @@ class CaseEdit extends Component {
     async componentDidMount() {
         const headTeachers = await (await fetch('/api/users/headteachers', {headers: authHeader()})).json();
         const users = await (await fetch('/api/users', {headers: authHeader()})).json();
+        const currentUser = AuthService.getCurrentUser();
+        const filteredUsers = users.filter(u => !(u.id === currentUser.id));
         if (this.props.match.params.id !== 'new') {
             const aCase = await (await fetch(`/api/cases/${this.props.match.params.id}`, {headers: authHeader()})).json();
-            this.setState({aCase: aCase, users: users, headTeachers: headTeachers});
+            this.setState({aCase: aCase, users: filteredUsers, headTeachers: headTeachers});
         } else {
-            this.setState({users: users, headTeachers: headTeachers})
+            this.setState({users: filteredUsers, headTeachers: headTeachers})
         }
     }
 
@@ -90,15 +92,14 @@ class CaseEdit extends Component {
 
     render() {
         const {aCase, users, headTeachers} = this.state;
-        const title = <h2>{aCase.id ? 'Edit Case' : 'Add Case'}</h2>;
-        const currentUser = AuthService.getCurrentUser();
-        const user = users.map((user, index) =>
+        const title = <h2 className="mb-n1">{aCase.id ? 'Edit Case' : 'Add Case'}</h2>;
+        const user = users
+            .map((user, index) =>
             <option key={index} value={index}>
                 {user.name} {user.surname}
             </option>
         );
         const headTeacher = headTeachers
-            .filter(ht => !(ht.id === currentUser.id))
             .map((headTeacher, index) =>
             <option key={index} value={index}>
                 {headTeacher.name} {headTeacher.surname}
@@ -109,19 +110,24 @@ class CaseEdit extends Component {
             <Container>
                 {title}
                 <Form onSubmit={this.handleSubmit}>
+                    <div className="justify-content-between">
+
+                    </div>
                     <div className="row">
-                        <FormGroup className="col-md-4 mb-3">
-                            <Label for="user">Select User (default: {aCase.user.name} {aCase.user.surname})</Label>
+                        <FormGroup className="col-md-4 mb-n2 mr-5">
+                            <Label className="mb-0" for="user">Select user (default: {aCase.user.name} {aCase.user.surname})</Label>
                             <Input type="select" name="user" id="user" defaultValue={aCase.user}
                                    onChange={this.handleUserChange}>
                                 <option/>
                                 {user}
                             </Input>
                         </FormGroup>
+                        <Button className="col-md-2 mb-n2 h-25 align-self-center mr-5" color="primary" type="submit">Save</Button>{' '}
+                        <Button className="col-md-2 mb-n2 h-25 align-self-center mr-5" color="secondary" tag={Link} to="/cases">Cancel</Button>
                     </div>
                     <div className="row">
-                        <FormGroup className="col-md-4 mb-3">
-                            <Label for="headTeacher">Select Head Teacher
+                        <FormGroup className="col-md-4 mb-n2">
+                            <Label className="mb-0" for="headTeacher">Select Head Teacher
                                 (default: {aCase.headTeacher.name} {aCase.headTeacher.surname})</Label>
                             <Input type="select" name="headTeacher" id="headTeacher" defaultValue={aCase.headTeacher}
                                    onChange={this.handleHeadTeacherChange}>
@@ -129,18 +135,18 @@ class CaseEdit extends Component {
                                 {headTeacher}
                             </Input>
                         </FormGroup>
-                        <FormGroup className="col-md-2 mb-3">
-                            <Label for="startDate">Start Date</Label>
+                        <FormGroup className="col-md-2 mb-n2">
+                            <Label className="mb-0" for="startDate">Start date</Label>
                             <Input type="text" name="startDate" id="startDate" value={aCase.startDate}
                                    onChange={this.handleChange}/>
                         </FormGroup>
-                        <FormGroup className="col-md-2 mb-3">
-                            <Label for="endDate">End Date</Label>
+                        <FormGroup className="col-md-2 mb-n2">
+                            <Label className="mb-0" for="endDate">End date</Label>
                             <Input type="text" name="endDate" id="endDate" value={aCase.endDate}
                                    onChange={this.handleChange}/>
                         </FormGroup>
-                        <FormGroup className="col-md-2 mb-3">
-                            <Label for="partDayType">Part Day Type</Label>
+                        <FormGroup className="col-md-2 mb-n2">
+                            <Label className="mb-0" for="partDayType">Part day type</Label>
                             <Input type="select" name="partDayType" id="partDayType" value={aCase.partDayType}
                                    onChange={this.handleChange}>
                                 <option/>
@@ -151,20 +157,20 @@ class CaseEdit extends Component {
                         </FormGroup>
                     </div>
                     <div className="row">
-                        <FormGroup className="col-md-5 mb-3">
-                            <Label for="absenceReason">Absence Reason</Label>
+                        <FormGroup className="col-md-5 mb-n2">
+                            <Label className="mb-0" for="absenceReason">Absence reason</Label>
                             <Input type="textarea" name="absenceReason" id="absenceReason" value={aCase.absenceReason}
                                    onChange={this.handleChange}/>
                         </FormGroup>
-                        <FormGroup className="col-md-5 mb-3">
-                            <Label for="userComment">User Comment</Label>
+                        <FormGroup className="col-md-5 mb-n2">
+                            <Label className="mb-0" for="userComment">User comment</Label>
                             <Input type="textarea" name="userComment" id="userComment" value={aCase.userComment}
                                    onChange={this.handleChange}/>
                         </FormGroup>
                     </div>
                     <div className="row">
-                        <FormGroup className="col-md-2 mb-3">
-                            <Label for="isCoverRequired">Cover Required</Label>
+                        <FormGroup className="col-md-2 mb-n2">
+                            <Label className="mb-0" for="isCoverRequired">Cover required</Label>
                             <Input type="select" name="isCoverRequired" id="isCoverRequired"
                                    value={aCase.isCoverRequired}
                                    onChange={this.handleChange}>
@@ -173,8 +179,8 @@ class CaseEdit extends Component {
                                 <option value="true">yes</option>
                             </Input>
                         </FormGroup>
-                        <FormGroup className="col-md-2 mb-3">
-                            <Label for="isCoverProvided">Cover Provided</Label>
+                        <FormGroup className="col-md-2 mb-n2">
+                            <Label className="mb-0" for="isCoverProvided">Cover provided</Label>
                             <Input type="select" name="isCoverProvided" id="isCoverProvided"
                                    value={aCase.isCoverProvided}
                                    onChange={this.handleChange}>
@@ -183,16 +189,16 @@ class CaseEdit extends Component {
                                 <option value="true">yes</option>
                             </Input>
                         </FormGroup>
-                        <FormGroup className="col-md-6 mb-3">
-                            <Label for="coverSupervisorComment">Cover Supervisor Comment</Label>
+                        <FormGroup className="col-md-6 mb-n2">
+                            <Label className="mb-0" for="coverSupervisorComment">Cover Supervisor comment</Label>
                             <Input type="textarea" name="coverSupervisorComment" id="coverSupervisorComment"
                                    value={aCase.coverSupervisorComment}
                                    onChange={this.handleChange}/>
                         </FormGroup>
                     </div>
                     <div className="row">
-                        <FormGroup className="col-md-2 mb-3">
-                            <Label for="isApprovedByHeadTeacher">Absence Approved</Label>
+                        <FormGroup className="col-md-2 mb-n2">
+                            <Label className="mb-0" for="isApprovedByHeadTeacher">Absence approved</Label>
                             <Input type="select" name="isApprovedByHeadTeacher" id="isApprovedByHeadTeacher"
                                    value={aCase.isApprovedByHeadTeacher}
                                    onChange={this.handleChange}>
@@ -201,8 +207,8 @@ class CaseEdit extends Component {
                                 <option value="true">yes</option>
                             </Input>
                         </FormGroup>
-                        <FormGroup className="col-md-2 mb-3">
-                            <Label for="isAbsencePaid">Absence Paid</Label>
+                        <FormGroup className="col-md-2 mb-n2">
+                            <Label className="mb-0" for="isAbsencePaid">Absence paid</Label>
                             <Input type="select" name="isAbsencePaid" id="isAbsencePaid"
                                    value={aCase.isAbsencePaid}
                                    onChange={this.handleChange}>
@@ -211,22 +217,22 @@ class CaseEdit extends Component {
                                 <option value="true">yes</option>
                             </Input>
                         </FormGroup>
-                        <FormGroup className="col-md-6 mb-1">
-                            <Label for="headTeacherComment">Head Teacher Comment</Label>
+                        <FormGroup className="col-md-6 mb-n2">
+                            <Label className="mb-0" for="headTeacherComment">Head Teacher comment</Label>
                             <Input type="textarea" name="headTeacherComment" id="headTeacherComment"
                                    value={aCase.headTeacherComment}
                                    onChange={this.handleChange}/>
                         </FormGroup>
                     </div>
                     <div className="row">
-                        <FormGroup className="col-md-6 mb-3">
-                            <Label for="hrSupervisorComment">HR Supervisor Comment</Label>
+                        <FormGroup className="col-md-6 mb-n2">
+                            <Label className="mb-0" for="hrSupervisorComment">HR Supervisor comment</Label>
                             <Input type="textarea" name="hrSupervisorComment" id="hrSupervisorComment"
                                    value={aCase.hrSupervisorComment}
                                    onChange={this.handleChange}/>
                         </FormGroup>
-                        <FormGroup className="col-md-2 mb-3">
-                            <Label for="isCaseResolved">Case Resolved</Label>
+                        <FormGroup className="col-md-2 mb-n2">
+                            <Label className="mb-0" for="isCaseResolved">Case resolved</Label>
                             <Input type="select" name="isCaseResolved" id="isCaseResolved"
                                    value={aCase.isCaseResolved}
                                    onChange={this.handleChange}>
@@ -237,8 +243,6 @@ class CaseEdit extends Component {
                         </FormGroup>
                     </div>
                     <FormGroup>
-                        <Button color="primary" type="submit">Save</Button>{' '}
-                        <Button color="secondary" tag={Link} to="/cases">Cancel</Button>
                     </FormGroup>
                 </Form>
             </Container>

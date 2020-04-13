@@ -13,6 +13,8 @@ import SupervisorComponent from "./component/SupervisorComponent";
 import ActiveCaseList from "./component/ActiveCaseList";
 import ActiveCaseManagedByHeadTeacherList from "./component/ActiveCaseManagedByHeadTeacherList";
 import AdminComponent from "./component/AdminComponent";
+import CaseDetailsSecondVersion from "./component/CaseDetails";
+import authHeader from "./auth/AuthHeader";
 
 class App extends Component {
 
@@ -24,9 +26,11 @@ class App extends Component {
             showHeadTeacherBoard: false,
             showHRSupervisorBoard: false,
             showAdminBoard: false,
-            currentUser: undefined
+            currentUser: undefined,
+            userForShow: ''
         };
     }
+
 
     componentDidMount() {
         const user = AuthService.getCurrentUser();
@@ -38,6 +42,10 @@ class App extends Component {
                 showHRSupervisorBoard: user.roles.includes("ROLE_HR_SUPERVISOR"),
                 showAdminBoard: user.roles.includes("ROLE_ADMIN")
             });
+            fetch('api/users/' + AuthService.getCurrentUser().id, {headers: authHeader()})
+                .then(response => response.json())
+                // .then(r => alert(r.name))
+                .then(data => this.setState({userForShow: data}));
         }
     }
 
@@ -46,7 +54,7 @@ class App extends Component {
     }
 
     render() {
-        const {currentUser, showCoverSupervisorBoard, showHeadTeacherBoard, showHRSupervisorBoard, showAdminBoard} = this.state;
+        const {currentUser, userForShow, showCoverSupervisorBoard, showHeadTeacherBoard, showHRSupervisorBoard, showAdminBoard} = this.state;
 
         return (
             <Router>
@@ -60,7 +68,7 @@ class App extends Component {
                             {currentUser && (
                                 <li className="nav-item">
                                     <Link to={"/user"} className="nav-link">
-                                        User Board
+                                        User Board: {userForShow.name} {userForShow.surname} ({userForShow.jobTitle})
                                     </Link>
                                 </li>
                             )}
@@ -102,16 +110,16 @@ class App extends Component {
                                         </Link>
                                     </li>
                                 </div>
-                                )}
+                            )}
                         </div>
 
                         {currentUser ? (
                             <div className="navbar-nav ml-auto">
-                                <li className="nav-item">
-                                    <Link to={"/user"} className="nav-link">
-                                        {currentUser.username}
-                                    </Link>
-                                </li>
+                                {/*<li className="nav-item">*/}
+                                {/*    <Link to={"/user"} className="nav-link">*/}
+                                {/*        *** {userForShow.name} {userForShow.surname} ****/}
+                                {/*    </Link>*/}
+                                {/*</li>*/}
                                 <li className="nav-item">
                                     <a href="/" className="nav-link" onClick={this.logOut}>
                                         LogOut
@@ -143,6 +151,7 @@ class App extends Component {
                             <Route path='/admin' exact={true} component={AdminComponent}/>
                             <Route path='/users' exact={true} component={AllUserList}/>
                             <Route path='/users/:id' component={UserEdit}/>
+                            <Route path='/case_details' exact={true} component={CaseDetailsSecondVersion}/>
                         </Switch>
                     </div>
                 </div>

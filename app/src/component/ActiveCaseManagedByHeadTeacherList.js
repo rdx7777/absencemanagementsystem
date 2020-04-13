@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import { Button, Container, Table } from 'reactstrap';
-import { Link } from 'react-router-dom';
+import {Link, withRouter} from 'react-router-dom';
 import AuthService from "../auth/AuthService";
-import caseDetails from "./CaseDetails";
 import authHeader from "../auth/AuthHeader";
 
-export default class ActiveCaseManagedByHeadTeacherList extends Component {
+class ActiveCaseManagedByHeadTeacherList extends Component {
 
     constructor(props) {
         super(props);
@@ -45,7 +44,6 @@ export default class ActiveCaseManagedByHeadTeacherList extends Component {
         }
 
         const caseList = cases
-            // .filter(aCase => aCase.isActive)
             .map(aCase => {
                 var isProvided;
                 if (aCase.isCoverProvided) {
@@ -71,11 +69,16 @@ export default class ActiveCaseManagedByHeadTeacherList extends Component {
                     <td>{isResolved}</td>
                     <td>
                         <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
-                                size="sm" color="primary" tag={Link} to={caseDetails(aCase, "/cases")}>
+                                size="sm" color="primary"
+                                onClick={() => this.props.history.push({
+                                    pathname: '/case_details',
+                                    search: '?query=abc',
+                                    state: {aCase: aCase, returnAddress: '/active_cases_managed_by_headteacher'}
+                                })}>
                             Details</Button>
                         <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
                                 size="sm" color="warning" tag={Link} to={"/cases/" + aCase.id}
-                                disabled={aCase.isCaseResolved ? "disabled" : ""}>
+                                disabled={aCase.isCaseResolved ? true : false}>
                             Edit</Button>
                     </td>
                 </tr>
@@ -115,3 +118,5 @@ export default class ActiveCaseManagedByHeadTeacherList extends Component {
         );
     }
 }
+
+export default withRouter(ActiveCaseManagedByHeadTeacherList);

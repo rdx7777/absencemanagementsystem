@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import { Button, Container, Table } from 'reactstrap';
-import { Link } from 'react-router-dom';
+import {Link, withRouter} from 'react-router-dom';
 import AuthService from "../auth/AuthService";
-import caseDetails from "./CaseDetails";
 import authHeader from "../auth/AuthHeader";
 
-export default class ActiveCaseList extends Component {
+class ActiveCaseList extends Component {
 
     constructor(props) {
         super(props);
@@ -79,11 +78,16 @@ export default class ActiveCaseList extends Component {
                     <td>{isResolved}</td>
                     <td>
                         <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
-                                size="sm" color="primary" tag={Link} to={caseDetails(aCase, "/cases")}>
+                                size="sm" color="primary"
+                                onClick={() => this.props.history.push({
+                                    pathname: '/case_details',
+                                    search: '?query=abc',
+                                    state: {aCase: aCase, returnAddress: '/active_cases'}
+                                })}>
                             Details</Button>
                         <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
                                 size="sm" color="warning" tag={Link} to={"/cases/" + aCase.id}
-                                disabled={aCase.isCaseResolved ? "disabled" : ""}>
+                                disabled={aCase.isCaseResolved ? true : false}>
                             Edit</Button>
                         <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center', display: `${displayButton}`}}
                                 size="sm" color="danger" onClick={() => this.remove(aCase.id)}>
@@ -126,3 +130,4 @@ export default class ActiveCaseList extends Component {
         );
     }
 }
+export default withRouter(ActiveCaseList);

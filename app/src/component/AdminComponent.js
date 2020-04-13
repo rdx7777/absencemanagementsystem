@@ -3,7 +3,7 @@ import ActiveCaseList from "./ActiveCaseList";
 
 export default class AdminComponent extends Component {
 
-        render() {
+    render() {
         return (
             <ActiveCaseList/>
         )

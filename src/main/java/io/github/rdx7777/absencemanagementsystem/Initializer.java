@@ -103,7 +103,7 @@ public class Initializer implements CommandLineRunner {
             .build();
         User admin = User.builder()
             .withName("Rdx")
-            .withSurname("J")
+            .withSurname("Jxxx")
             .withEmail("radek.jerzynski@gmail.com")
             .withPassword("$2a$10$u3AJC2e8fQ7bapCZh6I6Re4siOLimyBkPp.E//Ae07CSdW1SrRrFu") // password: test
             .withJobTitle("Admin")
