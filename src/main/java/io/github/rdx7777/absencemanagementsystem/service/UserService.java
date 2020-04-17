@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -92,8 +93,10 @@ public class UserService {
     }
 
     public Collection<User> getAllUsers() throws ServiceOperationException {
+        Sort sort = Sort.by(Sort.Direction.ASC, "id");
         try {
-            return repository.findAll();
+            return repository.findAll(sort);
+//            return repository.findAll();
         } catch (NonTransientDataAccessException e) {
             String message = "An error occurred during getting all users.";
             logger.error(message, e);
@@ -103,8 +106,10 @@ public class UserService {
 
     public Collection<User> getAllActiveUsers() throws ServiceOperationException {
         Example<User> example = Example.of(new User.Builder().withIsActive(true).build());
+        Sort sort = Sort.by(Sort.Direction.ASC, "id");
         try {
-            return repository.findAll(example);
+            return repository.findAll(example, sort);
+//            return repository.findAll(example);
         } catch (NonTransientDataAccessException e) {
             String message = "An error occurred during getting all active users.";
             logger.error(message, e);
@@ -114,13 +119,25 @@ public class UserService {
 
     public Collection<User> getHeadTeachers() throws ServiceOperationException {
         Example<User> example = Example.of(new User.Builder().withIsActive(true).withPosition(Position.HeadTeacher).build());
+        Sort sort = Sort.by(Sort.Direction.ASC, "id");
         try {
-            return repository.findAll(example);
+            return repository.findAll(example, sort);
+//            return repository.findAll(example);
         } catch (NonTransientDataAccessException e) {
             String message = "An error occurred during getting Head Teachers.";
             logger.error(message, e);
             throw new ServiceOperationException(message, e);
         }
+    }
+
+    // TODO:
+    public User getCoverSupervisor() throws ServiceOperationException {
+        return null;
+    }
+
+    // TODO:
+    public User getHRSupervisor() throws ServiceOperationException {
+        return null;
     }
 
     public void deleteUser(Long id) throws ServiceOperationException {

@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import AuthService from "../auth/AuthService";
-import {Button, ButtonGroup, Container, ListGroup, ListGroupItem, Table} from "reactstrap";
+import {Button, Container, Table} from "reactstrap";
 import {Link, withRouter} from "react-router-dom";
 import authHeader from "../auth/AuthHeader";
 
@@ -53,6 +53,7 @@ class UserComponent extends Component {
                             onClick={() => this.props.history.push({
                                 pathname: '/case_details',
                                 search: '?query=abc',
+                                // TODO: remove line above
                                 state: {aCase: aCase, returnAddress: '/user'}
                                 })}>
                     Details</Button>

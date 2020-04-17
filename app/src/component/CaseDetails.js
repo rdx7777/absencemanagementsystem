@@ -4,13 +4,15 @@ import {Link, withRouter} from "react-router-dom";
 
 class CaseDetails extends Component {
 
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         const aCase = this.props.location.state.aCase;
         const returnAddress = this.props.location.state.returnAddress;
+        var partDayType;
+        if (aCase.partDayType === 'AllDay') {
+            partDayType = 'All day'
+        } else {
+            partDayType = aCase.partDayType;
+        }
         var isCoverRequired;
         if (aCase.isCoverRequired) {isCoverRequired = 'YES'} else {isCoverRequired = 'NO'}
         var isCoverProvided;
@@ -39,7 +41,7 @@ class CaseDetails extends Component {
                         <div className="row">
                             <ListGroupItem className="rounded block-example border border-dark col-md-4 mb-1">Start date:  {aCase.startDate}</ListGroupItem>
                             <ListGroupItem className="rounded block-example border border-dark col-md-4 mb-1">End date:  {aCase.endDate}</ListGroupItem>
-                            <ListGroupItem className="rounded block-example border border-dark col-md-4 mb-1">Part day type:  {aCase.partDayType}</ListGroupItem>
+                            <ListGroupItem className="rounded block-example border border-dark col-md-4 mb-1">Part day type:  {partDayType}</ListGroupItem>
                         </div>
                         <div className="row">
                             <ListGroupItem className="rounded block-example border border-dark col-md-12 mb-1">Absence reason:  {aCase.absenceReason}</ListGroupItem>

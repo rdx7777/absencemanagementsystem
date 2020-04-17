@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -89,8 +90,10 @@ public class AbsenceCaseService {
     }
 
     public Collection<AbsenceCase> getAllCases() throws ServiceOperationException {
+        Sort sort = Sort.by(Sort.Direction.ASC, "id");
         try {
-            return repository.findAll();
+            return repository.findAll(sort);
+//            return repository.findAll();
         } catch (NonTransientDataAccessException e) {
             String message = "An error occurred during getting all absence cases.";
             logger.error(message, e);
@@ -100,8 +103,10 @@ public class AbsenceCaseService {
 
     public Collection<AbsenceCase> getAllActiveCases() throws ServiceOperationException {
         Example<AbsenceCase> example = Example.of(new AbsenceCase.Builder().withIsCaseResolved(false).build());
+        Sort sort = Sort.by(Sort.Direction.ASC, "id");
         try {
-            return repository.findAll(example);
+            return repository.findAll(example, sort);
+//            return repository.findAll(example);
         } catch (NonTransientDataAccessException e) {
             String message = "An error occurred during getting all active absence cases.";
             logger.error(message, e);
@@ -116,8 +121,10 @@ public class AbsenceCaseService {
         }
         User userExample = User.builder().withId(userId).build();
         Example<AbsenceCase> caseExample = Example.of(new AbsenceCase.Builder().withUser(userExample).build());
+        Sort sort = Sort.by(Sort.Direction.ASC, "id");
         try {
-            return repository.findAll(caseExample);
+            return repository.findAll(caseExample, sort);
+//            return repository.findAll(caseExample);
         } catch (NonTransientDataAccessException e) {
             String message = "An error occurred during getting all absence cases for user id: " + userId + ".";
             logger.error(message, e);
@@ -132,8 +139,10 @@ public class AbsenceCaseService {
         }
         User headTeacherExample = User.builder().withId(headTeacherId).build();
         Example<AbsenceCase> caseExample = Example.of(new AbsenceCase.Builder().withHeadTeacher(headTeacherExample).withIsCaseResolved(false).build());
+        Sort sort = Sort.by(Sort.Direction.ASC, "id");
         try {
-            return repository.findAll(caseExample);
+            return repository.findAll(caseExample, sort);
+//            return repository.findAll(caseExample);
         } catch (NonTransientDataAccessException e) {
             String message = "An error occurred during getting all absence cases for head teacher id: " + headTeacherId + ".";
             logger.error(message, e);

@@ -110,7 +110,8 @@ export default class AddUserCase extends Component {
                     </div>
                     <div className="row">
                         <FormGroup className="col-md-4 mb-3">
-                            <Label for="headTeacher">Select Head Teacher</Label>
+                            <Label for="headTeacher">Select Head Teacher </Label>
+                            <Label className="text-danger">*</Label>
                             <Input type="select" name="headTeacher" id="headTeacher" defaultValue={aCase.headTeacher}
                                    onChange={this.handleHeadTeacherChange}>
                                 <option/>
@@ -118,17 +119,20 @@ export default class AddUserCase extends Component {
                             </Input>
                         </FormGroup>
                         <FormGroup className="col-md-2 mb-3">
-                            <Label for="startDate">Start Date</Label>
+                            <Label for="startDate">Start Date </Label>
+                            <Label className="text-danger">*</Label>
                             <Input type="text" name="startDate" id="startDate" value={aCase.startDate} placeholder="YYYY-MM-DD"
                                    onChange={this.handleChange}/>
                         </FormGroup>
                         <FormGroup className="col-md-2 mb-3">
-                            <Label for="endDate">End Date</Label>
+                            <Label for="endDate">End Date </Label>
+                            <Label className="text-danger">*</Label>
                             <Input type="text" name="endDate" id="endDate" value={aCase.endDate} placeholder="YYYY-MM-DD"
                                    onChange={this.handleChange}/>
                         </FormGroup>
                         <FormGroup className="col-md-2 mb-3">
-                            <Label for="partDayType">Part Day Type</Label>
+                            <Label for="partDayType">Part Day Type </Label>
+                            <Label className="text-danger">*</Label>
                             <Input type="select" name="partDayType" id="partDayType" value={aCase.partDayType}
                                    onChange={this.handleChange}>
                                 <option/>
@@ -140,7 +144,8 @@ export default class AddUserCase extends Component {
                     </div>
                     <div className="row">
                         <FormGroup className="col-md-5 mb-3">
-                            <Label for="absenceReason">Absence Reason</Label>
+                            <Label for="absenceReason">Absence Reason </Label>
+                            <Label className="text-danger">*</Label>
                             <Input type="textarea" name="absenceReason" id="absenceReason" value={aCase.absenceReason}
                                    onChange={this.handleChange}/>
                         </FormGroup>
@@ -152,7 +157,8 @@ export default class AddUserCase extends Component {
                     </div>
                     <div className="row">
                         <FormGroup className="col-md-2 mb-3">
-                            <Label for="isCoverRequired">Cover Required</Label>
+                            <Label for="isCoverRequired">Cover Required </Label>
+                            <Label className="text-danger">*</Label>
                             <Input type="select" name="isCoverRequired" id="isCoverRequired"
                                    value={aCase.isCoverRequired}
                                    onChange={this.handleChange}>

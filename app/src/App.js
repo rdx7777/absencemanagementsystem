@@ -13,7 +13,7 @@ import SupervisorComponent from "./component/SupervisorComponent";
 import ActiveCaseList from "./component/ActiveCaseList";
 import ActiveCaseManagedByHeadTeacherList from "./component/ActiveCaseManagedByHeadTeacherList";
 import AdminComponent from "./component/AdminComponent";
-import CaseDetailsSecondVersion from "./component/CaseDetails";
+import CaseDetails from "./component/CaseDetails";
 import authHeader from "./auth/AuthHeader";
 
 class App extends Component {
@@ -151,7 +151,7 @@ class App extends Component {
                             <Route path='/admin' exact={true} component={AdminComponent}/>
                             <Route path='/users' exact={true} component={AllUserList}/>
                             <Route path='/users/:id' component={UserEdit}/>
-                            <Route path='/case_details' exact={true} component={CaseDetailsSecondVersion}/>
+                            <Route path='/case_details' exact={true} component={CaseDetails}/>
                         </Switch>
                     </div>
                 </div>

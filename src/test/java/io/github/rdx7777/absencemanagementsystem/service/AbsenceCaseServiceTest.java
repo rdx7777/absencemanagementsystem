@@ -22,6 +22,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Sort;
 
 @ExtendWith(MockitoExtension.class)
 class AbsenceCaseServiceTest {
@@ -209,44 +210,47 @@ class AbsenceCaseServiceTest {
     void shouldReturnAllCases() throws ServiceOperationException {
         // given
         List<AbsenceCase> cases = List.of(AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayType(), AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayType());
-        when(repository.findAll()).thenReturn(cases);
+        Sort sort = Sort.by(Sort.Direction.ASC, "id");
+        when(repository.findAll(sort)).thenReturn(cases);
 
         // when
         Collection<AbsenceCase> result = absenceCaseService.getAllCases();
 
         // then
         assertEquals(cases, result);
-        verify(repository).findAll();
+        verify(repository).findAll(sort);
     }
 
     @Test
     void getAllCasesMethodShouldThrowExceptionWhenAnErrorOccursDuringGettingAllCases() {
         // given
+        Sort sort = Sort.by(Sort.Direction.ASC, "id");
         doThrow(new NonTransientDataAccessException("") {
             @Override
             public String getMessage() {
                 return super.getMessage();
             }
-        }).when(repository).findAll();
+        }).when(repository).findAll(sort);
 
         // then
         assertThrows(ServiceOperationException.class, () -> absenceCaseService.getAllCases());
-        verify(repository).findAll();
+        verify(repository).findAll(sort);
     }
 
     @Test
     void shouldReturnAllActiveCases() throws ServiceOperationException {
         // given
         List<AbsenceCase> cases = List.of(AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayType(), AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayType());
-        Example example = Example.of(new AbsenceCase.Builder().withIsCaseResolved(false).build());
-        when(repository.findAll(example)).thenReturn(cases);
+        Example<AbsenceCase> example = Example.of(new AbsenceCase.Builder().withIsCaseResolved(false).build());
+        Sort sort = Sort.by(Sort.Direction.ASC, "id");
+        when(repository.findAll(example, sort)).thenReturn(cases);
 
         // when
         Collection<AbsenceCase> result = absenceCaseService.getAllActiveCases();
 
         // then
         assertEquals(cases, result);
-        verify(repository).findAll(example);
+        verify(repository).findAll(example, sort);
     }
 
     @Test
@@ -257,26 +261,27 @@ class AbsenceCaseServiceTest {
             public String getMessage() {
                 return super.getMessage();
             }
-        }).when(repository).findAll((Example<AbsenceCase>) any());
+        }).when(repository).findAll((Example<AbsenceCase>) any(), (Sort) any());
 
         // then
         assertThrows(ServiceOperationException.class, () -> absenceCaseService.getAllActiveCases());
-        verify(repository).findAll((Example<AbsenceCase>) any());
+        verify(repository).findAll((Example<AbsenceCase>) any(), (Sort) any());
     }
 
     @Test
     void shouldReturnAllUserCases() throws ServiceOperationException {
         // given
         List<AbsenceCase> cases = List.of(AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayTypeAndSpecificUserId(2L), AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayTypeAndSpecificUserId(2L));
-        Example example = Example.of(new AbsenceCase.Builder().withUser(User.builder().withId(2L).build()).build());
-        when(repository.findAll(example)).thenReturn(cases);
+        Example<AbsenceCase> example = Example.of(new AbsenceCase.Builder().withUser(User.builder().withId(2L).build()).build());
+        Sort sort = Sort.by(Sort.Direction.ASC, "id");
+        when(repository.findAll(example, sort)).thenReturn(cases);
 
         // when
         Collection<AbsenceCase> result = absenceCaseService.getAllUserCases(2L);
 
         // then
         assertEquals(cases, result);
-        verify(repository).findAll(example);
+        verify(repository).findAll(example, sort);
     }
 
     @Test
@@ -293,29 +298,30 @@ class AbsenceCaseServiceTest {
             public String getMessage() {
                 return super.getMessage();
             }
-        }).when(repository).findAll((Example<AbsenceCase>) any());
+        }).when(repository).findAll((Example<AbsenceCase>) any(), (Sort) any());
 
         // then
         assertThrows(ServiceOperationException.class, () -> absenceCaseService.getAllUserCases(1L));
-        verify(repository).findAll((Example<AbsenceCase>) any());
+        verify(repository).findAll((Example<AbsenceCase>) any(), (Sort) any());
     }
 
     @Test
     void shouldReturnAllActiveCasesForHeadTeacher() throws ServiceOperationException {
         // given
         List<AbsenceCase> cases = List.of(AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayTypeAndSpecificHeadTeacherId(4L), AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayTypeAndSpecificHeadTeacherId(4L));
-        Example example = Example.of(new AbsenceCase.Builder()
+        Example<AbsenceCase> example = Example.of(new AbsenceCase.Builder()
             .withHeadTeacher(User.builder().withId(4L).build())
             .withIsCaseResolved(false)
             .build());
-        when(repository.findAll(example)).thenReturn(cases);
+        Sort sort = Sort.by(Sort.Direction.ASC, "id");
+        when(repository.findAll(example, sort)).thenReturn(cases);
 
         // when
         Collection<AbsenceCase> result = absenceCaseService.getAllActiveCasesForHeadTeacher(4L);
 
         // then
         assertEquals(cases, result);
-        verify(repository).findAll(example);
+        verify(repository).findAll(example, sort);
     }
 
     @Test
@@ -332,11 +338,11 @@ class AbsenceCaseServiceTest {
             public String getMessage() {
                 return super.getMessage();
             }
-        }).when(repository).findAll((Example<AbsenceCase>) any());
+        }).when(repository).findAll((Example<AbsenceCase>) any(), (Sort) any());
 
         // then
         assertThrows(ServiceOperationException.class, () -> absenceCaseService.getAllActiveCasesForHeadTeacher(1L));
-        verify(repository).findAll((Example<AbsenceCase>) any());
+        verify(repository).findAll((Example<AbsenceCase>) any(), (Sort) any());
     }
 
     @Test

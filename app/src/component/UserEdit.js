@@ -100,6 +100,7 @@ class UserEdit extends Component {
                             <Label for="isActive">User active?</Label>
                             <Input type="select" name="isActive" id="isActive" value={user.isActive}
                                    onChange={this.handleChange}>
+                                <option/>
                                 <option value="false">no</option>
                                 <option value="true">yes</option>
                             </Input>

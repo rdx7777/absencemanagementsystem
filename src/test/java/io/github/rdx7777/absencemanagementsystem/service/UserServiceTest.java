@@ -19,6 +19,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Sort;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
@@ -235,44 +236,47 @@ class UserServiceTest {
     void shouldReturnAllUsers() throws ServiceOperationException {
         // given
         List<User> users = List.of(UserGenerator.getRandomEmployee(), UserGenerator.getRandomEmployee());
-        when(repository.findAll()).thenReturn(users);
+        Sort sort = Sort.by(Sort.Direction.ASC, "id");
+        when(repository.findAll(sort)).thenReturn(users);
 
         // when
         Collection<User> result = userService.getAllUsers();
 
         // then
         assertEquals(users, result);
-        verify(repository).findAll();
+        verify(repository).findAll(sort);
     }
 
     @Test
     void getAllUsersMethodShouldThrowExceptionWhenAnErrorOccursDuringGettingAllUsers() {
         // given
+        Sort sort = Sort.by(Sort.Direction.ASC, "id");
         doThrow(new NonTransientDataAccessException("") {
             @Override
             public String getMessage() {
                 return super.getMessage();
             }
-        }).when(repository).findAll();
+        }).when(repository).findAll(sort);
 
         // then
         assertThrows(ServiceOperationException.class, () -> userService.getAllUsers());
-        verify(repository).findAll();
+        verify(repository).findAll(sort);
     }
 
     @Test
     void shouldReturnAllActiveUsers() throws ServiceOperationException {
         // given
         List<User> users = List.of(UserGenerator.getRandomEmployee(), UserGenerator.getRandomEmployee());
-        Example example = Example.of(new User.Builder().withIsActive(true).build());
-        when(repository.findAll(example)).thenReturn(users);
+        Example<User> example = Example.of(new User.Builder().withIsActive(true).build());
+        Sort sort = Sort.by(Sort.Direction.ASC, "id");
+        when(repository.findAll(example, sort)).thenReturn(users);
 
         // when
         Collection<User> result = userService.getAllActiveUsers();
 
         // then
         assertEquals(users, result);
-        verify(repository).findAll(example);
+        verify(repository).findAll(example, sort);
     }
 
     @Test
@@ -283,11 +287,11 @@ class UserServiceTest {
             public String getMessage() {
                 return super.getMessage();
             }
-        }).when(repository).findAll((Example<User>) any());
+        }).when(repository).findAll((Example<User>) any(), (Sort) any());
 
         // then
         assertThrows(ServiceOperationException.class, () -> userService.getAllActiveUsers());
-        verify(repository).findAll((Example<User>) any());
+        verify(repository).findAll((Example<User>) any(), (Sort) any());
     }
 
     @Test

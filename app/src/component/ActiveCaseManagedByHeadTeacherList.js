@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { Button, Container, Table } from 'reactstrap';
+import React, {Component} from 'react';
+import {Button, Container, Table} from 'reactstrap';
 import {Link, withRouter} from 'react-router-dom';
 import AuthService from "../auth/AuthService";
 import authHeader from "../auth/AuthHeader";
@@ -43,46 +43,39 @@ class ActiveCaseManagedByHeadTeacherList extends Component {
             return <p>Loading...</p>;
         }
 
-        const caseList = cases
-            .map(aCase => {
-                var isProvided;
-                if (aCase.isCoverProvided) {
-                    isProvided='yes'
-                } else {
-                    isProvided='no'
-                }
-                var isResolved;
-                if (aCase.isCaseResolved) {
-                    isResolved='yes'
-                } else {
-                    isResolved='no'
-                }
-                return <tr key={aCase.id}>
-                    <td style={{whiteSpace: 'nowrap'}}>{aCase.id}</td>
-                    <td>{aCase.user.name || ''} {aCase.user.surname || ''}</td>
-                    <td>{aCase.headTeacher.name || ''} {aCase.headTeacher.surname || ''}</td>
-                    <td>{new Intl.DateTimeFormat('en-US', {year: 'numeric', month: '2-digit', day: '2-digit'})
-                        .format(new Date(aCase.startDate))}</td>
-                    <td>{new Intl.DateTimeFormat('en-US', {year: 'numeric', month: '2-digit', day: '2-digit'})
-                        .format(new Date(aCase.endDate))}</td>
-                    <td>{isProvided}</td>
-                    <td>{isResolved}</td>
-                    <td>
-                        <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
-                                size="sm" color="primary"
-                                onClick={() => this.props.history.push({
-                                    pathname: '/case_details',
-                                    search: '?query=abc',
-                                    state: {aCase: aCase, returnAddress: '/active_cases_managed_by_headteacher'}
-                                })}>
-                            Details</Button>
-                        <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
-                                size="sm" color="warning" tag={Link} to={"/cases/" + aCase.id}
-                                disabled={aCase.isCaseResolved ? true : false}>
-                            Edit</Button>
-                    </td>
-                </tr>
-            });
+        const caseList = cases.map(aCase => {
+            var isRequired;
+            if (aCase.isCoverRequired) {isRequired='yes'} else {isRequired='no'}
+            var isProvided;
+            if (aCase.isCoverProvided) {isProvided = 'yes'} else {isProvided = 'no'}
+            var isResolved;
+            if (aCase.isCaseResolved) {isResolved = 'yes'} else {isResolved = 'no'}
+            return <tr key={aCase.id}>
+                <td style={{whiteSpace: 'nowrap'}}>{aCase.id}</td>
+                <td>{aCase.user.name || ''} {aCase.user.surname || ''}</td>
+                <td>{aCase.headTeacher.name || ''} {aCase.headTeacher.surname || ''}</td>
+                <td>{aCase.startDate}</td>
+                <td>{aCase.endDate}</td>
+                <td>{isRequired}</td>
+                <td>{isProvided}</td>
+                <td>{isResolved}</td>
+                <td>
+                    <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
+                            size="sm" color="primary"
+                            onClick={() => this.props.history.push({
+                                pathname: '/case_details',
+                                search: '?query=abc',
+                                // TODO: remove line above
+                                state: {aCase: aCase, returnAddress: '/active_cases_managed_by_headteacher'}
+                            })}>
+                        Details</Button>
+                    <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
+                            size="sm" color="warning" tag={Link} to={"/cases/" + aCase.id}
+                            disabled={aCase.isCaseResolved ? true : false}>
+                        Edit</Button>
+                </td>
+            </tr>
+        });
 
         return (
             <div>
@@ -102,10 +95,11 @@ class ActiveCaseManagedByHeadTeacherList extends Component {
                             <th width="5%">Id</th>
                             <th width="15%">User</th>
                             <th width="15%">Head Teacher</th>
-                            <th width="5%">Start Date</th>
-                            <th width="5%">End Date</th>
-                            <th width="10%">Cover Provided?</th>
-                            <th width="10%">Case Resolved?</th>
+                            <th width="10%">Start date</th>
+                            <th width="10%">End date</th>
+                            <th width="8%">Cover required?</th>
+                            <th width="8%">Cover provided?</th>
+                            <th width="8%">Case resolved?</th>
                             <th width="20%">Actions</th>
                         </tr>
                         </thead>
