@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.rdx7777.absencemanagementsystem.generators.AbsenceCaseGenerator;
 import io.github.rdx7777.absencemanagementsystem.generators.UserGenerator;
 import io.github.rdx7777.absencemanagementsystem.model.AbsenceCase;
+import io.github.rdx7777.absencemanagementsystem.model.AppModelMapper;
 import io.github.rdx7777.absencemanagementsystem.model.User;
 import io.github.rdx7777.absencemanagementsystem.repository.UserRepository;
 import io.github.rdx7777.absencemanagementsystem.security.jwt.AuthEntryPointJwt;
@@ -23,7 +24,7 @@ import io.github.rdx7777.absencemanagementsystem.service.UserService;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -51,6 +52,9 @@ class AbsenceCaseControllerTest {
     private EmailService emailService;
 
     @MockBean
+    private AppModelMapper appModelMapper;
+
+    @MockBean
     private UserRepository repository;
 
     @MockBean
@@ -70,6 +74,7 @@ class AbsenceCaseControllerTest {
 
     @Test
     void shouldAddCase() throws Exception {
+        AppModelMapper unMockedAppModelMapper = new AppModelMapper(repository);
         AbsenceCase caseToAdd = AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayType();
         AbsenceCase addedCase = AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayType();
         when(caseService.caseExists(caseToAdd.getId())).thenReturn(false);
@@ -78,7 +83,8 @@ class AbsenceCaseControllerTest {
         User user = UserGenerator.getRandomEmployee();
         when(userService.getUserById(caseToAdd.getHeadTeacher().getId())).thenReturn(Optional.of(headTeacher));
         when(userService.getUserById(caseToAdd.getUser().getId())).thenReturn(Optional.of(user));
-        doNothing().when(emailService).sendEmailToCoverSupervisor(headTeacher, user, addedCase);
+        when(appModelMapper.mapToAbsenceCaseDTO(addedCase)).thenReturn(unMockedAppModelMapper.mapToAbsenceCaseDTO(addedCase));
+        doNothing().when(emailService).sendEmailToCoverSupervisor(any(), any(), any());
 
         String url = "/api/cases";
 
@@ -88,11 +94,11 @@ class AbsenceCaseControllerTest {
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isCreated())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(content().json(mapper.writeValueAsString(addedCase)));
+            .andExpect(content().json(mapper.writeValueAsString(appModelMapper.mapToAbsenceCaseDTO(addedCase))));
 
         verify(caseService).caseExists(caseToAdd.getId());
         verify(caseService).addCase(caseToAdd);
-        verify(emailService, never()).sendEmailToCoverSupervisor(headTeacher, user, addedCase);
+        verify(emailService).sendEmailToCoverSupervisor(any(), any(), any());
     }
 
     @Test
@@ -181,15 +187,18 @@ class AbsenceCaseControllerTest {
 
     @Test
     void shouldUpdateCase() throws Exception {
+
+        AppModelMapper unMockedAppModelMapper = new AppModelMapper(repository);
         AbsenceCase aCase = AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayType();
         when(caseService.caseExists(aCase.getId())).thenReturn(true);
         when(caseService.updateCase(aCase)).thenReturn(aCase);
-        User headTeacher = UserGenerator.getRandomHeadTeacher();
-        User user = UserGenerator.getRandomEmployee();
-        when(userService.getUserById(aCase.getHeadTeacher().getId())).thenReturn(Optional.of(headTeacher));
-        when(userService.getUserById(aCase.getUser().getId())).thenReturn(Optional.of(user));
+        User headTeacher = aCase.getHeadTeacher();
+        User user = aCase.getUser();
+        when(userService.getUserByEmail(aCase.getUser().getEmail())).thenReturn(Optional.of(user));
+        when(userService.getUserByEmail(aCase.getHeadTeacher().getEmail())).thenReturn(Optional.of(headTeacher));
         when(userService.getUserById(any())).thenReturn(Optional.of(headTeacher));
-        doNothing().when(emailService).sendEmailToHumanResourcesSupervisor(headTeacher, user, aCase);
+        when(appModelMapper.mapToAbsenceCaseDTO(aCase)).thenReturn(unMockedAppModelMapper.mapToAbsenceCaseDTO(aCase));
+        doNothing().when(emailService).sendEmailToHumanResourcesSupervisor(any(), any(), any());
 
         String url = String.format("/api/cases?id=%d&userId=%d", aCase.getId(), headTeacher.getId());
 
@@ -199,11 +208,11 @@ class AbsenceCaseControllerTest {
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(content().json(mapper.writeValueAsString(aCase)));
+            .andExpect(content().json(mapper.writeValueAsString(appModelMapper.mapToAbsenceCaseDTO(aCase))));
 
         verify(caseService).caseExists(aCase.getId());
         verify(caseService).updateCase(aCase);
-        verify(emailService, never()).sendEmailToHumanResourcesSupervisor(headTeacher, user, aCase);
+        verify(emailService).sendEmailToHumanResourcesSupervisor(any(), any(), any());
     }
 
     @Test
@@ -291,7 +300,11 @@ class AbsenceCaseControllerTest {
     @Test
     void shouldReturnInternalServerErrorDuringUpdatingCaseWhenSomethingWentWrongOnServer() throws Exception {
         AbsenceCase aCase = AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayType();
+        User headTeacher = aCase.getHeadTeacher();
+        User user = aCase.getUser();
         when(caseService.caseExists(aCase.getId())).thenReturn(true);
+        when(userService.getUserByEmail(aCase.getUser().getEmail())).thenReturn(Optional.of(user));
+        when(userService.getUserByEmail(aCase.getHeadTeacher().getEmail())).thenReturn(Optional.of(headTeacher));
         when(caseService.updateCase(aCase)).thenThrow(new ServiceOperationException());
 
         String url = String.format("/api/cases?id=%d&userId=%d", aCase.getId(), 1L);
@@ -371,7 +384,7 @@ class AbsenceCaseControllerTest {
 
     @Test
     void shouldReturnAllCases() throws Exception {
-        Collection<AbsenceCase> cases = Arrays.asList(AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayType(),
+        List<AbsenceCase> cases = Arrays.asList(AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayType(),
             AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayType());
         when(caseService.getAllCases()).thenReturn(cases);
 
@@ -381,14 +394,14 @@ class AbsenceCaseControllerTest {
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(content().json(mapper.writeValueAsString(cases)));
+            .andExpect(content().json(mapper.writeValueAsString(appModelMapper.mapToAbsenceCaseDTOList(cases))));
 
         verify(caseService).getAllCases();
     }
 
     @Test
     void shouldReturnEmptyListOfCasesWhenThereAreNotCasesInTheDatabase() throws Exception {
-        Collection<AbsenceCase> cases = new ArrayList<>();
+        List<AbsenceCase> cases = new ArrayList<>();
         when(caseService.getAllCases()).thenReturn(cases);
 
         String url = "/api/cases";
@@ -397,7 +410,7 @@ class AbsenceCaseControllerTest {
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(content().json(mapper.writeValueAsString(cases)));
+            .andExpect(content().json(mapper.writeValueAsString(appModelMapper.mapToAbsenceCaseDTOList(cases))));
 
         verify(caseService).getAllCases();
     }
@@ -429,7 +442,7 @@ class AbsenceCaseControllerTest {
 
     @Test
     void shouldReturnAllActiveCases() throws Exception {
-        Collection<AbsenceCase> cases = Arrays.asList(AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayType(),
+        List<AbsenceCase> cases = Arrays.asList(AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayType(),
             AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayType());
         when(caseService.getAllActiveCases()).thenReturn(cases);
 
@@ -439,14 +452,14 @@ class AbsenceCaseControllerTest {
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(content().json(mapper.writeValueAsString(cases)));
+            .andExpect(content().json(mapper.writeValueAsString(appModelMapper.mapToAbsenceCaseDTOList(cases))));
 
         verify(caseService).getAllActiveCases();
     }
 
     @Test
     void shouldReturnEmptyListOfActiveCasesWhenThereAreNotActiveCasesInTheDatabase() throws Exception {
-        Collection<AbsenceCase> cases = new ArrayList<>();
+        List<AbsenceCase> cases = new ArrayList<>();
         when(caseService.getAllActiveCases()).thenReturn(cases);
 
         String url = "/api/cases/active";
@@ -455,7 +468,7 @@ class AbsenceCaseControllerTest {
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(content().json(mapper.writeValueAsString(cases)));
+            .andExpect(content().json(mapper.writeValueAsString(appModelMapper.mapToAbsenceCaseDTOList(cases))));
 
         verify(caseService).getAllActiveCases();
     }
@@ -487,7 +500,7 @@ class AbsenceCaseControllerTest {
 
     @Test
     void shouldReturnAllUserCases() throws Exception {
-        Collection<AbsenceCase> cases = Arrays.asList(AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayTypeAndSpecificUserId(1L),
+        List<AbsenceCase> cases = Arrays.asList(AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayTypeAndSpecificUserId(1L),
             AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayTypeAndSpecificUserId(1L));
         when(caseService.getAllUserCases(1L)).thenReturn(cases);
 
@@ -497,7 +510,7 @@ class AbsenceCaseControllerTest {
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(content().json(mapper.writeValueAsString(cases)));
+            .andExpect(content().json(mapper.writeValueAsString(appModelMapper.mapToAbsenceCaseDTOList(cases))));
 
         verify(caseService).getAllUserCases(1L);
     }
@@ -505,7 +518,7 @@ class AbsenceCaseControllerTest {
     @Test
     void shouldReturnEmptyListOfUserCasesWhenThereAreNotUserCasesInTheDatabase() throws Exception {
         Long id = 1L;
-        Collection<AbsenceCase> cases = new ArrayList<>();
+        List<AbsenceCase> cases = new ArrayList<>();
         when(caseService.getAllUserCases(id)).thenReturn(cases);
 
         String url = String.format("/api/cases/user/%d", id);
@@ -514,7 +527,7 @@ class AbsenceCaseControllerTest {
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(content().json(mapper.writeValueAsString(cases)));
+            .andExpect(content().json(mapper.writeValueAsString(appModelMapper.mapToAbsenceCaseDTOList(cases))));
 
         verify(caseService).getAllUserCases(id);
     }
@@ -548,7 +561,7 @@ class AbsenceCaseControllerTest {
 
     @Test
     void shouldReturnAllActiveCasesForHeadTeacher() throws Exception {
-        Collection<AbsenceCase> cases = Arrays.asList(AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayTypeAndSpecificHeadTeacherId(1L),
+        List<AbsenceCase> cases = Arrays.asList(AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayTypeAndSpecificHeadTeacherId(1L),
             AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayTypeAndSpecificHeadTeacherId(1L));
         when(caseService.getAllActiveCasesForHeadTeacher(1L)).thenReturn(cases);
 
@@ -558,7 +571,7 @@ class AbsenceCaseControllerTest {
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(content().json(mapper.writeValueAsString(cases)));
+            .andExpect(content().json(mapper.writeValueAsString(appModelMapper.mapToAbsenceCaseDTOList(cases))));
 
         verify(caseService).getAllActiveCasesForHeadTeacher(1L);
     }
@@ -566,7 +579,7 @@ class AbsenceCaseControllerTest {
     @Test
     void shouldReturnEmptyListOfAllActiveCasesForHeadTeacherWhenThereAreNotActiveCasesForHeadTeacherInTheDatabase() throws Exception {
         Long id = 1L;
-        Collection<AbsenceCase> cases = new ArrayList<>();
+        List<AbsenceCase> cases = new ArrayList<>();
         when(caseService.getAllActiveCasesForHeadTeacher(id)).thenReturn(cases);
 
         String url = String.format("/api/cases/active/ht/%d", id);
@@ -575,7 +588,7 @@ class AbsenceCaseControllerTest {
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(content().json(mapper.writeValueAsString(cases)));
+            .andExpect(content().json(mapper.writeValueAsString(appModelMapper.mapToAbsenceCaseDTOList(cases))));
 
         verify(caseService).getAllActiveCasesForHeadTeacher(id);
     }

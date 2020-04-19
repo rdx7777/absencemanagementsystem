@@ -96,7 +96,6 @@ public class UserService {
         Sort sort = Sort.by(Sort.Direction.ASC, "id");
         try {
             return repository.findAll(sort);
-//            return repository.findAll();
         } catch (NonTransientDataAccessException e) {
             String message = "An error occurred during getting all users.";
             logger.error(message, e);
@@ -109,7 +108,6 @@ public class UserService {
         Sort sort = Sort.by(Sort.Direction.ASC, "id");
         try {
             return repository.findAll(example, sort);
-//            return repository.findAll(example);
         } catch (NonTransientDataAccessException e) {
             String message = "An error occurred during getting all active users.";
             logger.error(message, e);
@@ -122,7 +120,6 @@ public class UserService {
         Sort sort = Sort.by(Sort.Direction.ASC, "id");
         try {
             return repository.findAll(example, sort);
-//            return repository.findAll(example);
         } catch (NonTransientDataAccessException e) {
             String message = "An error occurred during getting Head Teachers.";
             logger.error(message, e);
@@ -130,14 +127,28 @@ public class UserService {
         }
     }
 
-    // TODO:
+    // TODO: check it with EmailService!
     public User getCoverSupervisor() throws ServiceOperationException {
-        return null;
+        Example<User> example = Example.of(new User.Builder().withIsActive(true).withPosition(Position.CoverSupervisor).build());
+        try {
+            return repository.findOne(example).orElseThrow();
+        } catch (NonTransientDataAccessException e) {
+            String message = "An error occurred during getting Cover Supervisor.";
+            logger.error(message, e);
+            throw new ServiceOperationException(message, e);
+        }
     }
 
-    // TODO:
+    // TODO: check it with EmailService!
     public User getHRSupervisor() throws ServiceOperationException {
-        return null;
+        Example<User> example = Example.of(new User.Builder().withIsActive(true).withPosition(Position.HumanResourcesSupervisor).build());
+        try {
+            return repository.findOne(example).orElseThrow();
+        } catch (NonTransientDataAccessException e) {
+            String message = "An error occurred during getting Human Resources Supervisor.";
+            logger.error(message, e);
+            throw new ServiceOperationException(message, e);
+        }
     }
 
     public void deleteUser(Long id) throws ServiceOperationException {

@@ -1,6 +1,6 @@
 package io.github.rdx7777.absencemanagementsystem.service;
 
-import io.github.rdx7777.absencemanagementsystem.model.AbsenceCase;
+import io.github.rdx7777.absencemanagementsystem.model.AbsenceCaseDTO;
 import io.github.rdx7777.absencemanagementsystem.model.User;
 
 import javax.mail.MessagingException;
@@ -30,7 +30,7 @@ public class EmailService {
     }
 
     @Async
-    public void sendEmailToCoverSupervisor(User headTeacher, User user, AbsenceCase aCase) {
+    public void sendEmailToCoverSupervisor(User headTeacher, User user, AbsenceCaseDTO aCase) {
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
@@ -53,7 +53,7 @@ public class EmailService {
     }
 
     @Async
-    public void sendEmailToHeadTeacher(User headTeacher, User user, AbsenceCase aCase) {
+    public void sendEmailToHeadTeacher(User headTeacher, User user, AbsenceCaseDTO aCase) {
         String headTeacherEmail = headTeacher.getEmail();
         String isCoverRequired = aCase.getIsCoverRequired() ? "yes" : "no";
         String isCoverProvided = aCase.getIsCoverProvided() ? "yes" : "no";
@@ -81,7 +81,7 @@ public class EmailService {
     }
 
     @Async
-    public void sendEmailToHumanResourcesSupervisor(User headTeacher, User user, AbsenceCase aCase) {
+    public void sendEmailToHumanResourcesSupervisor(User headTeacher, User user, AbsenceCaseDTO aCase) {
         String isCoverRequired = aCase.getIsCoverRequired() ? "yes" : "no";
         String isCoverProvided = aCase.getIsCoverProvided() ? "yes" : "no";
         String isApprovedByHeadTeacher = aCase.getIsApprovedByHeadTeacher() ? "yes" : "no";
@@ -114,7 +114,7 @@ public class EmailService {
     }
 
     @Async
-    public void sendEmailToUser(User headTeacher, User user, AbsenceCase aCase) {
+    public void sendEmailToUser(User headTeacher, User user, AbsenceCaseDTO aCase) {
         String userEmail = user.getEmail();
         String isCoverRequired = aCase.getIsCoverRequired() ? "yes" : "no";
         String isCoverProvided = aCase.getIsCoverProvided() ? "yes" : "no";

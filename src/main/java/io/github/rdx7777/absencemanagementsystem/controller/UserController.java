@@ -1,6 +1,8 @@
 package io.github.rdx7777.absencemanagementsystem.controller;
 
+import io.github.rdx7777.absencemanagementsystem.model.AppModelMapper;
 import io.github.rdx7777.absencemanagementsystem.model.User;
+import io.github.rdx7777.absencemanagementsystem.model.UserDTO;
 import io.github.rdx7777.absencemanagementsystem.model.validation.UserValidator;
 import io.github.rdx7777.absencemanagementsystem.service.ServiceOperationException;
 import io.github.rdx7777.absencemanagementsystem.service.UserService;
@@ -11,6 +13,7 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -34,10 +37,13 @@ public class UserController {
 
     private final Logger logger = LoggerFactory.getLogger(UserController.class);
 
-    private UserService service;
+    private final UserService service;
+    private final AppModelMapper appModelMapper;
 
-    public UserController(UserService service) {
+    @Autowired
+    public UserController(UserService service, AppModelMapper appModelMapper) {
         this.service = service;
+        this.appModelMapper = appModelMapper;
     }
 
     @PostMapping(produces = "application/json", consumes = "application/json")
@@ -56,7 +62,7 @@ public class UserController {
             logger.error("Attempt to add invalid user to database.");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attempt to add invalid user to database.");
         }
-        User addedUser = service.addUser(user);
+        UserDTO addedUser = appModelMapper.mapToUserDTO(service.addUser(user));
         logger.debug("New user added with id: {}.", addedUser.getId());
         URI location = URI.create(String.format("/api/users/%d", addedUser.getId()));
         HttpHeaders httpHeaders = new HttpHeaders();
@@ -84,10 +90,14 @@ public class UserController {
             logger.error("Attempt to update invalid user.");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attempt to update invalid user.");
         }
-        logger.debug("Updated user with id {}.", user.getId());
-        return ResponseEntity.ok(service.updateUser(user));
+        UserDTO updatedUser = appModelMapper.mapToUserDTO(service.updateUser(user));
+        logger.debug("Updated user with id {}.", updatedUser.getId());
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        return new ResponseEntity<>(updatedUser, httpHeaders, HttpStatus.OK);
     }
 
+    // returns full user with password - it's only used to edit user details
     @GetMapping(value = "/{id}", produces = "application/json")
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER') or hasRole('CS_SUPERVISOR') or hasRole('HEAD_TEACHER') or hasRole('HR_SUPERVISOR')")
     public ResponseEntity<?> getUser(@PathVariable("id") Long id) throws ServiceOperationException {
@@ -103,21 +113,21 @@ public class UserController {
     @PreAuthorize("hasRole('ADMIN') or hasRole('CS_SUPERVISOR') or hasRole('HEAD_TEACHER') or hasRole('HR_SUPERVISOR')")
     public ResponseEntity<?> getAllUsers() throws ServiceOperationException {
         logger.info("Attempt to get all users.");
-        return ResponseEntity.ok(service.getAllUsers());
+        return ResponseEntity.ok(appModelMapper.mapToUserDTOList((List<User>) service.getAllUsers()));
     }
 
     @GetMapping(value = "/active", produces = "application/json")
     @PreAuthorize("hasRole('ADMIN') or hasRole('CS_SUPERVISOR') or hasRole('HEAD_TEACHER') or hasRole('HR_SUPERVISOR')")
     public ResponseEntity<?> getAllActiveUsers() throws ServiceOperationException {
         logger.info("Attempt to get all active users.");
-        return ResponseEntity.ok(service.getAllActiveUsers());
+        return ResponseEntity.ok(appModelMapper.mapToUserDTOList((List<User>) service.getAllActiveUsers()));
     }
 
     @GetMapping(value = "/headteachers", produces = "application/json")
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER') or hasRole('CS_SUPERVISOR') or hasRole('HEAD_TEACHER') or hasRole('HR_SUPERVISOR')")
     public ResponseEntity<?> getHeadTeachers() throws ServiceOperationException {
         logger.info("Attempt to get all Head Teachers.");
-        return ResponseEntity.ok(service.getHeadTeachers());
+        return ResponseEntity.ok(appModelMapper.mapToUserDTOList((List<User>) service.getHeadTeachers()));
     }
 
     @DeleteMapping(value = "/{id}")

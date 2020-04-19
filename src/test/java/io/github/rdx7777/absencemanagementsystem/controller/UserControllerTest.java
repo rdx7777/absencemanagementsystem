@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.github.rdx7777.absencemanagementsystem.generators.UserGenerator;
+import io.github.rdx7777.absencemanagementsystem.model.AppModelMapper;
 import io.github.rdx7777.absencemanagementsystem.model.User;
 import io.github.rdx7777.absencemanagementsystem.repository.UserRepository;
 import io.github.rdx7777.absencemanagementsystem.security.jwt.AuthEntryPointJwt;
@@ -19,6 +20,7 @@ import io.github.rdx7777.absencemanagementsystem.service.UserService;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -40,6 +42,9 @@ class UserControllerTest {
     private UserService userService;
 
     @MockBean
+    private AppModelMapper appModelMapper;
+
+    @MockBean
     private UserDetailsServiceImpl userDetailsService;
 
     @MockBean
@@ -57,13 +62,14 @@ class UserControllerTest {
     @Autowired
     private ObjectMapper mapper;
 
-
     @Test
     void shouldAddUser() throws Exception {
+        AppModelMapper unMockedAppModelMapper = new AppModelMapper(repository);
         User userToAdd = UserGenerator.getRandomEmployee();
         User addedUser = UserGenerator.getRandomEmployee();
         when(userService.userExists(userToAdd.getId())).thenReturn(false);
         when(userService.addUser(userToAdd)).thenReturn(addedUser);
+        when(appModelMapper.mapToUserDTO(addedUser)).thenReturn(unMockedAppModelMapper.mapToUserDTO(addedUser));
 
         String url = "/api/users";
 
@@ -73,7 +79,7 @@ class UserControllerTest {
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isCreated())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(content().json(mapper.writeValueAsString(addedUser)));
+            .andExpect(content().json(mapper.writeValueAsString(appModelMapper.mapToUserDTO(addedUser))));
 
         verify(userService).userExists(userToAdd.getId());
         verify(userService).addUser(userToAdd);
@@ -165,9 +171,11 @@ class UserControllerTest {
 
     @Test
     void shouldUpdateUser() throws Exception {
+        AppModelMapper unMockedAppModelMapper = new AppModelMapper(repository);
         User user = UserGenerator.getRandomEmployee();
         when(userService.userExists(user.getId())).thenReturn(true);
         when(userService.updateUser(user)).thenReturn(user);
+        when(appModelMapper.mapToUserDTO(user)).thenReturn(unMockedAppModelMapper.mapToUserDTO(user));
 
         String url = String.format("/api/users/%d", user.getId());
 
@@ -177,7 +185,7 @@ class UserControllerTest {
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(content().json(mapper.writeValueAsString(user)));
+            .andExpect(content().json(mapper.writeValueAsString(appModelMapper.mapToUserDTO(user))));
 
         verify(userService).userExists(user.getId());
         verify(userService).updateUser(user);
@@ -361,7 +369,7 @@ class UserControllerTest {
 
     @Test
     void shouldReturnAllUsers() throws Exception {
-        Collection<User> users = Arrays.asList(UserGenerator.getRandomEmployee(), UserGenerator.getRandomEmployee());
+        List<User> users = Arrays.asList(UserGenerator.getRandomEmployee(), UserGenerator.getRandomEmployee());
         when(userService.getAllUsers()).thenReturn(users);
 
         String url = "/api/users";
@@ -370,7 +378,7 @@ class UserControllerTest {
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(content().json(mapper.writeValueAsString(users)));
+            .andExpect(content().json(mapper.writeValueAsString(appModelMapper.mapToUserDTOList(users))));
 
         verify(userService).getAllUsers();
     }
@@ -418,7 +426,7 @@ class UserControllerTest {
 
     @Test
     void shouldReturnAllActiveUsers() throws Exception {
-        Collection<User> users = Arrays.asList(UserGenerator.getRandomEmployee(), UserGenerator.getRandomEmployee());
+        List<User> users = Arrays.asList(UserGenerator.getRandomEmployee(), UserGenerator.getRandomEmployee());
         when(userService.getAllActiveUsers()).thenReturn(users);
 
         String url = "/api/users/active";
@@ -427,7 +435,7 @@ class UserControllerTest {
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(content().json(mapper.writeValueAsString(users)));
+            .andExpect(content().json(mapper.writeValueAsString(appModelMapper.mapToUserDTOList(users))));
 
         verify(userService).getAllActiveUsers();
     }

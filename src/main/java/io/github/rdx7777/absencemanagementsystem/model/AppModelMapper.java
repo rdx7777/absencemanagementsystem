@@ -2,7 +2,10 @@ package io.github.rdx7777.absencemanagementsystem.model;
 
 import io.github.rdx7777.absencemanagementsystem.repository.UserRepository;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
@@ -38,19 +41,6 @@ public class AppModelMapper {
             .build();
     }
 
-    public UserDTO mapToUserDTO(User user) {
-        return UserDTO.builder()
-            .withId(user.getId())
-            .withName(user.getName())
-            .withSurname(user.getSurname())
-            .withEmail(user.getEmail())
-            .withJobTitle(user.getJobTitle())
-            .withIsActive(user.getIsActive())
-            .withPosition(user.getPosition())
-            .withRole(user.getRole())
-            .build();
-    }
-
     public AbsenceCase mapToAbsenceCase(AbsenceCaseDTO caseDTO) {
         User user = mapToUser(caseDTO.getUser());
         User headTeacher = mapToUser(caseDTO.getHeadTeacher());
@@ -70,6 +60,26 @@ public class AppModelMapper {
             .withIsAbsencePaid(caseDTO.getIsAbsencePaid())
             .withHeadTeacherComment(caseDTO.getHeadTeacherComment())
             .withHrSupervisorComment(caseDTO.getHrSupervisorComment())
+            .withIsCaseResolved(caseDTO.getIsCaseResolved())
+            .build();
+    }
+
+    public List<AbsenceCaseDTO> mapToAbsenceCaseDTOList(List<AbsenceCase> userList) {
+        return userList.stream()
+            .map(this::mapToAbsenceCaseDTO)
+            .collect(Collectors.toList());
+    }
+
+    public UserDTO mapToUserDTO(User user) {
+        return UserDTO.builder()
+            .withId(user.getId())
+            .withName(user.getName())
+            .withSurname(user.getSurname())
+            .withEmail(user.getEmail())
+            .withJobTitle(user.getJobTitle())
+            .withIsActive(user.getIsActive())
+            .withPosition(user.getPosition())
+            .withRole(user.getRole())
             .build();
     }
 
@@ -78,5 +88,11 @@ public class AppModelMapper {
         Long id = userDTO.getId();
         Optional<User> user = userRepository.findById(id);
         return user.orElse(null);
+    }
+
+    public Collection<UserDTO> mapToUserDTOList(List<User> userList) {
+        return userList.stream()
+            .map(this::mapToUserDTO)
+            .collect(Collectors.toList());
     }
 }
