@@ -127,11 +127,10 @@ public class UserService {
         }
     }
 
-    // TODO: check it with EmailService!
-    public User getCoverSupervisor() throws ServiceOperationException {
+    public Optional<User> getCoverSupervisor() throws ServiceOperationException {
         Example<User> example = Example.of(new User.Builder().withIsActive(true).withPosition(Position.CoverSupervisor).build());
         try {
-            return repository.findOne(example).orElseThrow();
+            return repository.findOne(example);
         } catch (NonTransientDataAccessException e) {
             String message = "An error occurred during getting Cover Supervisor.";
             logger.error(message, e);
@@ -139,11 +138,10 @@ public class UserService {
         }
     }
 
-    // TODO: check it with EmailService!
-    public User getHRSupervisor() throws ServiceOperationException {
+    public Optional<User> getHRSupervisor() throws ServiceOperationException {
         Example<User> example = Example.of(new User.Builder().withIsActive(true).withPosition(Position.HumanResourcesSupervisor).build());
         try {
-            return repository.findOne(example).orElseThrow();
+            return repository.findOne(example);
         } catch (NonTransientDataAccessException e) {
             String message = "An error occurred during getting Human Resources Supervisor.";
             logger.error(message, e);

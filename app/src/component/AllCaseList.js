@@ -82,7 +82,8 @@ class AllCaseList extends Component {
                             disabled={aCase.isCaseResolved ? true : false}>
                         Edit</Button>
                     <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center', display: `${displayButton}`}}
-                            size="sm" color="danger" onClick={() => this.remove(aCase.id)}>
+                            size="sm" color="danger"
+                            onClick={() => {if (window.confirm('Are you sure you want to delete this case?')) this.remove(aCase.id)}}>
                         Delete</Button>
                 </td>
             </tr>

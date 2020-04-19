@@ -99,20 +99,11 @@ public class AbsenceCaseController {
         }
         AbsenceCase aCase = appModelMapper.mapToAbsenceCase(caseDTO);
         List<String> validations = AbsenceCaseValidator.validate(aCase);
-//        System.out.println(validations);
         if (validations.size() > 0) {
             logger.error("Attempt to update invalid case.");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attempt to update invalid case.");
         }
         AbsenceCaseDTO updatedCase = appModelMapper.mapToAbsenceCaseDTO(caseService.updateCase(aCase));
-        /*User userWithPassword = userService.getUserByEmail(aCase.getUser().getEmail()).get();
-        User headTeacherWithPassword = userService.getUserByEmail(aCase.getHeadTeacher().getEmail()).get();
-        AbsenceCase absenceCaseForUpdate = AbsenceCase.builder()
-            .withCase(aCase)
-            .withUser(userWithPassword)
-            .withHeadTeacher(headTeacherWithPassword)
-            .build();
-        AbsenceCaseDTO updatedCase = appModelMapper.mapToAbsenceCaseDTO(caseService.updateCase(absenceCaseForUpdate));*/
         logger.debug("Updated case with id {} by .", caseDTO.getId());
         Optional<User> headTeacher = userService.getUserById(caseDTO.getHeadTeacher().getId());
         if (headTeacher.isEmpty()) {
@@ -125,11 +116,9 @@ public class AbsenceCaseController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attempt to send email with details of user, who does not exist in database.");
         }
         sendEmail(editingUserId, headTeacher.get(), user.get(), updatedCase);
-//        sendEmail(editingUserId, headTeacherWithPassword, userWithPassword, updatedCase);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         return new ResponseEntity<>(updatedCase, httpHeaders, HttpStatus.OK);
-//        return ResponseEntity.ok(updatedCase);
     }
 
     private void sendEmail(Long editingUserId, User headTeacher, User user, AbsenceCaseDTO updatedCase) throws ServiceOperationException {
@@ -176,18 +165,6 @@ public class AbsenceCaseController {
         logger.info("Attempt to get all active cases.");
         return ResponseEntity.ok(appModelMapper.mapToAbsenceCaseDTOList((List<AbsenceCase>) caseService.getAllActiveCases()));
     }
-
-/*    @GetMapping(value = "/user", params = {"id", "caseId"}, produces = "application/json") // "api/cases/user?id=%d&caseId=%d"
-    public ResponseEntity<?> getUserCase(@RequestParam(name = "id") Long id, @RequestParam(name = "caseId") Long caseId) throws ServiceOperationException {
-//    @GetMapping(value = "/user/{id}/{caseId}") // "api/cases/user/%d/%d"
-//    public ResponseEntity<?> getUserCase(@PathVariable("id") Long id, @PathVariable("caseId") Long caseId) {
-        if (!caseService.getCaseById(caseId).get().getId().equals(id)) {
-            logger.error("Attempt to get case which is not corresponding with user id.");
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attempt to get case which is not corresponding with user id.");
-        }
-        logger.info("Attempt to get all user cases.");
-         return ResponseEntity.ok(caseService.getCaseById(caseId).get());
-    }*/
 
     @GetMapping(value = "/user/{id}", produces = "application/json")
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER') or hasRole('CS_SUPERVISOR') or hasRole('HEAD_TEACHER') or hasRole('HR_SUPERVISOR')")

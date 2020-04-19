@@ -3,6 +3,7 @@ package io.github.rdx7777.absencemanagementsystem.service;
 import io.github.rdx7777.absencemanagementsystem.model.AbsenceCaseDTO;
 import io.github.rdx7777.absencemanagementsystem.model.User;
 
+import java.util.Optional;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
@@ -22,11 +23,13 @@ public class EmailService {
 
     private final JavaMailSender mailSender;
     private final MailProperties mailProperties;
+    private final UserService userService;
 
     @Autowired
-    public EmailService(JavaMailSender mailSender, MailProperties mailProperties) {
+    public EmailService(JavaMailSender mailSender, MailProperties mailProperties, UserService userService) {
         this.mailSender = mailSender;
         this.mailProperties = mailProperties;
+        this.userService = userService;
     }
 
     @Async
@@ -34,10 +37,13 @@ public class EmailService {
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
-            // TODO: solve sending email FROM - sender cannot be taken from properties
             helper.setFrom(mailProperties.getUsername());
-            // TODO: solve sending email to Cover Supervisor (below) - supervisor as this method argument
-            helper.setTo(mailProperties.getProperties().get("to_cover_supervisor")); // permanent settings
+            Optional<User> coverSupervisor = userService.getCoverSupervisor();
+            if (coverSupervisor.isEmpty()) {
+                logger.error("Attempt to get Cover Supervisor that does not exist in database.");
+                throw new ServiceOperationException("Attempt to get Cover Supervisor that does not exist in database.");
+            }
+            helper.setTo(coverSupervisor.get().getEmail());
             helper.setSubject("New case in Absence Management System - action required");
             helper.setText("Dear Cover Supervisor, you have new case to deal with." + "\n"
                 + "Absence case id: " + aCase.getId() + "\n"
@@ -47,7 +53,7 @@ public class EmailService {
                 + "Staff comment: " + aCase.getUserComment() + "\n"
                 + "Head Teacher: " + headTeacher.getName() + " " + headTeacher.getSurname());
             mailSender.send(message);
-        } catch (MessagingException e) {
+        } catch (MessagingException | ServiceOperationException e) {
             logger.error("An error occurred during sending email.", e);
         }
     }
@@ -60,7 +66,6 @@ public class EmailService {
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
-            // TODO: solve sending email FROM - sender cannot be taken from properties
             helper.setFrom(mailProperties.getUsername());
             helper.setTo(headTeacherEmail);
             helper.setSubject("New case in Absence Management System - action required");
@@ -89,10 +94,13 @@ public class EmailService {
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
-            // TODO: solve sending email FROM - sender cannot be taken from properties
             helper.setFrom(mailProperties.getUsername());
-            // TODO: solve sending email to HR supervisor (below) - supervisor as this method argument
-            helper.setTo(mailProperties.getProperties().get("to_hr_supervisor")); // permanent settings
+            Optional<User> hrSupervisor = userService.getHRSupervisor();
+            if (hrSupervisor.isEmpty()) {
+                logger.error("Attempt to get HR Supervisor that does not exist in database.");
+                throw new ServiceOperationException("Attempt to get HR Supervisor that does not exist in database.");
+            }
+            helper.setTo(hrSupervisor.get().getEmail());
             helper.setSubject("New case in Absence Management System - action required");
             helper.setText("Dear HR Supervisor, you have new case to deal with." + "\n"
                 + "Absence case id: " + aCase.getId() + "\n"
@@ -108,7 +116,7 @@ public class EmailService {
                 + "Absence paid: " + isAbsencePaid + "\n"
                 + "Head Teacher comment: " + aCase.getHeadTeacherComment());
             mailSender.send(message);
-        } catch (MessagingException e) {
+        } catch (MessagingException | ServiceOperationException e) {
             logger.error("An error occurred during sending email.", e);
         }
     }
@@ -123,7 +131,6 @@ public class EmailService {
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
-            // TODO: solve sending email FROM - sender cannot be taken from properties
             helper.setFrom(mailProperties.getUsername());
             helper.setTo(userEmail);
             helper.setSubject("Your case in Absence Management System is finished");

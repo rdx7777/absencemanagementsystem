@@ -78,11 +78,12 @@ class CaseEdit extends Component {
     async handleSubmit(event) {
         event.preventDefault();
         const {aCase} = this.state;
+        const userEditingThisCaseId = AuthService.getCurrentUser().id;
         const headers = new Headers(authHeader());
         headers.set('Accept', 'application/json');
         headers.set('Content-Type', 'application/json');
 
-        await fetch('/api/cases' + (aCase.id ? '?id=' + aCase.id + '&userId=' + aCase.user.id : ''), {
+        await fetch('/api/cases' + (aCase.id ? '?id=' + aCase.id + '&userId=' + userEditingThisCaseId : ''), {
             method: (aCase.id) ? 'PUT' : 'POST',
             headers: headers,
             body: JSON.stringify(aCase)
