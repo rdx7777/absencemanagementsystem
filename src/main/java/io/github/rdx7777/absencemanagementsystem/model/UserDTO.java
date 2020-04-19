@@ -1,8 +1,11 @@
 package io.github.rdx7777.absencemanagementsystem.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+
 import java.util.Objects;
 
-//@JsonDeserialize(builder = UserDTO.Builder.class)
+@JsonDeserialize(builder = UserDTO.Builder.class)
 public class UserDTO {
 
     private final Long id;
@@ -95,7 +98,7 @@ public class UserDTO {
             '}';
     }
 
-//    @JsonPOJOBuilder
+    @JsonPOJOBuilder
     public static class Builder {
         private Long id;
         private String name;

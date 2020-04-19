@@ -1,9 +1,12 @@
 package io.github.rdx7777.absencemanagementsystem.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+
 import java.time.LocalDate;
 import java.util.Objects;
 
-//@JsonDeserialize(builder = AbsenceCaseDTO.Builder.class)
+@JsonDeserialize(builder = AbsenceCaseDTO.Builder.class)
 public class AbsenceCaseDTO {
 
     private final Long id;
@@ -160,7 +163,7 @@ public class AbsenceCaseDTO {
             '}';
     }
 
-//    @JsonPOJOBuilder
+    @JsonPOJOBuilder
     public static class Builder {
 
         private Long id;

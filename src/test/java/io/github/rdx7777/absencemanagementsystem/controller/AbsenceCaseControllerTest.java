@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.rdx7777.absencemanagementsystem.generators.AbsenceCaseGenerator;
 import io.github.rdx7777.absencemanagementsystem.generators.UserGenerator;
 import io.github.rdx7777.absencemanagementsystem.model.AbsenceCase;
+import io.github.rdx7777.absencemanagementsystem.model.AbsenceCaseDTO;
 import io.github.rdx7777.absencemanagementsystem.model.AppModelMapper;
 import io.github.rdx7777.absencemanagementsystem.model.User;
 import io.github.rdx7777.absencemanagementsystem.repository.UserRepository;
@@ -190,28 +191,32 @@ class AbsenceCaseControllerTest {
 
         AppModelMapper unMockedAppModelMapper = new AppModelMapper(repository);
         AbsenceCase aCase = AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayType();
-        when(caseService.caseExists(aCase.getId())).thenReturn(true);
+        AbsenceCaseDTO caseDTO = unMockedAppModelMapper.mapToAbsenceCaseDTO(aCase);
+        when(caseService.caseExists(caseDTO.getId())).thenReturn(true);
+        when(appModelMapper.mapToAbsenceCase(any())).thenReturn(aCase);
         when(caseService.updateCase(aCase)).thenReturn(aCase);
+        when(appModelMapper.mapToAbsenceCaseDTO(aCase)).thenReturn(unMockedAppModelMapper.mapToAbsenceCaseDTO(aCase));
         User headTeacher = aCase.getHeadTeacher();
         User user = aCase.getUser();
-        when(userService.getUserByEmail(aCase.getUser().getEmail())).thenReturn(Optional.of(user));
-        when(userService.getUserByEmail(aCase.getHeadTeacher().getEmail())).thenReturn(Optional.of(headTeacher));
+        when(userService.getUserById(aCase.getUser().getId())).thenReturn(Optional.of(user));
+        when(userService.getUserById(aCase.getHeadTeacher().getId())).thenReturn(Optional.of(headTeacher));
         when(userService.getUserById(any())).thenReturn(Optional.of(headTeacher));
-        when(appModelMapper.mapToAbsenceCaseDTO(aCase)).thenReturn(unMockedAppModelMapper.mapToAbsenceCaseDTO(aCase));
         doNothing().when(emailService).sendEmailToHumanResourcesSupervisor(any(), any(), any());
 
-        String url = String.format("/api/cases?id=%d&userId=%d", aCase.getId(), headTeacher.getId());
+        String url = String.format("/api/cases?id=%d&userId=%d", caseDTO.getId(), headTeacher.getId());
 
         mockMvc.perform(put(url)
             .contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsBytes(aCase))
+            .content(mapper.writeValueAsBytes(caseDTO))
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(content().json(mapper.writeValueAsString(appModelMapper.mapToAbsenceCaseDTO(aCase))));
+            .andExpect(content().json(mapper.writeValueAsString(unMockedAppModelMapper.mapToAbsenceCaseDTO(aCase))));
 
         verify(caseService).caseExists(aCase.getId());
         verify(caseService).updateCase(aCase);
+        verify(appModelMapper).mapToAbsenceCase(any());
+        verify(appModelMapper).mapToAbsenceCaseDTO(aCase);
         verify(emailService).sendEmailToHumanResourcesSupervisor(any(), any(), any());
     }
 
@@ -299,12 +304,12 @@ class AbsenceCaseControllerTest {
 
     @Test
     void shouldReturnInternalServerErrorDuringUpdatingCaseWhenSomethingWentWrongOnServer() throws Exception {
+
+        AppModelMapper unMockedAppModelMapper = new AppModelMapper(repository);
         AbsenceCase aCase = AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayType();
-        User headTeacher = aCase.getHeadTeacher();
-        User user = aCase.getUser();
-        when(caseService.caseExists(aCase.getId())).thenReturn(true);
-        when(userService.getUserByEmail(aCase.getUser().getEmail())).thenReturn(Optional.of(user));
-        when(userService.getUserByEmail(aCase.getHeadTeacher().getEmail())).thenReturn(Optional.of(headTeacher));
+        AbsenceCaseDTO caseDTO = unMockedAppModelMapper.mapToAbsenceCaseDTO(aCase);
+        when(caseService.caseExists(caseDTO.getId())).thenReturn(true);
+        when(appModelMapper.mapToAbsenceCase(any())).thenReturn(aCase);
         when(caseService.updateCase(aCase)).thenThrow(new ServiceOperationException());
 
         String url = String.format("/api/cases?id=%d&userId=%d", aCase.getId(), 1L);
@@ -322,8 +327,12 @@ class AbsenceCaseControllerTest {
 
     @Test
     void shouldReturnCase() throws Exception {
+        AppModelMapper unMockedAppModelMapper = new AppModelMapper(repository);
         AbsenceCase aCase = AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayType();
-        when(caseService.getCaseById(aCase.getId())).thenReturn(Optional.of(aCase));
+        AbsenceCaseDTO caseDTO = unMockedAppModelMapper.mapToAbsenceCaseDTO(aCase);
+        Long id = caseDTO.getId();
+        when(caseService.getCaseById(id)).thenReturn(Optional.of(aCase));
+        when(appModelMapper.mapToAbsenceCaseDTO(aCase)).thenReturn(unMockedAppModelMapper.mapToAbsenceCaseDTO(aCase));
 
         String url = String.format("/api/cases/%d", aCase.getId());
 
@@ -331,9 +340,10 @@ class AbsenceCaseControllerTest {
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(content().json(mapper.writeValueAsString(aCase)));
+            .andExpect(content().json(mapper.writeValueAsString(unMockedAppModelMapper.mapToAbsenceCaseDTO(aCase))));
 
         verify(caseService).getCaseById(aCase.getId());
+        verify(appModelMapper).mapToAbsenceCaseDTO(aCase);
     }
 
     @Test
@@ -353,8 +363,11 @@ class AbsenceCaseControllerTest {
 
     @Test
     void shouldReturnCaseAsJsonIfIsPriorToOtherAcceptedHeaders() throws Exception {
+
+        AppModelMapper unMockedAppModelMapper = new AppModelMapper(repository);
         AbsenceCase aCase = AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayType();
         when(caseService.getCaseById(aCase.getId())).thenReturn(Optional.of(aCase));
+        when(appModelMapper.mapToAbsenceCaseDTO(aCase)).thenReturn(unMockedAppModelMapper.mapToAbsenceCaseDTO(aCase));
 
         String url = String.format("/api/cases/%d", aCase.getId());
 
@@ -362,9 +375,10 @@ class AbsenceCaseControllerTest {
             .accept(MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_PDF))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(content().json(mapper.writeValueAsString(aCase)));
+            .andExpect(content().json(mapper.writeValueAsString(unMockedAppModelMapper.mapToAbsenceCaseDTO(aCase))));
 
         verify(caseService).getCaseById(aCase.getId());
+        verify(appModelMapper).mapToAbsenceCaseDTO(aCase);
     }
 
     @Test

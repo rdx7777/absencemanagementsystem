@@ -108,9 +108,9 @@ class AllCaseList extends Component {
                             <th width="15%">Head Teacher</th>
                             <th width="10%">Start date</th>
                             <th width="10%">End date</th>
-                            <th width="8%">Cover required?</th>
-                            <th width="8%">Cover provided?</th>
-                            <th width="8%">Case resolved?</th>
+                            <th width="5%">Cover required?</th>
+                            <th width="5%">Cover provided?</th>
+                            <th width="5%">Case resolved?</th>
                             <th width="20%">Actions</th>
                         </tr>
                         </thead>

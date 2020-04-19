@@ -84,12 +84,12 @@ public class AbsenceCaseController {
     @PreAuthorize("hasRole('ADMIN') or hasRole('CS_SUPERVISOR') or hasRole('HEAD_TEACHER') or hasRole('HR_SUPERVISOR')")
     public ResponseEntity<?> updateCase(@RequestParam(name = "id") Long id,
                                         @RequestParam(name = "userId") Long editingUserId,
-                                        @RequestBody (required = false) AbsenceCase aCase) throws ServiceOperationException {
-        if (aCase == null) {
+                                        @RequestBody (required = false) AbsenceCaseDTO caseDTO) throws ServiceOperationException {
+        if (caseDTO == null) {
             logger.error("Attempt to update case providing null case.");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attempt to update case providing null case.");
         }
-        if (!id.equals(aCase.getId())) {
+        if (!id.equals(caseDTO.getId())) {
             logger.error("Attempt to update case providing different case id.");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attempt to update case providing different case id.");
         }
@@ -97,34 +97,35 @@ public class AbsenceCaseController {
             logger.error("Attempt to update not existing case.");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Attempt to update not existing case.");
         }
+        AbsenceCase aCase = appModelMapper.mapToAbsenceCase(caseDTO);
         List<String> validations = AbsenceCaseValidator.validate(aCase);
+//        System.out.println(validations);
         if (validations.size() > 0) {
             logger.error("Attempt to update invalid case.");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attempt to update invalid case.");
         }
-
-        User userWithPassword = userService.getUserByEmail(aCase.getUser().getEmail()).get();
+        AbsenceCaseDTO updatedCase = appModelMapper.mapToAbsenceCaseDTO(caseService.updateCase(aCase));
+        /*User userWithPassword = userService.getUserByEmail(aCase.getUser().getEmail()).get();
         User headTeacherWithPassword = userService.getUserByEmail(aCase.getHeadTeacher().getEmail()).get();
         AbsenceCase absenceCaseForUpdate = AbsenceCase.builder()
             .withCase(aCase)
             .withUser(userWithPassword)
             .withHeadTeacher(headTeacherWithPassword)
             .build();
-        AbsenceCaseDTO updatedCase = appModelMapper.mapToAbsenceCaseDTO(caseService.updateCase(absenceCaseForUpdate));
-
-        logger.debug("Updated case with id {} by .", aCase.getId());
-//        Optional<User> headTeacher = userService.getUserById(aCase.getHeadTeacher().getId());
-//        if (headTeacher.isEmpty()) {
-//            logger.error("Attempt to send email with details of Head Teacher, who does not exist in database.");
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attempt to send email with details of Head Teacher, who does not exist in database.");
-//        }
-//        Optional<User> user = userService.getUserById(aCase.getUser().getId());
-//        if (user.isEmpty()) {
-//            logger.error("Attempt to send email with details of user, who does not exist in database.");
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attempt to send email with details of user, who does not exist in database.");
-//        }
-//        sendEmail(editingUserId, headTeacher.get(), user.get(), updatedCase);
-        sendEmail(editingUserId, headTeacherWithPassword, userWithPassword, updatedCase);
+        AbsenceCaseDTO updatedCase = appModelMapper.mapToAbsenceCaseDTO(caseService.updateCase(absenceCaseForUpdate));*/
+        logger.debug("Updated case with id {} by .", caseDTO.getId());
+        Optional<User> headTeacher = userService.getUserById(caseDTO.getHeadTeacher().getId());
+        if (headTeacher.isEmpty()) {
+            logger.error("Attempt to send email with details of Head Teacher, who does not exist in database.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attempt to send email with details of Head Teacher, who does not exist in database.");
+        }
+        Optional<User> user = userService.getUserById(caseDTO.getUser().getId());
+        if (user.isEmpty()) {
+            logger.error("Attempt to send email with details of user, who does not exist in database.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attempt to send email with details of user, who does not exist in database.");
+        }
+        sendEmail(editingUserId, headTeacher.get(), user.get(), updatedCase);
+//        sendEmail(editingUserId, headTeacherWithPassword, userWithPassword, updatedCase);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         return new ResponseEntity<>(updatedCase, httpHeaders, HttpStatus.OK);
@@ -159,7 +160,7 @@ public class AbsenceCaseController {
             logger.error("Attempt to get case by id that does not exist in database.");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Attempt to get case by id that does not exist in database.");
         }
-        return ResponseEntity.ok(aCase.get());
+        return ResponseEntity.ok(appModelMapper.mapToAbsenceCaseDTO(aCase.get()));
     }
 
     @GetMapping(produces = "application/json")

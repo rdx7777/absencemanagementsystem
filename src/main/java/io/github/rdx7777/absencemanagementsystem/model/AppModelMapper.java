@@ -51,7 +51,7 @@ public class AppModelMapper {
             .withStartDate(caseDTO.getStartDate())
             .withEndDate(caseDTO.getEndDate())
             .withPartDayType(caseDTO.getPartDayType())
-            .withIsAbsencePaid(caseDTO.getIsAbsencePaid())
+            .withAbsenceReason(caseDTO.getAbsenceReason())
             .withUserComment(caseDTO.getUserComment())
             .withIsCoverRequired(caseDTO.getIsCoverRequired())
             .withIsCoverProvided(caseDTO.getIsCoverProvided())

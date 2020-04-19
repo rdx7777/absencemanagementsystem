@@ -59,9 +59,12 @@ class AllUserList extends Component {
                 <td>{role}</td>
                 <td>
                     <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
-                            size="sm" color="primary" tag={Link} to={"/users/" + user.id}>Edit</Button>
+                            size="sm" color="warning" tag={Link} to={"/users/" + user.id}>
+                        Edit</Button>
                     <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
-                            size="sm" color="danger" onClick={() => this.remove(user.id)}>Delete</Button>
+                            size="sm" color="danger"
+                            onClick={() => {if (window.confirm('Are you sure you want to delete this user?')) this.remove(user.id)}}>
+                        Delete</Button>
                 </td>
             </tr>
         });
