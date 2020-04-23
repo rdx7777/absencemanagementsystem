@@ -28,7 +28,8 @@
     "react-scripts": "3.4.1",
     "reactstrap": "^8.4.1",
     "react-validation": "3.0.7",
-    "validator": "12.2.0"
+    "validator": "12.2.0",
+    "prop-types": "latest"
   },
   "scripts": {
     "start": "react-scripts start",

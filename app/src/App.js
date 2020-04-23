@@ -15,6 +15,7 @@ import ActiveCaseManagedByHeadTeacherList from "./component/ActiveCaseManagedByH
 import AdminComponent from "./component/AdminComponent";
 import CaseDetails from "./component/CaseDetails";
 import authHeader from "./auth/AuthHeader";
+import TemporaryAllCaseList from "./component/TemporaryAllCaseList";
 
 class App extends Component {
 
@@ -143,7 +144,8 @@ class App extends Component {
                             <Route path='/user' exact={true} component={UserComponent}/>
                             <Route path='/add_user_case' exact={true} component={AddUserCase}/>
                             <Route path='/supervisor' exact={true} component={SupervisorComponent}/>
-                            <Route path='/cases' exact={true} component={AllCaseList}/>
+                            {/*<Route path='/cases' exact={true} component={AllCaseList}/>*/}
+                            <Route path='/cases' exact={true} component={TemporaryAllCaseList}/>
                             <Route path='/active_cases' exact={true} component={ActiveCaseList}/>
                             <Route path='/active_cases_managed_by_headteacher' exact={true}
                                    component={ActiveCaseManagedByHeadTeacherList}/>
