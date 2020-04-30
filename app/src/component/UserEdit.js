@@ -66,13 +66,15 @@ class UserEdit extends Component {
                 <Form onSubmit={this.handleSubmit}>
                     <div className="row">
                         <FormGroup className="col-md-4 mb-3">
-                            <Label for="name">Name</Label>
+                            <Label for="name">Name </Label>
+                            <Label className="text-danger" for="name">*</Label>
                             <Input type="text" name="name" id="name" value={user.name}
                                    onChange={this.handleChange}>
                             </Input>
                         </FormGroup>
                         <FormGroup className="col-md-4 mb-3">
-                            <Label for="surname">Surname</Label>
+                            <Label for="surname">Surname </Label>
+                            <Label className="text-danger" for="surname">*</Label>
                             <Input type="text" name="surname" id="surname" value={user.surname}
                                    onChange={this.handleChange}>
                             </Input>
@@ -80,24 +82,28 @@ class UserEdit extends Component {
                     </div>
                     <div className="row">
                         <FormGroup className="col-md-4 mb-3">
-                            <Label for="email">Email</Label>
+                            <Label for="email">Email </Label>
+                            <Label className="text-danger" for="email">*</Label>
                             <Input type="email" name="email" id="email" value={user.email}
                                    onChange={this.handleChange} placeholder="user email"/>
                         </FormGroup>
                         <FormGroup className="col-md-6 mb-3">
-                            <Label for="password">Password</Label>
+                            <Label for="password">Password </Label>
+                            <Label className="text-danger" for="password">*</Label>
                             <Input type="text" name="password" id="password" value={user.password}
                                    onChange={this.handleChange}/>
                         </FormGroup>
                     </div>
                     <div className="row">
                         <FormGroup className="col-md-4 mb-3">
-                            <Label for="jobTitle">Job title</Label>
+                            <Label for="jobTitle">Job title </Label>
+                            <Label className="text-danger" for="jobTitle">*</Label>
                             <Input type="text" name="jobTitle" id="jobTitle" value={user.jobTitle}
                                    onChange={this.handleChange}/>
                         </FormGroup>
                         <FormGroup className="col-md-2 mb-3">
-                            <Label for="isActive">User active?</Label>
+                            <Label for="isActive">User active? </Label>
+                            <Label className="text-danger" for="isActive">*</Label>
                             <Input type="select" name="isActive" id="isActive" value={user.isActive}
                                    onChange={this.handleChange}>
                                 <option/>
@@ -108,7 +114,8 @@ class UserEdit extends Component {
                     </div>
                     <div className="row">
                         <FormGroup className="col-md-2 mb-3">
-                            <Label for="position">Position</Label>
+                            <Label for="position">Position </Label>
+                            <Label className="text-danger" for="position">*</Label>
                             <Input type="select" name="position" id="position" value={user.position}
                                    onChange={this.handleChange}>
                                 <option value=""/>
@@ -119,7 +126,8 @@ class UserEdit extends Component {
                             </Input>
                         </FormGroup>
                         <FormGroup className="col-md-4 mb-3">
-                            <Label for="role">Authorisation</Label>
+                            <Label for="role">Authorisation </Label>
+                            <Label className="text-danger" for="role">*</Label>
                             <Input type="select" name="role" id="role" value={user.role}
                                    onChange={this.handleChange}>
                                 <option value=""/>

@@ -159,6 +159,22 @@ public class AbsenceCaseController {
         return ResponseEntity.ok(appModelMapper.mapToAbsenceCaseDTOList((List<AbsenceCase>) caseService.getAllCases()));
     }
 
+    @GetMapping(params = {"offset", "limit"}, produces = "application/json")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER') or hasRole('CS_SUPERVISOR') or hasRole('HEAD_TEACHER') or hasRole('HR_SUPERVISOR')")
+    public ResponseEntity<?> getAllCasesPaginated(@RequestParam(name = "offset") Long offset,
+                                                  @RequestParam(name = "limit") Long limit) throws ServiceOperationException {
+        if (offset == null) {
+            logger.error("Attempt to get all paginated cases providing null offset.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attempt to get all paginated cases providing null offset.");
+        }
+        if (limit == null) {
+            logger.error("Attempt to get all paginated cases providing null limit.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attempt to get all paginated cases providing null limit.");
+        }
+        logger.info("Attempt to get all paginated cases with offset {} and limit {}.", offset, limit);
+        return ResponseEntity.ok(appModelMapper.mapToAbsenceCaseDTOList((List<AbsenceCase>) caseService.getAllCasesPaginated(offset, limit)));
+    }
+
     @GetMapping(value = "/active", produces = "application/json")
     @PreAuthorize("hasRole('ADMIN') or hasRole('CS_SUPERVISOR') or hasRole('HEAD_TEACHER') or hasRole('HR_SUPERVISOR')")
     public ResponseEntity<?> getAllActiveCases() throws ServiceOperationException {
@@ -169,14 +185,14 @@ public class AbsenceCaseController {
     @GetMapping(value = "/user/{id}", produces = "application/json")
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER') or hasRole('CS_SUPERVISOR') or hasRole('HEAD_TEACHER') or hasRole('HR_SUPERVISOR')")
     public ResponseEntity<?> getAllUserCases(@PathVariable("id") Long id) throws ServiceOperationException {
-        logger.info("Attempt to get all user cases.");
+        logger.debug("Attempt to get all user cases.");
         return ResponseEntity.ok(appModelMapper.mapToAbsenceCaseDTOList((List<AbsenceCase>) caseService.getAllUserCases(id)));
     }
 
     @GetMapping(value = "/active/ht/{id}", produces = "application/json")
     @PreAuthorize("hasRole('ADMIN') or hasRole('CS_SUPERVISOR') or hasRole('HEAD_TEACHER') or hasRole('HR_SUPERVISOR')")
     public ResponseEntity<?> getAllActiveCasesForHeadTeacher(@PathVariable("id") Long id) throws ServiceOperationException {
-        logger.info("Attempt to get all active cases for Head Teacher with id {}.", id);
+        logger.debug("Attempt to get all active cases for Head Teacher with id {}.", id);
         return ResponseEntity.ok(appModelMapper.mapToAbsenceCaseDTOList((List<AbsenceCase>) caseService.getAllActiveCasesForHeadTeacher(id)));
     }
 
@@ -192,5 +208,12 @@ public class AbsenceCaseController {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         return new ResponseEntity<>(httpHeaders, HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping(value = "/count", produces = "application/json")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER') or hasRole('CS_SUPERVISOR') or hasRole('HEAD_TEACHER') or hasRole('HR_SUPERVISOR')")
+    public ResponseEntity<?> countCases() throws ServiceOperationException {
+        logger.info("Attempt to get number of all cases.");
+        return ResponseEntity.ok(caseService.casesCount());
     }
 }

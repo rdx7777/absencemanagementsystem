@@ -4,6 +4,7 @@ import {Link, withRouter} from 'react-router-dom';
 import AuthService from "../auth/AuthService";
 import authHeader from "../auth/AuthHeader";
 import Pagination from "./Pagination";
+import CaseDetails from "./CaseDetails";
 
 class TemporaryAllCaseList extends Component {
 
@@ -12,16 +13,24 @@ class TemporaryAllCaseList extends Component {
         this.state = {
             allCases: [],
             currentCases: [],
+            totalCases: null,
             currentPage: null,
+            requiredPage: null,
             totalPages: null,
+            pageLimit: null,
             displayButton: "none",
             displayHeadTeacherButton: "none",
             isLoading: true,
         };
+        // alert(this.state.requiredPage);
         this.remove = this.remove.bind(this);
     }
 
     componentDidMount() {
+        if (this.props.location.state !== null) {
+            // alert("this.props.location.state.requiredPage = " + this.props.location.state.requiredPage);
+            this.setState({requiredPage: this.props.location.state.requiredPage});
+        }
         this.setState({isLoading: true});
         const currentUser = AuthService.getCurrentUser();
         if (currentUser.roles.includes("ROLE_ADMIN")) {
@@ -30,19 +39,19 @@ class TemporaryAllCaseList extends Component {
         if (currentUser.roles.includes("ROLE_HEAD_TEACHER")) {
             this.setState({displayHeadTeacherButton: ""})
         }
-        fetch('api/cases', {headers: authHeader()})
+        fetch('api/cases/count', {headers: authHeader()})
             .then(response => response.json())
-            .then(data => this.setState({allCases: data, isLoading: false}));
+            .then(data => this.setState({totalCases: data, isLoading: false}));
     }
 
     onPageChanged = data => {
-        const {allCases} = this.state;
         const {currentPage, totalPages, pageLimit} = data;
-
         const offset = (currentPage - 1) * pageLimit;
-        const currentCases = allCases.slice(offset, offset + pageLimit);
 
-        this.setState({currentPage, currentCases, totalPages});
+        fetch(`api/cases?offset=${offset}&limit=${pageLimit}`, {headers: authHeader()})
+            .then(response => response.json())
+            .then(data => this.setState({currentCases: data, isLoading: false,
+                currentPage: currentPage, totalPages: totalPages, pageLimit: pageLimit}));
     };
 
     async remove(id) {
@@ -53,16 +62,31 @@ class TemporaryAllCaseList extends Component {
             method: 'DELETE',
             headers: headers
         }).then(() => {
-            let updatedCases = [...this.state.allCases].filter(i => i.id !== id);
-            this.setState({allCases: updatedCases});
+            fetch('api/cases/count', {headers: authHeader()})
+                .then(response => response.json())
+                .then(data => this.setState({totalCases: data, isLoading: false}))
+                .then(() => {
+                    const {currentPage, pageLimit} = this.state;
+                    const offset = (currentPage - 1) * pageLimit;
+                    fetch(`api/cases?offset=${offset}&limit=${pageLimit}`, {headers: authHeader()})
+                        .then(response => response.json())
+                        .then(data => this.setState({currentCases: data, isLoading: false}));
+                    // alert("currentPage: " + currentPage + "; totalPages: " + this.state.totalPages + "; totalCases: " + this.state.totalCases);
+                });
         });
     }
 
-    render() {
-        const {allCases, currentPage, currentCases, displayButton, displayHeadTeacherButton, isLoading} = this.state;
-        const totalCases = allCases.length;
+    /*handleOnClick(data, returnAddress) {
+        localStorage.setItem("returnAddress", returnAddress);
+        localStorage.setItem("userName&Surname", `${data.user.name} ${data.user.surname}`);
+        localStorage.setItem("headTeacherName&Surname", `${data.headTeacher.name} ${data.headTeacher.surname}`);
+        window.open('/case_details', "_blank")
+    }*/
 
-        if (totalCases === 0) return null;
+    render() {
+        const {currentCases, displayButton, displayHeadTeacherButton, isLoading} = this.state;
+
+        // alert("AllCaseList render method here, requiredPage = " + this.state.requiredPage);
 
         if (isLoading) {
             return <p>Loading...</p>;
@@ -87,10 +111,10 @@ class TemporaryAllCaseList extends Component {
                 <td>
                     <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
                             size="sm" color="primary"
-                            onClick={() => this.props.history.push({
-                                pathname: '/case_details',
-                                state: {aCase: aCase, returnAddress: '/cases'/*, currentPage: currentPage*/}
-                            })}>
+                        onClick={() => this.props.history.push({
+                        pathname: '/case_details',
+                        state: {aCase: aCase, returnAddress: '/cases', requiredPage: this.state.currentPage}})}>
+                        {/*onClick={() => this.handleOnClick(aCase, '/cases')}*/}
                         Details</Button>
                     <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
                             size="sm" color="warning" tag={Link} to={"/cases/" + aCase.id}
@@ -100,7 +124,7 @@ class TemporaryAllCaseList extends Component {
                             size="sm" color="danger"
                             onClick={() => {if (window.confirm('Are you sure you want to delete this case?'))
                                 this.remove(aCase.id);
-                                window.location.reload(false);
+                                // window.location.reload(false);
                             }}>
                         Delete</Button>
                 </td>
@@ -138,7 +162,10 @@ class TemporaryAllCaseList extends Component {
                         </tbody>
                     </Table>
                     <div className="d-flex flex-row py-4 align-items-center">
-                        <Pagination totalRecords={totalCases} pageLimit={4} pageNeighbours={1} onPageChanged={this.onPageChanged}/>
+                        <Pagination totalRecords={this.state.totalCases} pageLimit={4} pageNeighbours={1}
+                                    requiredPage={this.state.requiredPage}
+                                    onPageChanged={this.onPageChanged}
+                        />
                     </div>
                 </Container>
             </div>

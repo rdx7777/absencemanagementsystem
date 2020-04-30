@@ -14,7 +14,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class AbsenceCaseService {
@@ -96,6 +98,24 @@ public class AbsenceCaseService {
 //            return repository.findAll();
         } catch (NonTransientDataAccessException e) {
             String message = "An error occurred during getting all absence cases.";
+            logger.error(message, e);
+            throw new ServiceOperationException(message, e);
+        }
+    }
+
+    public Collection<AbsenceCase> getAllCasesPaginated(Long offset, Long limit) throws ServiceOperationException {
+        if (offset < 0) {
+            logger.error("Attempt to get all paginated cases with offset less than 0.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attempt to get all paginated cases with offset less than 0.");
+        }
+        if (limit < 0) {
+            logger.error("Attempt to get all paginated cases with limit less than 0.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attempt to get all paginated cases with limit less than 0.");
+        }
+        try {
+            return repository.findAllByOffsetAndLimit(offset, limit);
+        } catch (NonTransientDataAccessException e) {
+            String message = "An error occurred during getting all paginated absence cases.";
             logger.error(message, e);
             throw new ServiceOperationException(message, e);
         }

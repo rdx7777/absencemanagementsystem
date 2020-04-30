@@ -4,9 +4,21 @@ import {Link, withRouter} from "react-router-dom";
 
 class CaseDetails extends Component {
 
+    /*constructor(props) {
+        super(props);
+    }*/
+
+    /*componentWillMount() {
+        const returnAddress = localStorage.getItem("returnAddress");
+        const
+        this.setState({aCase: aCase, returnAddress: returnAddress});
+    }*/
+
     render() {
         const aCase = this.props.location.state.aCase;
         const returnAddress = this.props.location.state.returnAddress;
+        const requiredPage = this.props.location.state.requiredPage;
+        // alert(requiredPage);
         var partDayType;
         if (aCase.partDayType === 'AllDay') {
             partDayType = 'All day'
@@ -65,8 +77,10 @@ class CaseDetails extends Component {
                         </div>
                     </ListGroup>
                     <div className="float-right">
-                        <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
-                                color="primary" tag={Link} to={returnAddress}>Back to list</Button>
+                        <Link to={{pathname: returnAddress, state: {requiredPage: requiredPage}}}>
+                            <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
+                                    color="primary">Back to list</Button>
+                        </Link>
                     </div>
                 </Container>
             </div>

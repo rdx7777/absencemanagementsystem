@@ -96,8 +96,10 @@ class ActiveCaseList extends Component {
                         <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center', display: `${displayHeadTeacherButton}`}}
                                 color="primary" tag={Link} to="/active_cases_managed_by_headteacher">Show All Active
                             Head Teacher Cases</Button>
-                        <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
-                                color="primary" tag={Link} to="/cases">Show All Cases</Button>
+                        <Link to={{pathname: "/cases", state: {requiredPage: 1}}}>
+                            <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
+                                    color="primary" /*tag={Link} to="/cases"*/>Show All Cases</Button>
+                        </Link>
                         <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
                                 color="success" tag={Link} to="/cases/new">Add Employee Case</Button>
                     </div>
