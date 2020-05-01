@@ -10,6 +10,7 @@ class UserComponent extends Component {
         super(props);
         this.state = {
             cases: [],
+            requiredPage: null,
             isLoading: true,
             seen: false
         };
@@ -52,11 +53,9 @@ class UserComponent extends Component {
                             size="sm" color="primary"
                             onClick={() => this.props.history.push({
                                 pathname: '/case_details',
-                                search: '?query=abc',
-                                // TODO: remove line above
-                                state: {aCase: aCase, returnAddress: '/user'}
-                                })}>
-                    Details</Button>
+                                state: {aCase: aCase, returnAddress: '/user', requiredPage: this.state.currentPage}})}>
+                        Details
+                    </Button>
                     {/*<CaseDetailsOldVer aCase={aCase}/>*/}
                 </td>
             </tr>
@@ -66,8 +65,13 @@ class UserComponent extends Component {
             <div>
                 <Container fluid>
                     <div className="float-right">
-                        <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
-                                color="success" tag={Link} to="/add_user_case">Add Your Case</Button>
+                        <Link to={{pathname: '/add_user_case',
+                            state: {returnAddress: '/user', requiredPage: this.state.currentPage}}}>
+                            <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
+                                    color="success" /*tag={Link} to="/add_user_case"*/>
+                                Add Your Case
+                            </Button>
+                        </Link>
                     </div>
                     <h3>Your Absence Cases</h3>
                     <Table className="mt-4">

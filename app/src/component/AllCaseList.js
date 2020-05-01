@@ -3,13 +3,20 @@ import { Button, Container, Table } from 'reactstrap';
 import {Link, withRouter} from 'react-router-dom';
 import AuthService from "../auth/AuthService";
 import authHeader from "../auth/AuthHeader";
+import Pagination from "./Pagination";
 
 class AllCaseList extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            cases: [],
+            allCases: [],
+            currentCases: [],
+            totalCases: null,
+            currentPage: null,
+            requiredPage: null,
+            totalPages: null,
+            pageLimit: null,
             displayButton: "none",
             displayHeadTeacherButton: "none",
             isLoading: true,
@@ -18,6 +25,10 @@ class AllCaseList extends Component {
     }
 
     componentDidMount() {
+        if (this.props.location.state !== null) {
+            // alert("AllCaseList: this.props.location.state.requiredPage = " + this.props.location.state.requiredPage);
+            this.setState({requiredPage: this.props.location.state.requiredPage});
+        }
         this.setState({isLoading: true});
         const currentUser = AuthService.getCurrentUser();
         if (currentUser.roles.includes("ROLE_ADMIN")) {
@@ -26,10 +37,25 @@ class AllCaseList extends Component {
         if (currentUser.roles.includes("ROLE_HEAD_TEACHER")) {
             this.setState({displayHeadTeacherButton: ""})
         }
-        fetch('api/cases', {headers: authHeader()})
+        fetch('api/cases/count', {headers: authHeader()})
             .then(response => response.json())
-            .then(data => this.setState({cases: data, isLoading: false}));
+            .then(data => this.setState({totalCases: data, isLoading: false}))
+            .then(() => {
+                // alert("AllCaseList: this.state.requiredPage = " + this.state.requiredPage);
+                // alert("AllCaseList: this.state.totalCases = " + this.state.totalCases);
+            });
     }
+
+    onPageChanged = data => {
+        const {currentPage, totalPages, pageLimit} = data;
+        const offset = (currentPage - 1) * pageLimit;
+        // alert("currentPage: " + currentPage + "; totalPages: " + this.state.totalPages);
+
+        fetch(`api/cases?offset=${offset}&limit=${pageLimit}`, {headers: authHeader()})
+            .then(response => response.json())
+            .then(data => this.setState({currentCases: data, isLoading: false,
+                currentPage: currentPage, totalPages: totalPages, pageLimit: pageLimit}));
+    };
 
     async remove(id) {
         const headers = new Headers(authHeader());
@@ -39,19 +65,30 @@ class AllCaseList extends Component {
             method: 'DELETE',
             headers: headers
         }).then(() => {
-            let updatedCases = [...this.state.cases].filter(i => i.id !== id);
-            this.setState({cases: updatedCases});
+            fetch('api/cases/count', {headers: authHeader()})
+                .then(response => response.json())
+                .then(data => this.setState({totalCases: data, isLoading: false}))
+                .then(() => {
+                    const {currentPage, pageLimit} = this.state;
+                    const offset = (currentPage - 1) * pageLimit;
+                    fetch(`api/cases?offset=${offset}&limit=${pageLimit}`, {headers: authHeader()})
+                        .then(response => response.json())
+                        .then(data => this.setState({currentCases: data, isLoading: false}));
+                    // alert("currentPage: " + currentPage + "; totalPages: " + this.state.totalPages + "; totalCases: " + this.state.totalCases);
+                });
         });
     }
 
     render() {
-        const {cases, displayButton, displayHeadTeacherButton, isLoading} = this.state;
+        const {currentCases, displayButton, displayHeadTeacherButton, isLoading} = this.state;
+
+        // alert("AllCaseList render method here, requiredPage = " + this.state.requiredPage);
 
         if (isLoading) {
             return <p>Loading...</p>;
         }
 
-        const caseList = cases.map(aCase => {
+        const caseList = currentCases.map(aCase => {
             var isRequired;
             if (aCase.isCoverRequired) {isRequired='yes'} else {isRequired='no'}
             var isProvided;
@@ -72,19 +109,23 @@ class AllCaseList extends Component {
                             size="sm" color="primary"
                             onClick={() => this.props.history.push({
                                 pathname: '/case_details',
-                                search: '?query=abc',
-                                // TODO: remove line above
-                                state: {aCase: aCase, returnAddress: '/cases'}
-                            })}>
-                        Details</Button>
-                    <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
-                            size="sm" color="warning" tag={Link} to={"/cases/" + aCase.id}
-                            disabled={aCase.isCaseResolved ? true : false}>
-                        Edit</Button>
+                                state: {aCase: aCase, returnAddress: '/cases', requiredPage: this.state.currentPage}})}>
+                        Details
+                    </Button>
+                    <Link to={{pathname: "/cases/" + aCase.id,
+                        state: {returnAddress: '/cases', requiredPage: this.state.currentPage}}}>
+                        <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
+                                size="sm" color="warning" /*tag={Link} to={"/cases/" + aCase.id}*/
+                                disabled={aCase.isCaseResolved ? true : false}>
+                            Edit
+                        </Button>
+                    </Link>
                     <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center', display: `${displayButton}`}}
                             size="sm" color="danger"
-                            onClick={() => {if (window.confirm('Are you sure you want to delete this case?')) this.remove(aCase.id)}}>
-                        Delete</Button>
+                            onClick={() => {if (window.confirm('Are you sure you want to delete this case?'))
+                                this.remove(aCase.id);}}>
+                        Delete
+                    </Button>
                 </td>
             </tr>
         });
@@ -93,12 +134,25 @@ class AllCaseList extends Component {
             <div>
                 <Container fluid>
                     <div className="float-right">
-                        <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center', display: `${displayHeadTeacherButton}`}}
-                                color="primary" tag={Link} to="/active_cases_managed_by_headteacher">Show All Active Head Teacher Cases</Button>
-                        <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
-                                color="primary" tag={Link} to="/active_cases">Show All Active Cases</Button>
-                        <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
-                                color="success" tag={Link} to="/cases/new">Add Employee Case</Button>
+                        <Link to={{pathname: '/active_cases_managed_by_headteacher', state: {requiredPage: 1}}}>
+                            <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center', display: `${displayHeadTeacherButton}`}}
+                                    color="primary" /*tag={Link} to="/active_cases_managed_by_headteacher"*/>
+                                Show All Active Head Teacher Cases
+                            </Button>
+                        </Link>
+                        <Link to={{pathname: '/active_cases', state: {requiredPage: 1}}}>
+                            <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
+                                    color="primary" /*tag={Link} to="/active_cases"*/>
+                                Show All Active Cases
+                            </Button>
+                        </Link>
+                        <Link to={{pathname: '/cases/new',
+                            state: {returnAddress: '/cases', requiredPage: this.state.currentPage}}}>
+                            <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
+                                    color="success" /*tag={Link} to="/cases/new"*/>
+                                Add Employee Case
+                            </Button>
+                        </Link>
                     </div>
                     <h3>Absence Cases (all)</h3>
                     <Table className="mt-4">
@@ -119,6 +173,12 @@ class AllCaseList extends Component {
                         {caseList}
                         </tbody>
                     </Table>
+                    <div className="d-flex flex-row py-4 align-items-center">
+                        <Pagination totalRecords={this.state.totalCases} pageLimit={4} pageNeighbours={1}
+                                    requiredPage={this.state.requiredPage}
+                                    onPageChanged={this.onPageChanged}
+                        />
+                    </div>
                 </Container>
             </div>
         );

@@ -4,16 +4,6 @@ import {Link, withRouter} from "react-router-dom";
 
 class CaseDetails extends Component {
 
-    /*constructor(props) {
-        super(props);
-    }*/
-
-    /*componentWillMount() {
-        const returnAddress = localStorage.getItem("returnAddress");
-        const
-        this.setState({aCase: aCase, returnAddress: returnAddress});
-    }*/
-
     render() {
         const aCase = this.props.location.state.aCase;
         const returnAddress = this.props.location.state.returnAddress;

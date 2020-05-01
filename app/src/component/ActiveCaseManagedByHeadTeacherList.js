@@ -10,6 +10,7 @@ class ActiveCaseManagedByHeadTeacherList extends Component {
         super(props);
         this.state = {
             cases: [],
+            requiredPage: null,
             isLoading: true,
         };
         this.remove = this.remove.bind(this);
@@ -64,15 +65,18 @@ class ActiveCaseManagedByHeadTeacherList extends Component {
                             size="sm" color="primary"
                             onClick={() => this.props.history.push({
                                 pathname: '/case_details',
-                                search: '?query=abc',
-                                // TODO: remove line above
-                                state: {aCase: aCase, returnAddress: '/active_cases_managed_by_headteacher'}
+                                state: {aCase: aCase, returnAddress: '/active_cases_managed_by_headteacher', requiredPage: this.state.currentPage}
                             })}>
-                        Details</Button>
-                    <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
-                            size="sm" color="warning" tag={Link} to={"/cases/" + aCase.id}
-                            disabled={aCase.isCaseResolved ? true : false}>
-                        Edit</Button>
+                        Details
+                    </Button>
+                    <Link to={{pathname: "/cases/" + aCase.id,
+                        state: {returnAddress: '/active_cases_managed_by_headteacher', requiredPage: this.state.currentPage}}}>
+                        <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
+                                size="sm" color="warning" /*tag={Link} to={"/cases/" + aCase.id}*/
+                                disabled={aCase.isCaseResolved ? true : false}>
+                            Edit
+                        </Button>
+                    </Link>
                 </td>
             </tr>
         });
@@ -81,12 +85,25 @@ class ActiveCaseManagedByHeadTeacherList extends Component {
             <div>
                 <Container fluid>
                     <div className="float-right">
-                        <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
-                                color="primary" tag={Link} to="/active_cases">Show All Active Cases</Button>
-                        <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
-                                color="primary" tag={Link} to="/cases">Show All Cases</Button>
-                        <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
-                                color="success" tag={Link} to="/cases/new">Add Employee Case</Button>
+                        <Link to={{pathname: '/active_cases', state: {requiredPage: 1}}}>
+                            <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
+                                    color="primary" /*tag={Link} to="/active_cases"*/>
+                                Show All Active Cases
+                            </Button>
+                        </Link>
+                        <Link to={{pathname: "/cases", state: {requiredPage: 1}}}>
+                            <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
+                                    color="primary" /*tag={Link} to="/cases"*/>
+                                Show All Cases
+                            </Button>
+                        </Link>
+                        <Link to={{pathname: '/cases/new',
+                            state: {returnAddress: '/active_cases_managed_by_headteacher', requiredPage: this.state.currentPage}}}>
+                            <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
+                                    color="success" /*tag={Link} to="/cases/new"*/>
+                                Add Employee Case
+                            </Button>
+                        </Link>
                     </div>
                     <h3>Absence Cases Managed By You (active)</h3>
                     <Table className="mt-4">

@@ -10,6 +10,7 @@ class ActiveCaseList extends Component {
         super(props);
         this.state = {
             cases: [],
+            requiredPage: null,
             displayButton: "none",
             displayHeadTeacherButton: "none",
             isLoading: true,
@@ -72,19 +73,24 @@ class ActiveCaseList extends Component {
                             size="sm" color="primary"
                             onClick={() => this.props.history.push({
                                 pathname: '/case_details',
-                                search: '?query=abc',
-                                // TODO: remove line above
-                                state: {aCase: aCase, returnAddress: '/active_cases'}
+                                state: {aCase: aCase, returnAddress: '/active_cases', requiredPage: this.state.currentPage}
                             })}>
-                        Details</Button>
-                    <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
-                            size="sm" color="warning" tag={Link} to={"/cases/" + aCase.id}
-                            disabled={aCase.isCaseResolved ? true : false}>
-                        Edit</Button>
+                        Details
+                    </Button>
+                    <Link to={{pathname: "/cases/" + aCase.id,
+                        state: {returnAddress: '/active_cases', requiredPage: this.state.currentPage}}}>
+                        <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
+                                size="sm" color="warning" /*tag={Link} to={"/cases/" + aCase.id}*/
+                                disabled={aCase.isCaseResolved ? true : false}>
+                            Edit
+                        </Button>
+                    </Link>
                     <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center', display: `${displayButton}`}}
                             size="sm" color="danger"
-                            onClick={() => {if (window.confirm('Are you sure you want to delete this case?')) this.remove(aCase.id)}}>
-                        Delete</Button>
+                            onClick={() => {if (window.confirm('Are you sure you want to delete this case?'))
+                                this.remove(aCase.id)}}>
+                        Delete
+                    </Button>
                 </td>
             </tr>
         });
@@ -93,15 +99,25 @@ class ActiveCaseList extends Component {
             <div>
                 <Container fluid>
                     <div className="float-right">
-                        <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center', display: `${displayHeadTeacherButton}`}}
-                                color="primary" tag={Link} to="/active_cases_managed_by_headteacher">Show All Active
-                            Head Teacher Cases</Button>
+                        <Link to={{pathname: '/active_cases_managed_by_headteacher', state: {requiredPage: 1}}}>
+                            <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center', display: `${displayHeadTeacherButton}`}}
+                                    color="primary" /*tag={Link} to="/active_cases_managed_by_headteacher"*/>
+                                Show All Active Head Teacher Cases
+                            </Button>
+                        </Link>
                         <Link to={{pathname: "/cases", state: {requiredPage: 1}}}>
                             <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
-                                    color="primary" /*tag={Link} to="/cases"*/>Show All Cases</Button>
+                                    color="primary" /*tag={Link} to="/cases"*/>
+                                Show All Cases
+                            </Button>
                         </Link>
-                        <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
-                                color="success" tag={Link} to="/cases/new">Add Employee Case</Button>
+                        <Link to={{pathname: '/cases/new',
+                            state: {returnAddress: '/active_cases', requiredPage: this.state.currentPage}}}>
+                            <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
+                                    color="success" /*tag={Link} to="/cases/new"*/>
+                                Add Employee Case
+                            </Button>
+                        </Link>
                     </div>
                     <h3>Absence Cases (active)</h3>
                     <Table className="mt-4">

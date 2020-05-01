@@ -30,7 +30,9 @@ export default class AddUserCase extends Component {
         this.state = {
             aCase: this.emptyCase,
             user: undefined,
-            headTeachers: []
+            headTeachers: [],
+            requiredPage: null,
+            returnAddress: undefined
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleHeadTeacherChange = this.handleHeadTeacherChange.bind(this);
@@ -38,6 +40,12 @@ export default class AddUserCase extends Component {
     }
 
     async componentDidMount() {
+        if (this.props.location.state !== null) {
+            // alert("this.props.location.state.requiredPage = " + this.props.location.state.requiredPage);
+            // alert("this.props.location.state.returnAddress = " + this.props.location.state.returnAddress);
+            this.setState({requiredPage: this.props.location.state.requiredPage,
+                returnAddress: this.props.location.state.returnAddress});
+        }
         const currentUser = AuthService.getCurrentUser();
         const user = await (await fetch(`/api/users/${currentUser.id}`, {headers: authHeader()})).json();
         const headTeachers = await (await fetch('/api/users/headteachers', {headers: authHeader()})).json();
@@ -84,7 +92,12 @@ export default class AddUserCase extends Component {
             headers: headers,
             body: JSON.stringify(aCase)
         });
-        this.props.history.goBack();
+        alert("AddUserCase: this.state.requiredPage = " + this.state.requiredPage
+            + ", this.state.returnAddress = " + this.state.returnAddress);
+        this.props.history.push({
+            pathname: `${this.state.returnAddress}`,
+            state: {requiredPage: this.state.requiredPage}})
+        // this.props.history.goBack();
     }
 
     render() {
@@ -169,8 +182,14 @@ export default class AddUserCase extends Component {
                         </FormGroup>
                     </div>
                     <FormGroup>
-                        <Button color="primary" type="submit">Save</Button>{' '}
-                        <Button color="secondary" tag={Link} to="/user">Cancel</Button>
+                        <Button color="primary" type="submit">
+                            Save
+                        </Button>{' '}
+                        <Link to={{pathname: `${this.state.returnAddress}`, state: {requiredPage: this.state.requiredPage}}}>
+                            <Button color="secondary" /*tag={Link} to="/user"*/>
+                                Cancel
+                            </Button>
+                        </Link>
                     </FormGroup>
                 </Form>
             </Container>

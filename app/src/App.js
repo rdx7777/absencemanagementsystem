@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import './App.css';
 import Home from './component/Home';
 import {BrowserRouter as Router, Link, Route, Switch} from 'react-router-dom';
-import AllCaseList from './component/AllCaseList';
 import CaseEdit from "./component/CaseEdit";
 import AllUserList from "./component/AllUserList";
 import UserEdit from "./component/UserEdit";
@@ -15,7 +14,7 @@ import ActiveCaseManagedByHeadTeacherList from "./component/ActiveCaseManagedByH
 import AdminComponent from "./component/AdminComponent";
 import CaseDetails from "./component/CaseDetails";
 import authHeader from "./auth/AuthHeader";
-import TemporaryAllCaseList from "./component/TemporaryAllCaseList";
+import AllCaseList from "./component/AllCaseList";
 
 class App extends Component {
 
@@ -115,11 +114,6 @@ class App extends Component {
 
                         {currentUser ? (
                             <div className="navbar-nav ml-auto">
-                                {/*<li className="nav-item">*/}
-                                {/*    <Link to={"/user"} className="nav-link">*/}
-                                {/*        *** {userForShow.name} {userForShow.surname} ****/}
-                                {/*    </Link>*/}
-                                {/*</li>*/}
                                 <li className="nav-item">
                                     <a href="/" className="nav-link" onClick={this.logOut}>
                                         LogOut
@@ -143,8 +137,7 @@ class App extends Component {
                             <Route path='/user' exact={true} component={UserComponent}/>
                             <Route path='/add_user_case' exact={true} component={AddUserCase}/>
                             <Route path='/supervisor' exact={true} component={SupervisorComponent}/>
-                            {/*<Route path='/cases' exact={true} component={AllCaseList}/>*/}
-                            <Route path='/cases' exact={true} component={TemporaryAllCaseList}/>
+                            <Route path='/cases' exact={true} component={AllCaseList}/>
                             <Route path='/active_cases' exact={true} component={ActiveCaseList}/>
                             <Route path='/active_cases_managed_by_headteacher' exact={true}
                                    component={ActiveCaseManagedByHeadTeacherList}/>

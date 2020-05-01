@@ -3,34 +3,21 @@ import { Button, Container, Table } from 'reactstrap';
 import {Link, withRouter} from 'react-router-dom';
 import AuthService from "../auth/AuthService";
 import authHeader from "../auth/AuthHeader";
-import Pagination from "./Pagination";
-import CaseDetails from "./CaseDetails";
 
-class TemporaryAllCaseList extends Component {
+class AllCaseListOld extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            allCases: [],
-            currentCases: [],
-            totalCases: null,
-            currentPage: null,
-            requiredPage: null,
-            totalPages: null,
-            pageLimit: null,
+            cases: [],
             displayButton: "none",
             displayHeadTeacherButton: "none",
             isLoading: true,
         };
-        // alert(this.state.requiredPage);
         this.remove = this.remove.bind(this);
     }
 
     componentDidMount() {
-        if (this.props.location.state !== null) {
-            // alert("this.props.location.state.requiredPage = " + this.props.location.state.requiredPage);
-            this.setState({requiredPage: this.props.location.state.requiredPage});
-        }
         this.setState({isLoading: true});
         const currentUser = AuthService.getCurrentUser();
         if (currentUser.roles.includes("ROLE_ADMIN")) {
@@ -39,20 +26,10 @@ class TemporaryAllCaseList extends Component {
         if (currentUser.roles.includes("ROLE_HEAD_TEACHER")) {
             this.setState({displayHeadTeacherButton: ""})
         }
-        fetch('api/cases/count', {headers: authHeader()})
+        fetch('api/cases', {headers: authHeader()})
             .then(response => response.json())
-            .then(data => this.setState({totalCases: data, isLoading: false}));
+            .then(data => this.setState({cases: data, isLoading: false}));
     }
-
-    onPageChanged = data => {
-        const {currentPage, totalPages, pageLimit} = data;
-        const offset = (currentPage - 1) * pageLimit;
-
-        fetch(`api/cases?offset=${offset}&limit=${pageLimit}`, {headers: authHeader()})
-            .then(response => response.json())
-            .then(data => this.setState({currentCases: data, isLoading: false,
-                currentPage: currentPage, totalPages: totalPages, pageLimit: pageLimit}));
-    };
 
     async remove(id) {
         const headers = new Headers(authHeader());
@@ -62,37 +39,19 @@ class TemporaryAllCaseList extends Component {
             method: 'DELETE',
             headers: headers
         }).then(() => {
-            fetch('api/cases/count', {headers: authHeader()})
-                .then(response => response.json())
-                .then(data => this.setState({totalCases: data, isLoading: false}))
-                .then(() => {
-                    const {currentPage, pageLimit} = this.state;
-                    const offset = (currentPage - 1) * pageLimit;
-                    fetch(`api/cases?offset=${offset}&limit=${pageLimit}`, {headers: authHeader()})
-                        .then(response => response.json())
-                        .then(data => this.setState({currentCases: data, isLoading: false}));
-                    // alert("currentPage: " + currentPage + "; totalPages: " + this.state.totalPages + "; totalCases: " + this.state.totalCases);
-                });
+            let updatedCases = [...this.state.cases].filter(i => i.id !== id);
+            this.setState({cases: updatedCases});
         });
     }
 
-    /*handleOnClick(data, returnAddress) {
-        localStorage.setItem("returnAddress", returnAddress);
-        localStorage.setItem("userName&Surname", `${data.user.name} ${data.user.surname}`);
-        localStorage.setItem("headTeacherName&Surname", `${data.headTeacher.name} ${data.headTeacher.surname}`);
-        window.open('/case_details', "_blank")
-    }*/
-
     render() {
-        const {currentCases, displayButton, displayHeadTeacherButton, isLoading} = this.state;
-
-        // alert("AllCaseList render method here, requiredPage = " + this.state.requiredPage);
+        const {cases, displayButton, displayHeadTeacherButton, isLoading} = this.state;
 
         if (isLoading) {
             return <p>Loading...</p>;
         }
 
-        const caseList = currentCases.map(aCase => {
+        const caseList = cases.map(aCase => {
             var isRequired;
             if (aCase.isCoverRequired) {isRequired='yes'} else {isRequired='no'}
             var isProvided;
@@ -111,10 +70,12 @@ class TemporaryAllCaseList extends Component {
                 <td>
                     <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
                             size="sm" color="primary"
-                        onClick={() => this.props.history.push({
-                        pathname: '/case_details',
-                        state: {aCase: aCase, returnAddress: '/cases', requiredPage: this.state.currentPage}})}>
-                        {/*onClick={() => this.handleOnClick(aCase, '/cases')}*/}
+                            onClick={() => this.props.history.push({
+                                pathname: '/case_details',
+                                search: '?query=abc',
+                                // TODO: remove line above
+                                state: {aCase: aCase, returnAddress: '/cases'}
+                            })}>
                         Details</Button>
                     <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
                             size="sm" color="warning" tag={Link} to={"/cases/" + aCase.id}
@@ -122,10 +83,7 @@ class TemporaryAllCaseList extends Component {
                         Edit</Button>
                     <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center', display: `${displayButton}`}}
                             size="sm" color="danger"
-                            onClick={() => {if (window.confirm('Are you sure you want to delete this case?'))
-                                this.remove(aCase.id);
-                                // window.location.reload(false);
-                            }}>
+                            onClick={() => {if (window.confirm('Are you sure you want to delete this case?')) this.remove(aCase.id)}}>
                         Delete</Button>
                 </td>
             </tr>
@@ -161,16 +119,10 @@ class TemporaryAllCaseList extends Component {
                         {caseList}
                         </tbody>
                     </Table>
-                    <div className="d-flex flex-row py-4 align-items-center">
-                        <Pagination totalRecords={this.state.totalCases} pageLimit={4} pageNeighbours={1}
-                                    requiredPage={this.state.requiredPage}
-                                    onPageChanged={this.onPageChanged}
-                        />
-                    </div>
                 </Container>
             </div>
         );
     }
 }
 
-export default withRouter(TemporaryAllCaseList);
+export default withRouter(AllCaseListOld);

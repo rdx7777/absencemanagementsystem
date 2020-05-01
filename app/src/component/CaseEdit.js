@@ -29,7 +29,9 @@ class CaseEdit extends Component {
         this.state = {
             aCase: this.emptyCase,
             users: [],
-            headTeachers: []
+            headTeachers: [],
+            requiredPage: null,
+            returnAddress: undefined
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleUserChange = this.handleUserChange.bind(this);
@@ -38,6 +40,12 @@ class CaseEdit extends Component {
     }
 
     async componentDidMount() {
+        if (this.props.location.state !== null) {
+            // alert("this.props.location.state.requiredPage = " + this.props.location.state.requiredPage);
+            // alert("this.props.location.state.returnAddress = " + this.props.location.state.returnAddress);
+            this.setState({requiredPage: this.props.location.state.requiredPage,
+                returnAddress: this.props.location.state.returnAddress});
+        }
         const headTeachers = await (await fetch('/api/users/headteachers', {headers: authHeader()})).json();
         const users = await (await fetch('/api/users', {headers: authHeader()})).json();
         const currentUser = AuthService.getCurrentUser();
@@ -88,7 +96,11 @@ class CaseEdit extends Component {
             headers: headers,
             body: JSON.stringify(aCase)
         });
-        this.props.history.goBack();
+        alert("CaseEdit: this.state.requiredPage = " + this.state.requiredPage
+            + ", this.state.returnAddress = " + this.state.returnAddress);
+        this.props.history.push({
+            pathname: `${this.state.returnAddress}`,
+            state: {requiredPage: this.state.requiredPage}})
     }
 
     render() {
@@ -106,6 +118,8 @@ class CaseEdit extends Component {
                 {headTeacher.name} {headTeacher.surname}
             </option>
         );
+
+        // alert("CaseEdit: this.state.requiredPage = " + this.state.requiredPage);
 
         return <div>
             <Container>
@@ -251,8 +265,16 @@ class CaseEdit extends Component {
                                 <option value="true">yes</option>
                             </Input>
                         </FormGroup>
-                        <Button className="col-md-1 mb-n2 h-25 align-self-end mr-1" color="secondary" tag={Link} to="/cases">Cancel</Button>
-                        <Button className="col-md-1 mb-n2 h-25 align-self-end mr-1" color="primary" type="submit">Save</Button>{' '}
+                        <Link className="col-md-1 mb-n2 h-25 align-self-end mr-1"
+                              to={{pathname: `${this.state.returnAddress}`, state: {requiredPage: this.state.requiredPage}}}>
+                            <Button color="secondary" /*tag={Link}*/ /*to="/cases"*/>
+                                Cancel
+                            </Button>
+                        </Link>
+                        <Button className="col-md-1 mb-n2 h-25 align-self-end mr-1"
+                                color="primary" type="submit">
+                            Save
+                        </Button>{' '}
                     </div>
                     <FormGroup>
                     </FormGroup>
