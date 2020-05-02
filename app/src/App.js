@@ -43,7 +43,6 @@ class App extends Component {
             });
             fetch('api/users/' + AuthService.getCurrentUser().id, {headers: authHeader()})
                 .then(response => response.json())
-                // .then(r => alert(r.name))
                 .then(data => this.setState({userForShow: data}));
         }
     }
@@ -59,14 +58,14 @@ class App extends Component {
             <Router>
                 <div>
                     <nav className="navbar navbar-expand navbar-dark bg-dark">
-                        <Link to={"/user"} className="navbar-brand">
+                        <Link to={{pathname: "/user", state: {requiredPage: 1}}} className="navbar-brand">
                             AMSystem
                         </Link>
                         <div className="navbar-nav mr-auto">
 
                             {currentUser && (
                                 <li className="nav-item">
-                                    <Link to={"/user"} className="nav-link">
+                                    <Link to={{pathname: "/user", state: {requiredPage: 1}}} className="nav-link">
                                         User Board: {userForShow.name} {userForShow.surname} ({userForShow.jobTitle})
                                     </Link>
                                 </li>
@@ -74,7 +73,7 @@ class App extends Component {
 
                             {showCoverSupervisorBoard && (
                                 <li className="nav-item">
-                                    <Link to={"/supervisor"} className="nav-link">
+                                    <Link to={{pathname: "/supervisor", state: {requiredPage: 1}}} className="nav-link">
                                         Cover Supervisor Board
                                     </Link>
                                 </li>
@@ -82,7 +81,7 @@ class App extends Component {
 
                             {showHeadTeacherBoard && (
                                 <li className="nav-item">
-                                    <Link to={"/supervisor"} className="nav-link">
+                                    <Link to={{pathname: "/supervisor", state: {requiredPage: 1}}} className="nav-link">
                                         Head Teacher Board
                                     </Link>
                                 </li>
@@ -90,7 +89,7 @@ class App extends Component {
 
                             {showHRSupervisorBoard && (
                                 <li className="nav-item">
-                                    <Link to={"/supervisor"} className="nav-link">
+                                    <Link to={{pathname: "/supervisor", state: {requiredPage: 1}}} className="nav-link">
                                         HR Supervisor Board
                                     </Link>
                                 </li>
@@ -99,12 +98,12 @@ class App extends Component {
                             {showAdminBoard && (
                                 <div className="navbar-nav ml-auto">
                                     <li className="nav-item">
-                                        <Link to={"/admin"} className="nav-link">
+                                        <Link to={{pathname: "/admin", state: {requiredPage: 1}}} className="nav-link">
                                             Admin Board: Cases
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link to={"/users"} className="nav-link">
+                                        <Link to={{pathname: "/users", state: {requiredPage: 1}}} className="nav-link">
                                             Admin Board: Users
                                         </Link>
                                     </li>

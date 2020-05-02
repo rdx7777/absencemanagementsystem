@@ -96,8 +96,8 @@ class CaseEdit extends Component {
             headers: headers,
             body: JSON.stringify(aCase)
         });
-        alert("CaseEdit: this.state.requiredPage = " + this.state.requiredPage
-            + ", this.state.returnAddress = " + this.state.returnAddress);
+        // alert("CaseEdit: this.state.requiredPage = " + this.state.requiredPage
+        //     + ", this.state.returnAddress = " + this.state.returnAddress);
         this.props.history.push({
             pathname: `${this.state.returnAddress}`,
             state: {requiredPage: this.state.requiredPage}})

@@ -92,12 +92,11 @@ export default class AddUserCase extends Component {
             headers: headers,
             body: JSON.stringify(aCase)
         });
-        alert("AddUserCase: this.state.requiredPage = " + this.state.requiredPage
-            + ", this.state.returnAddress = " + this.state.returnAddress);
+        // alert("AddUserCase: this.state.requiredPage = " + this.state.requiredPage
+        //     + ", this.state.returnAddress = " + this.state.returnAddress);
         this.props.history.push({
             pathname: `${this.state.returnAddress}`,
             state: {requiredPage: this.state.requiredPage}})
-        // this.props.history.goBack();
     }
 
     render() {

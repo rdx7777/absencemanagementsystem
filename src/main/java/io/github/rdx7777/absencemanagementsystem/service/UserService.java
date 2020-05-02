@@ -103,6 +103,16 @@ public class UserService {
         }
     }
 
+    public Collection<User> getAllUsersPaginated(Long offset, Long limit) throws ServiceOperationException {
+        try {
+            return repository.findAllByOffsetAndLimit(offset, limit);
+        } catch (NonTransientDataAccessException e) {
+            String message = "An error occurred during getting all paginated users.";
+            logger.error(message, e);
+            throw new ServiceOperationException(message, e);
+        }
+    }
+
     public Collection<User> getAllActiveUsers() throws ServiceOperationException {
         Example<User> example = Example.of(new User.Builder().withIsActive(true).build());
         Sort sort = Sort.by(Sort.Direction.ASC, "id");

@@ -19,13 +19,18 @@ class UserEdit extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            user: this.emptyUser
+            user: this.emptyUser,
+            requiredPage: null
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     async componentDidMount() {
+        if (this.props.location.state !== null) {
+            // alert("UserEdit: this.props.location.state.requiredPage = " + this.props.location.state.requiredPage);
+            this.setState({requiredPage: this.props.location.state.requiredPage});
+        }
         if (this.props.match.params.id !== 'new') {
             const user = await (await fetch(`/api/users/${this.props.match.params.id}`, {headers: authHeader()})).json();
             this.setState({user: user});
@@ -53,7 +58,9 @@ class UserEdit extends Component {
             headers: headers,
             body: JSON.stringify(user)
         });
-        this.props.history.push('/users');
+        this.props.history.push({
+            pathname: '/users',
+            state: {requiredPage: this.state.requiredPage}})
     }
 
     render() {
@@ -140,8 +147,15 @@ class UserEdit extends Component {
                         </FormGroup>
                     </div>
                     <FormGroup>
-                        <Button color="primary" type="submit">Save</Button>{' '}
-                        <Button color="secondary" tag={Link} to="/users">Cancel</Button>
+                        <Button color="primary"
+                                type="submit">
+                            Save
+                        </Button>{' '}
+                        <Link to={{pathname: '/users', state: {requiredPage: this.state.requiredPage}}}>
+                            <Button color="secondary" /*tag={Link} to="/users"*/>
+                                Cancel
+                            </Button>
+                        </Link>
                     </FormGroup>
                 </Form>
             </Container>

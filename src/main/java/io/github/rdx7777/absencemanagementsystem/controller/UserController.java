@@ -19,15 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -97,7 +89,9 @@ public class UserController {
         return new ResponseEntity<>(updatedUser, httpHeaders, HttpStatus.OK);
     }
 
-    // returns full user with password - it's only used to edit user details
+    /**
+     * returns full user with password - it's only used to edit user details
+     */
     @GetMapping(value = "/{id}", produces = "application/json")
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER') or hasRole('CS_SUPERVISOR') or hasRole('HEAD_TEACHER') or hasRole('HR_SUPERVISOR')")
     public ResponseEntity<?> getUser(@PathVariable("id") Long id) throws ServiceOperationException {
@@ -114,6 +108,22 @@ public class UserController {
     public ResponseEntity<?> getAllUsers() throws ServiceOperationException {
         logger.info("Attempt to get all users.");
         return ResponseEntity.ok(appModelMapper.mapToUserDTOList((List<User>) service.getAllUsers()));
+    }
+
+    @GetMapping(params = {"offset", "limit"}, produces = "application/json")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> getAllUsersPaginated(@RequestParam(name = "offset") Long offset,
+                                                  @RequestParam(name = "limit") Long limit) throws ServiceOperationException {
+        if (offset == null) {
+            logger.error("Attempt to get all paginated users providing null offset.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attempt to get all paginated users providing null offset.");
+        }
+        if (limit == null) {
+            logger.error("Attempt to get all paginated users providing null limit.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attempt to get all paginated users providing null limit.");
+        }
+        logger.info("Attempt to get all paginated users with offset {} and limit {}.", offset, limit);
+        return ResponseEntity.ok(appModelMapper.mapToUserDTOList((List<User>) service.getAllUsersPaginated(offset, limit)));
     }
 
     @GetMapping(value = "/active", produces = "application/json")
@@ -142,5 +152,12 @@ public class UserController {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         return new ResponseEntity<>(httpHeaders, HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping(value = "/count", produces = "application/json")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> countUsers() throws ServiceOperationException {
+        logger.info("Attempt to get number of all users.");
+        return ResponseEntity.ok(service.usersCount());
     }
 }

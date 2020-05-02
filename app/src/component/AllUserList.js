@@ -2,22 +2,49 @@ import React, {Component} from "react";
 import {Button, Container, Table} from "reactstrap";
 import {Link} from "react-router-dom";
 import authHeader from "../auth/AuthHeader";
+import Pagination from "./Pagination";
 
 class AllUserList extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {users: [], isLoading: true};
+        this.state = {
+            users: [],
+            currentUsers: [],
+            totalUsers: null,
+            currentPage: null,
+            requiredPage: null,
+            totalPages: null,
+            pageLimit: null,
+            isLoading: true
+        };
         this.remove = this.remove.bind(this);
     }
 
     componentDidMount() {
+        if (this.props.location.state !== null) {
+            // alert("AllUserList: this.props.location.state.requiredPage = " + this.props.location.state.requiredPage);
+            this.setState({requiredPage: this.props.location.state.requiredPage});
+        }
         this.setState({isLoading: true});
 
-        fetch('api/users', {headers: authHeader()})
+        fetch('api/users/count', {headers: authHeader()})
             .then(response => response.json())
-            .then(data => this.setState({users: data, isLoading: false}));
+            .then(data => this.setState({totalUsers: data, isLoading: false}));
+        // fetch('api/users', {headers: authHeader()})
+        //     .then(response => response.json())
+        //     .then(data => this.setState({users: data, isLoading: false}));
     }
+
+    onPageChanged = data => {
+        const {currentPage, totalPages, pageLimit} = data;
+        const offset = (currentPage - 1) * pageLimit;
+
+        fetch(`api/users?offset=${offset}&limit=${pageLimit}`, {headers: authHeader()})
+            .then(response => response.json())
+            .then(data => this.setState({currentUsers: data, isLoading: false,
+                currentPage: currentPage, totalPages: totalPages, pageLimit: pageLimit}));
+    };
 
     async remove(id) {
         const headers = new Headers(authHeader());
@@ -28,19 +55,41 @@ class AllUserList extends Component {
             method: 'DELETE',
             headers: headers
         }).then(() => {
-            let updatedUsers = [...this.state.users].filter(i => i.id !== id);
-            this.setState({users: updatedUsers});
+            fetch('api/users/count', {headers: authHeader()})
+                .then(response => response.json())
+                .then(data => this.setState({totalUsers: data, isLoading: false}))
+                .then(() => {
+                    const {currentPage, pageLimit} = this.state;
+                    const offset = (currentPage - 1) * pageLimit;
+                    fetch(`api/users?offset=${offset}&limit=${pageLimit}`, {headers: authHeader()})
+                        .then(response => response.json())
+                        .then(data => this.setState({currentUsers: data, isLoading: false}));
+                });
         });
     }
 
+    // async remove(id) {
+    //     const headers = new Headers(authHeader());
+    //     headers.set('Accept', 'application/json');
+    //     headers.set('Content-Type', 'application/json');
+    //
+    //     await fetch(`/api/users/${id}`, {
+    //         method: 'DELETE',
+    //         headers: headers
+    //     }).then(() => {
+    //         let updatedUsers = [...this.state.users].filter(i => i.id !== id);
+    //         this.setState({users: updatedUsers});
+    //     });
+    // }
+
     render() {
-        const {users, isLoading} = this.state;
+        const {currentUsers, isLoading} = this.state;
 
         if (isLoading) {
             return <p>Loading...</p>;
         }
 
-        const userList = users.map(user => {
+        const userList = currentUsers.map(user => {
             var isActive;
             isActive = user.isActive ? 'yes' : 'no';
             var role;
@@ -55,16 +104,19 @@ class AllUserList extends Component {
                 <td>{user.email}</td>
                 <td>{user.jobTitle}</td>
                 <td>{isActive}</td>
-                {/*<td>{user.position}</td>*/}
                 <td>{role}</td>
                 <td>
-                    <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
-                            size="sm" color="warning" tag={Link} to={"/users/" + user.id}>
-                        Edit</Button>
+                    <Link to={{pathname: "/users/" + user.id, state: {requiredPage: this.state.currentPage}}}>
+                        <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
+                                size="sm" color="warning" /*tag={Link} to={"/users/" + user.id}*/>
+                            Edit
+                        </Button>
+                    </Link>
                     <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
                             size="sm" color="danger"
                             onClick={() => {if (window.confirm('Are you sure you want to delete this user?')) this.remove(user.id)}}>
-                        Delete</Button>
+                        Delete
+                    </Button>
                 </td>
             </tr>
         });
@@ -73,7 +125,11 @@ class AllUserList extends Component {
             <div>
                 <Container fluid>
                     <div className="float-right">
-                        <Button color="success" tag={Link} to="/users/new">Add User</Button>
+                        <Link to={{pathname: "/users/new", state: {requiredPage: this.state.currentPage}}}>
+                            <Button color="success" /*tag={Link} to="/users/new"*/>
+                                Add User
+                            </Button>
+                        </Link>
                     </div>
                     <h3>Users</h3>
                     <Table className="mt-4">
@@ -93,6 +149,12 @@ class AllUserList extends Component {
                         {userList}
                         </tbody>
                     </Table>
+                    <div className="d-flex flex-row py-4 align-items-center">
+                        <Pagination totalRecords={this.state.totalUsers} pageLimit={4} pageNeighbours={1}
+                                    requiredPage={this.state.requiredPage}
+                                    onPageChanged={this.onPageChanged}
+                        />
+                    </div>
                 </Container>
             </div>
         );

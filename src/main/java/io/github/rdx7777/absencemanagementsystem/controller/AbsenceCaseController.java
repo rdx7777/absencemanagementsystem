@@ -160,7 +160,7 @@ public class AbsenceCaseController {
     }
 
     @GetMapping(params = {"offset", "limit"}, produces = "application/json")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('USER') or hasRole('CS_SUPERVISOR') or hasRole('HEAD_TEACHER') or hasRole('HR_SUPERVISOR')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('CS_SUPERVISOR') or hasRole('HEAD_TEACHER') or hasRole('HR_SUPERVISOR')")
     public ResponseEntity<?> getAllCasesPaginated(@RequestParam(name = "offset") Long offset,
                                                   @RequestParam(name = "limit") Long limit) throws ServiceOperationException {
         if (offset == null) {
@@ -182,11 +182,36 @@ public class AbsenceCaseController {
         return ResponseEntity.ok(appModelMapper.mapToAbsenceCaseDTOList((List<AbsenceCase>) caseService.getAllActiveCases()));
     }
 
+    @GetMapping(value = "/active", params = {"offset", "limit"}, produces = "application/json")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('CS_SUPERVISOR') or hasRole('HEAD_TEACHER') or hasRole('HR_SUPERVISOR')")
+    public ResponseEntity<?> getAllActiveCasesPaginated(@RequestParam(name = "offset") Long offset,
+                                                        @RequestParam(name = "limit") Long limit) throws ServiceOperationException {
+        if (offset == null) {
+            logger.error("Attempt to get all paginated active cases providing null offset.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attempt to get all paginated active cases providing null offset.");
+        }
+        if (limit == null) {
+            logger.error("Attempt to get all paginated active cases providing null limit.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attempt to get all paginated active cases providing null limit.");
+        }
+        logger.info("Attempt to get all paginated active cases with offset {} and limit {}.", offset, limit);
+        return ResponseEntity.ok(appModelMapper.mapToAbsenceCaseDTOList((List<AbsenceCase>) caseService.getAllActiveCasesPaginated(offset, limit)));
+    }
+
     @GetMapping(value = "/user/{id}", produces = "application/json")
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER') or hasRole('CS_SUPERVISOR') or hasRole('HEAD_TEACHER') or hasRole('HR_SUPERVISOR')")
     public ResponseEntity<?> getAllUserCases(@PathVariable("id") Long id) throws ServiceOperationException {
         logger.debug("Attempt to get all user cases.");
         return ResponseEntity.ok(appModelMapper.mapToAbsenceCaseDTOList((List<AbsenceCase>) caseService.getAllUserCases(id)));
+    }
+
+    @GetMapping(value = "/user/{id}", params = {"offset", "limit"}, produces = "application/json")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER') or hasRole('CS_SUPERVISOR') or hasRole('HEAD_TEACHER') or hasRole('HR_SUPERVISOR')")
+    public ResponseEntity<?> getAllUserCasesPaginated(@PathVariable("id") Long id,
+                                                      @RequestParam(name = "offset") Long offset,
+                                                      @RequestParam(name = "limit") Long limit) throws ServiceOperationException {
+        logger.debug("Attempt to get all paginated user cases.");
+        return ResponseEntity.ok(appModelMapper.mapToAbsenceCaseDTOList((List<AbsenceCase>) caseService.getAllUserCasesPaginated(id, offset, limit)));
     }
 
     @GetMapping(value = "/active/ht/{id}", produces = "application/json")
@@ -196,8 +221,27 @@ public class AbsenceCaseController {
         return ResponseEntity.ok(appModelMapper.mapToAbsenceCaseDTOList((List<AbsenceCase>) caseService.getAllActiveCasesForHeadTeacher(id)));
     }
 
+    @GetMapping(value = "/active/ht/{id}", params = {"offset", "limit"}, produces = "application/json")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('CS_SUPERVISOR') or hasRole('HEAD_TEACHER') or hasRole('HR_SUPERVISOR')")
+    public ResponseEntity<?> getAllActiveCasesForHeadTeacherPaginated(@PathVariable("id") Long id,
+                                                                      @RequestParam(name = "offset") Long offset,
+                                                                      @RequestParam(name = "limit") Long limit) throws ServiceOperationException {
+        if (offset == null) {
+            logger.error("Attempt to get all paginated active cases for Head Teacher with id {} providing null offset.", id);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                String.format("Attempt to get all paginated active cases for Head Teacher with id %d providing null offset.", id));
+        }
+        if (limit == null) {
+            logger.error("Attempt to get all paginated active cases for Head Teacher with id {} providing null limit.", id);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                String.format("Attempt to get all paginated active cases for Head Teacher with id %d providing null limit.", id));
+        }
+        logger.info("Attempt to get all paginated active cases for Head Teacher with id {} with offset {} and limit {}.", id, offset, limit);
+        return ResponseEntity.ok(appModelMapper.mapToAbsenceCaseDTOList((List<AbsenceCase>) caseService.getAllActiveCasesForHeadTeacherPaginated(id, offset, limit)));
+    }
+
     @DeleteMapping(value = "/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('HEAD_TEACHER')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteCase(@PathVariable("id") Long id) throws ServiceOperationException {
         if (!caseService.caseExists(id)) {
             logger.error("Attempt to delete not existing case.");

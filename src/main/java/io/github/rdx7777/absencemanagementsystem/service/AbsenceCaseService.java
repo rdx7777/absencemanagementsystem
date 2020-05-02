@@ -95,7 +95,6 @@ public class AbsenceCaseService {
         Sort sort = Sort.by(Sort.Direction.ASC, "id");
         try {
             return repository.findAll(sort);
-//            return repository.findAll();
         } catch (NonTransientDataAccessException e) {
             String message = "An error occurred during getting all absence cases.";
             logger.error(message, e);
@@ -126,7 +125,6 @@ public class AbsenceCaseService {
         Sort sort = Sort.by(Sort.Direction.ASC, "id");
         try {
             return repository.findAll(example, sort);
-//            return repository.findAll(example);
         } catch (NonTransientDataAccessException e) {
             String message = "An error occurred during getting all active absence cases.";
             logger.error(message, e);
@@ -134,9 +132,27 @@ public class AbsenceCaseService {
         }
     }
 
+    public Collection<AbsenceCase> getAllActiveCasesPaginated(Long offset, Long limit) throws ServiceOperationException {
+        if (offset < 0) {
+            logger.error("Attempt to get all paginated active cases with offset less than 0.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attempt to get all paginated active cases with offset less than 0.");
+        }
+        if (limit < 0) {
+            logger.error("Attempt to get all paginated active cases with limit less than 0.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attempt to get all paginated active cases with limit less than 0.");
+        }
+        try {
+            return repository.findAllActiveByOffsetAndLimit(offset, limit);
+        } catch (NonTransientDataAccessException e) {
+            String message = "An error occurred during getting all paginated active absence cases.";
+            logger.error(message, e);
+            throw new ServiceOperationException(message, e);
+        }
+    }
+
     public Collection<AbsenceCase> getAllUserCases(Long userId) throws ServiceOperationException {
         if (userId == null) {
-            logger.error("Attempt to get absence case for user id providing null id.");
+            logger.error("Attempt to get absence cases for user id providing null id.");
             throw new IllegalArgumentException("User id cannot be null.");
         }
         User userExample = User.builder().withId(userId).build();
@@ -144,9 +160,30 @@ public class AbsenceCaseService {
         Sort sort = Sort.by(Sort.Direction.ASC, "id");
         try {
             return repository.findAll(caseExample, sort);
-//            return repository.findAll(caseExample);
         } catch (NonTransientDataAccessException e) {
             String message = "An error occurred during getting all absence cases for user id: " + userId + ".";
+            logger.error(message, e);
+            throw new ServiceOperationException(message, e);
+        }
+    }
+
+    public Collection<AbsenceCase> getAllUserCasesPaginated(Long userId, Long offset, Long limit) throws ServiceOperationException {
+        if (userId == null) {
+            logger.error("Attempt to get absence cases for user id providing null id.");
+            throw new IllegalArgumentException("User id cannot be null.");
+        }
+        if (offset < 0) {
+            logger.error("Attempt to get absence cases for user id with offset less than 0.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attempt to get absence cases for user id with offset less than 0.");
+        }
+        if (limit < 0) {
+            logger.error("Attempt to get absence cases for user id with limit less than 0.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attempt to get absence cases for user id with limit less than 0.");
+        }
+        try {
+            return repository.findAllByUserIdByOffsetAndLimit(userId, offset, limit);
+        } catch (NonTransientDataAccessException e) {
+            String message = "An error occurred during getting absence cases for user id: " + userId + ".";
             logger.error(message, e);
             throw new ServiceOperationException(message, e);
         }
@@ -162,9 +199,22 @@ public class AbsenceCaseService {
         Sort sort = Sort.by(Sort.Direction.ASC, "id");
         try {
             return repository.findAll(caseExample, sort);
-//            return repository.findAll(caseExample);
         } catch (NonTransientDataAccessException e) {
             String message = "An error occurred during getting all absence cases for head teacher id: " + headTeacherId + ".";
+            logger.error(message, e);
+            throw new ServiceOperationException(message, e);
+        }
+    }
+
+    public Collection<AbsenceCase> getAllActiveCasesForHeadTeacherPaginated(Long headTeacherId, Long offset, Long limit) throws ServiceOperationException {
+        if (headTeacherId == null) {
+            logger.error("Attempt to get all paginated absence case for head teacher id providing null id.");
+            throw new IllegalArgumentException("Head teacher id cannot be null.");
+        }
+        try {
+            return repository.findAllActiveManagedByHeadTeacherByOffsetAndLimit(headTeacherId, offset, limit);
+        } catch (NonTransientDataAccessException e) {
+            String message = "An error occurred during getting all paginated absence cases for head teacher id: " + headTeacherId + ".";
             logger.error(message, e);
             throw new ServiceOperationException(message, e);
         }

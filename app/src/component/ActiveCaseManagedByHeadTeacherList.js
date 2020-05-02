@@ -3,6 +3,7 @@ import {Button, Container, Table} from 'reactstrap';
 import {Link, withRouter} from 'react-router-dom';
 import AuthService from "../auth/AuthService";
 import authHeader from "../auth/AuthHeader";
+import Pagination from "./Pagination";
 
 class ActiveCaseManagedByHeadTeacherList extends Component {
 
@@ -10,41 +11,97 @@ class ActiveCaseManagedByHeadTeacherList extends Component {
         super(props);
         this.state = {
             cases: [],
+            currentCases: [],
+            totalCases: null,
+            currentPage: null,
             requiredPage: null,
+            totalPages: null,
+            pageLimit: null,
             isLoading: true,
         };
         this.remove = this.remove.bind(this);
     }
 
     componentDidMount() {
+        if (this.props.location.state !== null) {
+            // alert("ActiveCaseManagedByHeadTeacherList: this.props.location.state.requiredPage = " + this.props.location.state.requiredPage);
+            this.setState({requiredPage: this.props.location.state.requiredPage});
+        }
         this.setState({isLoading: true});
         const currentUser = AuthService.getCurrentUser();
-        fetch('api/cases/active/ht/' + currentUser.id, {headers: authHeader()})
+        const id = currentUser.id;
+
+        // TODO: create methods in controller, service and repository to count all active cases for HT
+        // TODO: and use them in componentDidMount and remove methods
+        fetch('api/cases/active/ht/' + id, {headers: authHeader()})
             .then(response => response.json())
-            .then(data => this.setState({cases: data, isLoading: false}));
+            .then(data => this.setState({totalCases: data.length, isLoading: false}));
+        // fetch('api/cases/active/ht/' + currentUser.id, {headers: authHeader()})
+        //     .then(response => response.json())
+        //     .then(data => this.setState({cases: data, isLoading: false}));
     }
 
+    onPageChanged = data => {
+        const currentUser = AuthService.getCurrentUser();
+        const id = currentUser.id;
+
+        const {currentPage, totalPages, pageLimit} = data;
+        const offset = (currentPage - 1) * pageLimit;
+        // alert("ActiveCaseListComponent: currentPage = " + currentPage + "; totalPages = " + this.state.totalPages);
+
+        fetch(`api/cases/active/ht/${id}?offset=${offset}&limit=${pageLimit}`, {headers: authHeader()})
+            .then(response => response.json())
+            .then(data => this.setState({currentCases: data, isLoading: false,
+                currentPage: currentPage, totalPages: totalPages, pageLimit: pageLimit}));
+    };
+
+    // TODO: change counting cases fetch
+    /**
+     * unused method for future's purposes
+     * **/
     async remove(id) {
         const headers = new Headers(authHeader());
         headers.set('Accept', 'application/json');
         headers.set('Content-Type', 'application/json');
+        const currentUser = AuthService.getCurrentUser();
         await fetch(`/api/cases/${id}`, {
             method: 'DELETE',
             headers: headers
         }).then(() => {
-            let updatedCases = [...this.state.cases].filter(i => i.id !== id);
-            this.setState({cases: updatedCases});
+            fetch('api/cases/active/ht/' + currentUser.id, {headers: authHeader()})
+                .then(response => response.json())
+                .then(data => this.setState({totalCases: data.length, isLoading: false}))
+                .then(() => {
+                    const {currentPage, pageLimit} = this.state;
+                    const offset = (currentPage - 1) * pageLimit;
+                    fetch(`api/cases/active/ht/${id}?offset=${offset}&limit=${pageLimit}`, {headers: authHeader()})
+                        .then(response => response.json())
+                        .then(data => this.setState({currentCases: data, isLoading: false}));
+                });
         });
     }
 
+    // async remove(id) {
+    //     const headers = new Headers(authHeader());
+    //     headers.set('Accept', 'application/json');
+    //     headers.set('Content-Type', 'application/json');
+    //     await fetch(`/api/cases/${id}`, {
+    //         method: 'DELETE',
+    //         headers: headers
+    //     }).then(() => {
+    //         let updatedCases = [...this.state.cases].filter(i => i.id !== id);
+    //         this.setState({cases: updatedCases});
+    //     });
+    // }
+
     render() {
-        const {cases, isLoading} = this.state;
+        const {currentCases, isLoading} = this.state;
 
         if (isLoading) {
             return <p>Loading...</p>;
         }
 
-        const caseList = cases.map(aCase => {
+        const caseList = currentCases.map(aCase => {
             var isRequired;
             if (aCase.isCoverRequired) {isRequired='yes'} else {isRequired='no'}
             var isProvided;
@@ -124,6 +181,12 @@ class ActiveCaseManagedByHeadTeacherList extends Component {
                         {caseList}
                         </tbody>
                     </Table>
+                    <div className="d-flex flex-row py-4 align-items-center">
+                        <Pagination totalRecords={this.state.totalCases} pageLimit={4} pageNeighbours={1}
+                                    requiredPage={this.state.requiredPage}
+                                    onPageChanged={this.onPageChanged}
+                        />
+                    </div>
                 </Container>
             </div>
         );
