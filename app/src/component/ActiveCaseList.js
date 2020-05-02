@@ -37,11 +37,9 @@ class ActiveCaseList extends Component {
         if (currentUser.roles.includes("ROLE_HEAD_TEACHER")) {
             this.setState({displayHeadTeacherButton: ""})
         }
-        // TODO: create methods in controller, service and repository to count all active cases
-        // TODO: and use them in componentDidMount and remove methods
-        fetch('api/cases/active', {headers: authHeader()})
+        fetch('api/cases/active/count', {headers: authHeader()})
             .then(response => response.json())
-            .then(data => this.setState({totalCases: data.length, isLoading: false}));
+            .then(data => this.setState({totalCases: data, isLoading: false}));
         // fetch('api/cases/active', {headers: authHeader()})
         //     .then(response => response.json())
         //     .then(data => this.setState({cases: data, isLoading: false}));
@@ -58,7 +56,6 @@ class ActiveCaseList extends Component {
                 currentPage: currentPage, totalPages: totalPages, pageLimit: pageLimit}));
     };
 
-    // TODO: change counting cases fetch
     async remove(id) {
         const headers = new Headers(authHeader());
         headers.set('Accept', 'application/json');
@@ -67,9 +64,9 @@ class ActiveCaseList extends Component {
             method: 'DELETE',
             headers: headers
         }).then(() => {
-            fetch('api/cases/active', {headers: authHeader()})
+            fetch('api/cases/active/count', {headers: authHeader()})
                 .then(response => response.json())
-                .then(data => this.setState({totalCases: data.length, isLoading: false}))
+                .then(data => this.setState({totalCases: data, isLoading: false}))
                 .then(() => {
                     const {currentPage, pageLimit} = this.state;
                     const offset = (currentPage - 1) * pageLimit;

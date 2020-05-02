@@ -31,10 +31,9 @@ class UserComponent extends Component {
         this.setState({isLoading: true});
         const currentUser = AuthService.getCurrentUser();
         const id = currentUser.id;
-        // TODO: create methods in controller, service and repository to count all user cases
-        fetch('api/cases/user/' + id, {headers: authHeader()})
+        fetch('api/cases/count/user/' + id, {headers: authHeader()})
             .then(response => response.json())
-            .then(data => this.setState({totalCases: data.length, isLoading: false}));
+            .then(data => this.setState({totalCases: data, isLoading: false}));
     }
 
     onPageChanged = data => {

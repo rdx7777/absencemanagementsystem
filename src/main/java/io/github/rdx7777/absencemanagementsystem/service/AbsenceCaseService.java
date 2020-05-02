@@ -257,4 +257,39 @@ public class AbsenceCaseService {
             throw new ServiceOperationException(message, e);
         }
     }
+
+    public long activeCasesCount() throws ServiceOperationException {
+        Example<AbsenceCase> activeCaseExample = Example.of(new AbsenceCase.Builder().withIsCaseResolved(false).build());
+        try {
+            return repository.count(activeCaseExample);
+        } catch (NonTransientDataAccessException e) {
+            String message = "An error occurred during getting number of active absence cases.";
+            logger.error(message, e);
+            throw new ServiceOperationException(message, e);
+        }
+    }
+
+    public long activeCasesForHeadTeacherCount(Long headTeacherId) throws ServiceOperationException {
+        User headTeacherExample = User.builder().withId(headTeacherId).build();
+        Example<AbsenceCase> activeCaseForHeadTeacherExample = Example.of(new AbsenceCase.Builder().withHeadTeacher(headTeacherExample).withIsCaseResolved(false).build());
+        try {
+            return repository.count(activeCaseForHeadTeacherExample);
+        } catch (NonTransientDataAccessException e) {
+            String message = "An error occurred during getting number of active absence cases for Head Teacher id: " + headTeacherId + ".";
+            logger.error(message, e);
+            throw new ServiceOperationException(message, e);
+        }
+    }
+
+    public long userCasesCount(Long userId) throws ServiceOperationException {
+        User userExample = User.builder().withId(userId).build();
+        Example<AbsenceCase> userCaseExample = Example.of(new AbsenceCase.Builder().withUser(userExample).build());
+        try {
+            return repository.count(userCaseExample);
+        } catch (NonTransientDataAccessException e) {
+            String message = "An error occurred during getting number of absence cases for user id: " + userId + ".";
+            logger.error(message, e);
+            throw new ServiceOperationException(message, e);
+        }
+    }
 }

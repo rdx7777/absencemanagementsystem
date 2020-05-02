@@ -31,11 +31,9 @@ class ActiveCaseManagedByHeadTeacherList extends Component {
         const currentUser = AuthService.getCurrentUser();
         const id = currentUser.id;
 
-        // TODO: create methods in controller, service and repository to count all active cases for HT
-        // TODO: and use them in componentDidMount and remove methods
-        fetch('api/cases/active/ht/' + id, {headers: authHeader()})
+        fetch('api/cases/active/count/ht/' + id, {headers: authHeader()})
             .then(response => response.json())
-            .then(data => this.setState({totalCases: data.length, isLoading: false}));
+            .then(data => this.setState({totalCases: data, isLoading: false}));
         // fetch('api/cases/active/ht/' + currentUser.id, {headers: authHeader()})
         //     .then(response => response.json())
         //     .then(data => this.setState({cases: data, isLoading: false}));
@@ -55,7 +53,6 @@ class ActiveCaseManagedByHeadTeacherList extends Component {
                 currentPage: currentPage, totalPages: totalPages, pageLimit: pageLimit}));
     };
 
-    // TODO: change counting cases fetch
     /**
      * unused method for future's purposes
      * **/
@@ -68,9 +65,9 @@ class ActiveCaseManagedByHeadTeacherList extends Component {
             method: 'DELETE',
             headers: headers
         }).then(() => {
-            fetch('api/cases/active/ht/' + currentUser.id, {headers: authHeader()})
+            fetch('api/cases/active/count/ht/' + currentUser.id, {headers: authHeader()})
                 .then(response => response.json())
-                .then(data => this.setState({totalCases: data.length, isLoading: false}))
+                .then(data => this.setState({totalCases: data, isLoading: false}))
                 .then(() => {
                     const {currentPage, pageLimit} = this.state;
                     const offset = (currentPage - 1) * pageLimit;

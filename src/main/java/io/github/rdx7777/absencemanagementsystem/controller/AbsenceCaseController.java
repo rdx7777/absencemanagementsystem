@@ -255,9 +255,30 @@ public class AbsenceCaseController {
     }
 
     @GetMapping(value = "/count", produces = "application/json")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('USER') or hasRole('CS_SUPERVISOR') or hasRole('HEAD_TEACHER') or hasRole('HR_SUPERVISOR')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('CS_SUPERVISOR') or hasRole('HEAD_TEACHER') or hasRole('HR_SUPERVISOR')")
     public ResponseEntity<?> countCases() throws ServiceOperationException {
         logger.info("Attempt to get number of all cases.");
         return ResponseEntity.ok(caseService.casesCount());
+    }
+
+    @GetMapping(value = "/active/count", produces = "application/json")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('CS_SUPERVISOR') or hasRole('HEAD_TEACHER') or hasRole('HR_SUPERVISOR')")
+    public ResponseEntity<?> countActiveCases() throws ServiceOperationException {
+        logger.info("Attempt to get number of all active cases.");
+        return ResponseEntity.ok(caseService.activeCasesCount());
+    }
+
+    @GetMapping(value = "/active/count/ht/{id}", produces = "application/json")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('CS_SUPERVISOR') or hasRole('HEAD_TEACHER') or hasRole('HR_SUPERVISOR')")
+    public ResponseEntity<?> countActiveCasesForHeadTeacher(@PathVariable("id") Long headTeacherId) throws ServiceOperationException {
+        logger.info("Attempt to get number of all active cases for Head Teacher.");
+        return ResponseEntity.ok(caseService.activeCasesForHeadTeacherCount(headTeacherId));
+    }
+
+    @GetMapping(value = "/count/user/{id}", produces = "application/json")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER') or hasRole('CS_SUPERVISOR') or hasRole('HEAD_TEACHER') or hasRole('HR_SUPERVISOR')")
+    public ResponseEntity<?> countUserCases(@PathVariable("id") Long userId) throws ServiceOperationException {
+        logger.info("Attempt to get number of all user cases.");
+        return ResponseEntity.ok(caseService.userCasesCount(userId));
     }
 }
