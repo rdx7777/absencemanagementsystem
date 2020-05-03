@@ -41,8 +41,6 @@ export default class AddUserCase extends Component {
 
     async componentDidMount() {
         if (this.props.location.state !== null) {
-            // alert("this.props.location.state.requiredPage = " + this.props.location.state.requiredPage);
-            // alert("this.props.location.state.returnAddress = " + this.props.location.state.returnAddress);
             this.setState({requiredPage: this.props.location.state.requiredPage,
                 returnAddress: this.props.location.state.returnAddress});
         }
@@ -92,8 +90,6 @@ export default class AddUserCase extends Component {
             headers: headers,
             body: JSON.stringify(aCase)
         });
-        // alert("AddUserCase: this.state.requiredPage = " + this.state.requiredPage
-        //     + ", this.state.returnAddress = " + this.state.returnAddress);
         this.props.history.push({
             pathname: `${this.state.returnAddress}`,
             state: {requiredPage: this.state.requiredPage}})
@@ -185,7 +181,7 @@ export default class AddUserCase extends Component {
                             Save
                         </Button>{' '}
                         <Link to={{pathname: `${this.state.returnAddress}`, state: {requiredPage: this.state.requiredPage}}}>
-                            <Button color="secondary" /*tag={Link} to="/user"*/>
+                            <Button color="secondary">
                                 Cancel
                             </Button>
                         </Link>

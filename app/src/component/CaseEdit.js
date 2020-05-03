@@ -41,8 +41,6 @@ class CaseEdit extends Component {
 
     async componentDidMount() {
         if (this.props.location.state !== null) {
-            // alert("this.props.location.state.requiredPage = " + this.props.location.state.requiredPage);
-            // alert("this.props.location.state.returnAddress = " + this.props.location.state.returnAddress);
             this.setState({requiredPage: this.props.location.state.requiredPage,
                 returnAddress: this.props.location.state.returnAddress});
         }
@@ -96,8 +94,6 @@ class CaseEdit extends Component {
             headers: headers,
             body: JSON.stringify(aCase)
         });
-        // alert("CaseEdit: this.state.requiredPage = " + this.state.requiredPage
-        //     + ", this.state.returnAddress = " + this.state.returnAddress);
         this.props.history.push({
             pathname: `${this.state.returnAddress}`,
             state: {requiredPage: this.state.requiredPage}})
@@ -118,8 +114,6 @@ class CaseEdit extends Component {
                 {headTeacher.name} {headTeacher.surname}
             </option>
         );
-
-        // alert("CaseEdit: this.state.requiredPage = " + this.state.requiredPage);
 
         return <div>
             <Container>
@@ -267,7 +261,7 @@ class CaseEdit extends Component {
                         </FormGroup>
                         <Link className="col-md-1 mb-n2 h-25 align-self-end mr-1"
                               to={{pathname: `${this.state.returnAddress}`, state: {requiredPage: this.state.requiredPage}}}>
-                            <Button color="secondary" /*tag={Link}*/ /*to="/cases"*/>
+                            <Button color="secondary">
                                 Cancel
                             </Button>
                         </Link>

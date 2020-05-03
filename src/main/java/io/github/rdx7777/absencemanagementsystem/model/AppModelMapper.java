@@ -83,7 +83,9 @@ public class AppModelMapper {
             .build();
     }
 
-    // this method is called only when saving or updating absenceCase
+    /**
+     * this method is called only when saving or updating absenceCase
+     */
     public User mapToUser(UserDTO userDTO) {
         Long id = userDTO.getId();
         Optional<User> user = userRepository.findById(id);

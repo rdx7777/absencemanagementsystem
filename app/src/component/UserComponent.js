@@ -24,13 +24,12 @@ class UserComponent extends Component {
 
     componentDidMount() {
         if (this.props.location.state !== null) {
-            // alert("UserComponent: this.props.location.state.requiredPage = "
-            //     + this.props.location.state.requiredPage);
             this.setState({requiredPage: this.props.location.state.requiredPage});
         }
         this.setState({isLoading: true});
         const currentUser = AuthService.getCurrentUser();
         const id = currentUser.id;
+
         fetch('api/cases/count/user/' + id, {headers: authHeader()})
             .then(response => response.json())
             .then(data => this.setState({totalCases: data, isLoading: false}));
@@ -42,7 +41,6 @@ class UserComponent extends Component {
 
         const {currentPage, totalPages, pageLimit} = data;
         const offset = (currentPage - 1) * pageLimit;
-        // alert("UserComponent: currentPage = " + currentPage + "; totalPages = " + this.state.totalPages);
 
         fetch(`api/cases/user/${id}?offset=${offset}&limit=${pageLimit}`, {headers: authHeader()})
             .then(response => response.json())
@@ -90,7 +88,7 @@ class UserComponent extends Component {
                         <Link to={{pathname: '/add_user_case',
                             state: {returnAddress: '/user', requiredPage: this.state.currentPage}}}>
                             <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
-                                    color="success" /*tag={Link} to="/add_user_case"*/>
+                                    color="success">
                                 Add Your Case
                             </Button>
                         </Link>

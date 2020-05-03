@@ -8,7 +8,6 @@ class CaseDetails extends Component {
         const aCase = this.props.location.state.aCase;
         const returnAddress = this.props.location.state.returnAddress;
         const requiredPage = this.props.location.state.requiredPage;
-        // alert(requiredPage);
         var partDayType;
         if (aCase.partDayType === 'AllDay') {
             partDayType = 'All day'

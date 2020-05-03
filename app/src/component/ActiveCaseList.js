@@ -26,7 +26,6 @@ class ActiveCaseList extends Component {
 
     componentDidMount() {
         if (this.props.location.state !== null) {
-            // alert("ActiveCaseList: this.props.location.state.requiredPage = " + this.props.location.state.requiredPage);
             this.setState({requiredPage: this.props.location.state.requiredPage});
         }
         this.setState({isLoading: true});
@@ -37,18 +36,15 @@ class ActiveCaseList extends Component {
         if (currentUser.roles.includes("ROLE_HEAD_TEACHER")) {
             this.setState({displayHeadTeacherButton: ""})
         }
+
         fetch('api/cases/active/count', {headers: authHeader()})
             .then(response => response.json())
             .then(data => this.setState({totalCases: data, isLoading: false}));
-        // fetch('api/cases/active', {headers: authHeader()})
-        //     .then(response => response.json())
-        //     .then(data => this.setState({cases: data, isLoading: false}));
     }
 
     onPageChanged = data => {
         const {currentPage, totalPages, pageLimit} = data;
         const offset = (currentPage - 1) * pageLimit;
-        // alert("ActiveCaseListComponent: currentPage = " + currentPage + "; totalPages = " + this.state.totalPages);
 
         fetch(`api/cases/active?offset=${offset}&limit=${pageLimit}`, {headers: authHeader()})
             .then(response => response.json())
@@ -76,19 +72,6 @@ class ActiveCaseList extends Component {
                 });
         });
     }
-
-    // async remove(id) {
-    //     const headers = new Headers(authHeader());
-    //     headers.set('Accept', 'application/json');
-    //     headers.set('Content-Type', 'application/json');
-    //     await fetch(`/api/cases/${id}`, {
-    //         method: 'DELETE',
-    //         headers: headers
-    //     }).then(() => {
-    //         let updatedCases = [...this.state.cases].filter(i => i.id !== id);
-    //         this.setState({cases: updatedCases});
-    //     });
-    // }
 
     render() {
         const {currentCases, displayButton, displayHeadTeacherButton, isLoading} = this.state;
@@ -125,7 +108,7 @@ class ActiveCaseList extends Component {
                     <Link to={{pathname: "/cases/" + aCase.id,
                         state: {returnAddress: '/active_cases', requiredPage: this.state.currentPage}}}>
                         <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
-                                size="sm" color="warning" /*tag={Link} to={"/cases/" + aCase.id}*/
+                                size="sm" color="warning"
                                 disabled={aCase.isCaseResolved ? true : false}>
                             Edit
                         </Button>
@@ -146,20 +129,20 @@ class ActiveCaseList extends Component {
                     <div className="float-right">
                         <Link to={{pathname: '/active_cases_managed_by_headteacher', state: {requiredPage: 1}}}>
                             <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center', display: `${displayHeadTeacherButton}`}}
-                                    color="primary" /*tag={Link} to="/active_cases_managed_by_headteacher"*/>
+                                    color="primary">
                                 Show All Active Head Teacher Cases
                             </Button>
                         </Link>
                         <Link to={{pathname: "/cases", state: {requiredPage: 1}}}>
                             <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
-                                    color="primary" /*tag={Link} to="/cases"*/>
+                                    color="primary">
                                 Show All Cases
                             </Button>
                         </Link>
                         <Link to={{pathname: '/cases/new',
                             state: {returnAddress: '/active_cases', requiredPage: this.state.currentPage}}}>
                             <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
-                                    color="success" /*tag={Link} to="/cases/new"*/>
+                                    color="success">
                                 Add Employee Case
                             </Button>
                         </Link>

@@ -26,7 +26,6 @@ class AllCaseList extends Component {
 
     componentDidMount() {
         if (this.props.location.state !== null) {
-            // alert("AllCaseList: this.props.location.state.requiredPage = " + this.props.location.state.requiredPage);
             this.setState({requiredPage: this.props.location.state.requiredPage});
         }
         this.setState({isLoading: true});
@@ -37,19 +36,17 @@ class AllCaseList extends Component {
         if (currentUser.roles.includes("ROLE_HEAD_TEACHER")) {
             this.setState({displayHeadTeacherButton: ""})
         }
+
         fetch('api/cases/count', {headers: authHeader()})
             .then(response => response.json())
             .then(data => this.setState({totalCases: data, isLoading: false}))
             .then(() => {
-                // alert("AllCaseList: this.state.requiredPage = " + this.state.requiredPage);
-                // alert("AllCaseList: this.state.totalCases = " + this.state.totalCases);
             });
     }
 
     onPageChanged = data => {
         const {currentPage, totalPages, pageLimit} = data;
         const offset = (currentPage - 1) * pageLimit;
-        // alert("currentPage: " + currentPage + "; totalPages: " + this.state.totalPages);
 
         fetch(`api/cases?offset=${offset}&limit=${pageLimit}`, {headers: authHeader()})
             .then(response => response.json())
@@ -75,15 +72,12 @@ class AllCaseList extends Component {
                     fetch(`api/cases?offset=${offset}&limit=${pageLimit}`, {headers: authHeader()})
                         .then(response => response.json())
                         .then(data => this.setState({currentCases: data, isLoading: false}));
-                    // alert("currentPage: " + currentPage + "; totalPages: " + this.state.totalPages + "; totalCases: " + this.state.totalCases);
                 });
         });
     }
 
     render() {
         const {currentCases, displayButton, displayHeadTeacherButton, isLoading} = this.state;
-
-        // alert("AllCaseList render method here, requiredPage = " + this.state.requiredPage);
 
         if (isLoading) {
             return <p>Loading...</p>;
@@ -116,7 +110,7 @@ class AllCaseList extends Component {
                     <Link to={{pathname: "/cases/" + aCase.id,
                         state: {returnAddress: '/cases', requiredPage: this.state.currentPage}}}>
                         <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
-                                size="sm" color="warning" /*tag={Link} to={"/cases/" + aCase.id}*/
+                                size="sm" color="warning"
                                 disabled={aCase.isCaseResolved ? true : false}>
                             Edit
                         </Button>
@@ -137,20 +131,20 @@ class AllCaseList extends Component {
                     <div className="float-right">
                         <Link to={{pathname: '/active_cases_managed_by_headteacher', state: {requiredPage: 1}}}>
                             <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center', display: `${displayHeadTeacherButton}`}}
-                                    color="primary" /*tag={Link} to="/active_cases_managed_by_headteacher"*/>
+                                    color="primary">
                                 Show All Active Head Teacher Cases
                             </Button>
                         </Link>
                         <Link to={{pathname: '/active_cases', state: {requiredPage: 1}}}>
                             <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
-                                    color="primary" /*tag={Link} to="/active_cases"*/>
+                                    color="primary">
                                 Show All Active Cases
                             </Button>
                         </Link>
                         <Link to={{pathname: '/cases/new',
                             state: {returnAddress: '/cases', requiredPage: this.state.currentPage}}}>
                             <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
-                                    color="success" /*tag={Link} to="/cases/new"*/>
+                                    color="success">
                                 Add Employee Case
                             </Button>
                         </Link>

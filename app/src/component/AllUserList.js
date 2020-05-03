@@ -23,7 +23,6 @@ class AllUserList extends Component {
 
     componentDidMount() {
         if (this.props.location.state !== null) {
-            // alert("AllUserList: this.props.location.state.requiredPage = " + this.props.location.state.requiredPage);
             this.setState({requiredPage: this.props.location.state.requiredPage});
         }
         this.setState({isLoading: true});
@@ -31,9 +30,6 @@ class AllUserList extends Component {
         fetch('api/users/count', {headers: authHeader()})
             .then(response => response.json())
             .then(data => this.setState({totalUsers: data, isLoading: false}));
-        // fetch('api/users', {headers: authHeader()})
-        //     .then(response => response.json())
-        //     .then(data => this.setState({users: data, isLoading: false}));
     }
 
     onPageChanged = data => {
@@ -68,20 +64,6 @@ class AllUserList extends Component {
         });
     }
 
-    // async remove(id) {
-    //     const headers = new Headers(authHeader());
-    //     headers.set('Accept', 'application/json');
-    //     headers.set('Content-Type', 'application/json');
-    //
-    //     await fetch(`/api/users/${id}`, {
-    //         method: 'DELETE',
-    //         headers: headers
-    //     }).then(() => {
-    //         let updatedUsers = [...this.state.users].filter(i => i.id !== id);
-    //         this.setState({users: updatedUsers});
-    //     });
-    // }
-
     render() {
         const {currentUsers, isLoading} = this.state;
 
@@ -108,7 +90,7 @@ class AllUserList extends Component {
                 <td>
                     <Link to={{pathname: "/users/" + user.id, state: {requiredPage: this.state.currentPage}}}>
                         <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
-                                size="sm" color="warning" /*tag={Link} to={"/users/" + user.id}*/>
+                                size="sm" color="warning">
                             Edit
                         </Button>
                     </Link>
@@ -126,7 +108,7 @@ class AllUserList extends Component {
                 <Container fluid>
                     <div className="float-right">
                         <Link to={{pathname: "/users/new", state: {requiredPage: this.state.currentPage}}}>
-                            <Button color="success" /*tag={Link} to="/users/new"*/>
+                            <Button color="success">
                                 Add User
                             </Button>
                         </Link>

@@ -28,7 +28,6 @@ class UserEdit extends Component {
 
     async componentDidMount() {
         if (this.props.location.state !== null) {
-            // alert("UserEdit: this.props.location.state.requiredPage = " + this.props.location.state.requiredPage);
             this.setState({requiredPage: this.props.location.state.requiredPage});
         }
         if (this.props.match.params.id !== 'new') {
@@ -152,7 +151,7 @@ class UserEdit extends Component {
                             Save
                         </Button>{' '}
                         <Link to={{pathname: '/users', state: {requiredPage: this.state.requiredPage}}}>
-                            <Button color="secondary" /*tag={Link} to="/users"*/>
+                            <Button color="secondary">
                                 Cancel
                             </Button>
                         </Link>

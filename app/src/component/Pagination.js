@@ -21,7 +21,6 @@ class Pagination extends Component {
     constructor(props) {
         super(props);
 
-        // const {totalRecords = null, pageLimit = 30, pageNeighbours = 0} = props;
         const {totalRecords = null, pageLimit = 30, pageNeighbours = 0, requiredPage = 1} = props;
 
         this.totalRecords = typeof totalRecords === 'number' ? totalRecords : 0;
@@ -32,7 +31,6 @@ class Pagination extends Component {
             ? Math.max(0, Math.min(pageNeighbours, 2))
             : 0;
 
-        // alert("Pagination component here, requiredPage = " + this.requiredPage);
         this.requiredPage = typeof requiredPage === 'number' ? requiredPage : 1;
 
         this.totalPages = Math.ceil(this.totalRecords / this.pageLimit);
@@ -40,15 +38,11 @@ class Pagination extends Component {
             this.totalPages = 1;
         }
 
-
-        // this.state = {currentPage: 1};
         this.state = {currentPage: requiredPage};
     }
 
     componentDidMount() {
-        // this.gotoPage(1);
         this.gotoPage(this.requiredPage);
-
     }
 
     componentWillReceiveProps(nextProps, nextContent) {
