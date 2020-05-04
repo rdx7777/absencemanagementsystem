@@ -41,76 +41,85 @@ public class Initializer implements CommandLineRunner {
                 userService.deleteUser(user.getId());
             }
         }
-        User firstUser = User.builder()
+        User firstUserToSave = User.builder()
             .withName("Alice")
             .withSurname("Springfield")
             .withEmail("rdx7777.test@gmail.com")
-            .withPassword("$2a$10$u3AJC2e8fQ7bapCZh6I6Re4siOLimyBkPp.E//Ae07CSdW1SrRrFu") // password: test
+            .withPassword("test")
             .withJobTitle("Math Teacher")
             .withIsActive(true)
             .withPosition(Position.Employee)
             .withRole("ROLE_USER")
             .build();
-        User secondUser = User.builder()
+        User secondUserToSave = User.builder()
             .withName("Jim")
             .withSurname("Morrison")
             .withEmail("rdx7777.test1@gmail.com")
-            .withPassword("$2a$10$u3AJC2e8fQ7bapCZh6I6Re4siOLimyBkPp.E//Ae07CSdW1SrRrFu") // password: test
+            .withPassword("test")
             .withJobTitle("English Teacher")
             .withIsActive(true)
             .withPosition(Position.Employee)
             .withRole("ROLE_USER")
             .build();
-        User thirdUser = User.builder()
+        User thirdUserToSave = User.builder()
             .withName("Kate")
             .withSurname("Bloom")
             .withEmail("rdx7777.test2@gmail.com")
-            .withPassword("$2a$10$u3AJC2e8fQ7bapCZh6I6Re4siOLimyBkPp.E//Ae07CSdW1SrRrFu") // password: test
+            .withPassword("test")
             .withJobTitle("Cover Supervisor")
             .withIsActive(true)
             .withPosition(Position.CoverSupervisor)
             .withRole("ROLE_CS_SUPERVISOR")
             .build();
-        User fourthUser = User.builder()
+        User fourthUserToSave = User.builder()
             .withName("Janet")
             .withSurname("Barney")
             .withEmail("rdx7777.test3@gmail.com")
-            .withPassword("$2a$10$u3AJC2e8fQ7bapCZh6I6Re4siOLimyBkPp.E//Ae07CSdW1SrRrFu") // password: test
+            .withPassword("test")
             .withJobTitle("Head Teacher - Maths & Science")
             .withIsActive(true)
             .withPosition(Position.HeadTeacher)
             .withRole("ROLE_HEAD_TEACHER")
             .build();
-        User fifthUser = User.builder()
+        User fifthUserToSave = User.builder()
             .withName("Leila")
             .withSurname("Smith")
             .withEmail("rdx7777.test4@gmail.com")
-            .withPassword("$2a$10$u3AJC2e8fQ7bapCZh6I6Re4siOLimyBkPp.E//Ae07CSdW1SrRrFu") // password: test
+            .withPassword("test")
             .withJobTitle("Head Teacher - Languages")
             .withIsActive(true)
             .withPosition(Position.HeadTeacher)
             .withRole("ROLE_HEAD_TEACHER")
             .build();
-        User sixthUser = User.builder()
+        User sixthUserToSave = User.builder()
             .withName("Mark")
             .withSurname("Thompson")
             .withEmail("rdx7777.test5@gmail.com")
-            .withPassword("$2a$10$u3AJC2e8fQ7bapCZh6I6Re4siOLimyBkPp.E//Ae07CSdW1SrRrFu") // password: test
+            .withPassword("test")
             .withJobTitle("HR Supervisor")
             .withIsActive(true)
             .withPosition(Position.HumanResourcesSupervisor)
             .withRole("ROLE_HR_SUPERVISOR")
             .build();
-        User admin = User.builder()
+        User adminToSave = User.builder()
             .withName("Rdx")
             .withSurname("Jxxx")
             .withEmail("radek.jerzynski@gmail.com")
-            .withPassword("$2a$10$u3AJC2e8fQ7bapCZh6I6Re4siOLimyBkPp.E//Ae07CSdW1SrRrFu") // password: test
+            .withPassword("test")
             .withJobTitle("Admin")
             .withIsActive(true)
             .withPosition(Position.Employee)
             .withRole("ROLE_ADMIN")
             .build();
+
+        User firstUser = userService.addUser(firstUserToSave);
+        User secondUser = userService.addUser(secondUserToSave);
+        User thirdUser = userService.addUser(fourthUserToSave);
+        User fourthUser = userService.addUser(fifthUserToSave);
+        User fifthUser = userService.addUser(thirdUserToSave);
+        User sixthUser = userService.addUser(sixthUserToSave);
+        User admin = userService.addUser(adminToSave);
+
         AbsenceCase firstCase = AbsenceCase.builder()
             .withUser(firstUser)
             .withHeadTeacher(fourthUser)
@@ -664,9 +673,5 @@ public class Initializer implements CommandLineRunner {
         caseService.addCase(b17);
         caseService.addCase(b18);
         caseService.addCase(b19);
-
-        userService.addUser(thirdUser);
-        userService.addUser(sixthUser);
-        userService.addUser(admin);
     }
 }

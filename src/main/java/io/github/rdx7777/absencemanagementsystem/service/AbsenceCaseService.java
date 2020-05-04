@@ -44,10 +44,12 @@ public class AbsenceCaseService {
         try {
             Optional<User> user = userRepository.findUserByEmail(aCase.getUser().getEmail());
             if (user.isEmpty()) {
+                System.out.println("****************************************************");
                 userRepository.save(aCase.getUser());
             }
             Optional<User> headTeacher = userRepository.findUserByEmail(aCase.getHeadTeacher().getEmail());
             if (headTeacher.isEmpty()) {
+                System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
                 userRepository.save(aCase.getHeadTeacher());
             }
             return repository.save(aCase);

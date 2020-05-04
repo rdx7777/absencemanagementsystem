@@ -20,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
@@ -30,12 +31,16 @@ class UserServiceTest {
     @InjectMocks
     UserService userService;
 
+    @Mock
+    PasswordEncoder passwordEncoder;
+
     @Test
     void shouldAddUser() throws ServiceOperationException {
         // given
         User userToAdd = UserGenerator.getRandomEmployee();
         User addedUser = UserGenerator.getRandomEmployee();
         when(repository.existsById(userToAdd.getId())).thenReturn(false);
+        when(passwordEncoder.encode(userToAdd.getPassword())).thenReturn(userToAdd.getPassword());
         when(repository.save(userToAdd)).thenReturn(addedUser);
 
         // when
@@ -44,6 +49,7 @@ class UserServiceTest {
         // then
         assertEquals(addedUser, result);
         verify(repository).existsById(userToAdd.getId());
+        verify(passwordEncoder).encode(userToAdd.getPassword());
         verify(repository).save(userToAdd);
     }
 
@@ -52,6 +58,7 @@ class UserServiceTest {
         // given
         User userToAdd = UserGenerator.getRandomEmployeeWithNullId();
         User addedUser = UserGenerator.getRandomEmployee();
+        when(passwordEncoder.encode(userToAdd.getPassword())).thenReturn(userToAdd.getPassword());
         when(repository.save(userToAdd)).thenReturn(addedUser);
 
         // when
@@ -60,6 +67,7 @@ class UserServiceTest {
         // then
         assertEquals(addedUser, result);
         verify(repository, never()).existsById(userToAdd.getId());
+        verify(passwordEncoder).encode(userToAdd.getPassword());
         verify(repository).save(userToAdd);
     }
 
@@ -87,6 +95,7 @@ class UserServiceTest {
         // given
         User user = UserGenerator.getRandomEmployee();
         when(repository.existsById(user.getId())).thenReturn(false);
+        when(passwordEncoder.encode(user.getPassword())).thenReturn(user.getPassword());
         doThrow(new NonTransientDataAccessException("") {
             @Override
             public String getMessage() {
@@ -97,6 +106,7 @@ class UserServiceTest {
         // then
         assertThrows(ServiceOperationException.class, () -> userService.addUser(user));
         verify(repository).existsById(user.getId());
+        verify(passwordEncoder).encode(user.getPassword());
         verify(repository).save(user);
     }
 
@@ -106,6 +116,8 @@ class UserServiceTest {
         User userToUpdate = UserGenerator.getRandomEmployee();
         User updatedUser = UserGenerator.getRandomEmployee();
         when(repository.existsById(userToUpdate.getId())).thenReturn(true);
+        when(repository.findById(userToUpdate.getId())).thenReturn(Optional.of(userToUpdate));
+//        when(passwordEncoder.encode(userToUpdate.getPassword())).thenReturn(userToUpdate.getPassword());
         when(repository.save(userToUpdate)).thenReturn(updatedUser);
 
         // when
@@ -114,6 +126,7 @@ class UserServiceTest {
         // then
         assertEquals(updatedUser, result);
         verify(repository).existsById(userToUpdate.getId());
+//        verify(passwordEncoder).encode(userToUpdate.getPassword());
         verify(repository).save(userToUpdate);
     }
 
@@ -152,6 +165,7 @@ class UserServiceTest {
         // given
         User user = UserGenerator.getRandomEmployee();
         when(repository.existsById(user.getId())).thenReturn(true);
+        when(repository.findById(user.getId())).thenReturn(Optional.of(user));
         doThrow(new NonTransientDataAccessException("") {
             @Override
             public String getMessage() {

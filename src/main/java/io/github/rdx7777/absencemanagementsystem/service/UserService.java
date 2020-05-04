@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,9 +22,11 @@ public class UserService {
     private final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     private final UserRepository repository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository repository) {
+    public UserService(UserRepository repository, PasswordEncoder passwordEncoder) {
         this.repository = repository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public User addUser(User user) throws ServiceOperationException {
@@ -36,8 +39,12 @@ public class UserService {
             logger.error("Attempt to add user already existing in database.");
             throw new ServiceOperationException("User already exists in database.");
         }
+        User userWithEncryptedPassword = User.builder()
+            .withUser(user)
+            .withPassword(passwordEncoder.encode(user.getPassword()))
+            .build();
         try {
-            return repository.save(user);
+            return repository.save(userWithEncryptedPassword);
         } catch (NonTransientDataAccessException e) {
             String message = "An error occurred during adding user.";
             logger.error(message, e);
@@ -55,8 +62,19 @@ public class UserService {
             logger.error("Attempt to update not existing user.");
             throw new ServiceOperationException("Given user does not exist in database.");
         }
+        String existingPassword = repository.findById(userId).get().getPassword();
+        String newPassword = user.getPassword();
+        User userToSave;
+        if (existingPassword.equals(newPassword)) {
+            userToSave = user;
+        } else {
+            userToSave = User.builder()
+                .withUser(user)
+                .withPassword(passwordEncoder.encode(user.getPassword()))
+                .build();
+        }
         try {
-            return repository.save(user);
+            return repository.save(userToSave);
         } catch (NonTransientDataAccessException e) {
             String message = "An error occurred during updating user.";
             logger.error(message, e);
