@@ -41,7 +41,10 @@ class App extends Component {
                 showHRSupervisorBoard: user.roles.includes("ROLE_HR_SUPERVISOR"),
                 showAdminBoard: user.roles.includes("ROLE_ADMIN")
             });
-            fetch('api/users/' + AuthService.getCurrentUser().id, {headers: authHeader()})
+            // fetch('api/users/' + AuthService.getCurrentUser().id, {headers: authHeader()})
+            //     .then(response => response.json())
+            //     .then(data => this.setState({userForShow: data}));
+            fetch('api/users/show_user/' + AuthService.getCurrentUser().id, {headers: authHeader()})
                 .then(response => response.json())
                 .then(data => this.setState({userForShow: data}));
         }

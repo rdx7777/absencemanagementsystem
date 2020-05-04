@@ -103,6 +103,17 @@ public class UserController {
         return ResponseEntity.ok(user.get());
     }
 
+    @GetMapping(value = "/show_user/{id}", produces = "application/json")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER') or hasRole('CS_SUPERVISOR') or hasRole('HEAD_TEACHER') or hasRole('HR_SUPERVISOR')")
+    public ResponseEntity<?> getUserForShow(@PathVariable("id") Long id) throws ServiceOperationException {
+        Optional<User> user = service.getUserById(id);
+        if (user.isEmpty()) {
+            logger.error("Attempt to get user by id that does not exist in database.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Attempt to get user by id that does not exist in database.");
+        }
+        return ResponseEntity.ok(appModelMapper.mapToUserDTO(user.get()));
+    }
+
     @GetMapping(produces = "application/json")
     @PreAuthorize("hasRole('ADMIN') or hasRole('CS_SUPERVISOR') or hasRole('HEAD_TEACHER') or hasRole('HR_SUPERVISOR')")
     public ResponseEntity<?> getAllUsers() throws ServiceOperationException {
