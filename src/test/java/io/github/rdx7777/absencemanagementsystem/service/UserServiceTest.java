@@ -117,7 +117,6 @@ class UserServiceTest {
         User updatedUser = UserGenerator.getRandomEmployee();
         when(repository.existsById(userToUpdate.getId())).thenReturn(true);
         when(repository.findById(userToUpdate.getId())).thenReturn(Optional.of(userToUpdate));
-//        when(passwordEncoder.encode(userToUpdate.getPassword())).thenReturn(userToUpdate.getPassword());
         when(repository.save(userToUpdate)).thenReturn(updatedUser);
 
         // when
@@ -126,8 +125,30 @@ class UserServiceTest {
         // then
         assertEquals(updatedUser, result);
         verify(repository).existsById(userToUpdate.getId());
-//        verify(passwordEncoder).encode(userToUpdate.getPassword());
         verify(repository).save(userToUpdate);
+    }
+
+    @Test
+    void shouldUpdateGivenUserWithChangedPasswordInDatabase() throws ServiceOperationException {
+        // given
+        User existingUser = UserGenerator.getRandomEmployee();
+        User userToUpdateWithChangedPassword = User.builder()
+            .withUser(existingUser)
+            .withPassword("***")
+            .build();
+        when(repository.existsById(userToUpdateWithChangedPassword.getId())).thenReturn(true);
+        when(repository.findById(userToUpdateWithChangedPassword.getId())).thenReturn(Optional.of(existingUser));
+        when(passwordEncoder.encode(userToUpdateWithChangedPassword.getPassword())).thenReturn("***");
+        when(repository.save(userToUpdateWithChangedPassword)).thenReturn(existingUser);
+
+        // when
+        User result = userService.updateUser(userToUpdateWithChangedPassword);
+
+        // then
+        assertEquals(existingUser, result);
+        verify(repository).existsById(userToUpdateWithChangedPassword.getId());
+        verify(passwordEncoder).encode(userToUpdateWithChangedPassword.getPassword());
+        verify(repository).save(userToUpdateWithChangedPassword);
     }
 
     @Test
