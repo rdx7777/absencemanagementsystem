@@ -94,16 +94,16 @@ class UserComponent extends Component {
                         </Link>
                     </div>
                     <h3>Your Absence Cases</h3>
-                    <Table className="mt-4">
+                    <Table className="mt-4 ">
                         <thead>
                         <tr>
                             <th width="5%">Id</th>
-                            <th width="15%">Head Teacher</th>
+                            <th width="10%">Head Teacher</th>
                             <th width="5%">Start Date</th>
                             <th width="5%">End Date</th>
                             <th width="10%">Absence Reason</th>
-                            <th width="10%">Case Resolved?</th>
-                            <th width="15%">Actions</th>
+                            <th width="8%">Case Resolved?</th>
+                            <th width="10%">Actions</th>
                         </tr>
                         </thead>
                         <tbody>

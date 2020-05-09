@@ -136,7 +136,10 @@ public class AbsenceCaseController {
                 emailService.sendEmailToHumanResourcesSupervisor(headTeacher, user, updatedCase);
                 break;
             case HumanResourcesSupervisor:
-                emailService.sendEmailToUser(headTeacher, user, updatedCase);
+                if (updatedCase.getIsCaseResolved()) {
+                    emailService.sendEmailToUser(headTeacher, user, updatedCase);
+                    break;
+                }
                 break;
         }
     }

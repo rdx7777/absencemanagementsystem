@@ -111,7 +111,7 @@ public class UserService {
     }
 
     public Collection<User> getAllUsers() throws ServiceOperationException {
-        Sort sort = Sort.by(Sort.Direction.ASC, "id");
+        Sort sort = Sort.by(Sort.Direction.DESC, "id");
         try {
             return repository.findAll(sort);
         } catch (NonTransientDataAccessException e) {
@@ -133,7 +133,7 @@ public class UserService {
 
     public Collection<User> getAllActiveUsers() throws ServiceOperationException {
         Example<User> example = Example.of(new User.Builder().withIsActive(true).build());
-        Sort sort = Sort.by(Sort.Direction.ASC, "id");
+        Sort sort = Sort.by(Sort.Direction.DESC, "id");
         try {
             return repository.findAll(example, sort);
         } catch (NonTransientDataAccessException e) {
@@ -145,7 +145,7 @@ public class UserService {
 
     public Collection<User> getHeadTeachers() throws ServiceOperationException {
         Example<User> example = Example.of(new User.Builder().withIsActive(true).withPosition(Position.HeadTeacher).build());
-        Sort sort = Sort.by(Sort.Direction.ASC, "id");
+        Sort sort = Sort.by(Sort.Direction.DESC, "id");
         try {
             return repository.findAll(example, sort);
         } catch (NonTransientDataAccessException e) {

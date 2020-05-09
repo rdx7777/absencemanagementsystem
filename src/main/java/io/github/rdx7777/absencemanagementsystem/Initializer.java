@@ -104,7 +104,7 @@ public class Initializer implements CommandLineRunner {
         User adminToSave = User.builder()
             .withName("Rdx")
             .withSurname("Jxxx")
-            .withEmail("radek.jerzynski@gmail.com")
+            .withEmail("rdx.7777@yahoo.com")
             .withPassword("test")
             .withJobTitle("Admin")
             .withIsActive(true)

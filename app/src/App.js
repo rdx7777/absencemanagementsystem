@@ -15,6 +15,11 @@ import AdminComponent from "./component/AdminComponent";
 import CaseDetails from "./component/CaseDetails";
 import authHeader from "./auth/AuthHeader";
 import AllCaseList from "./component/AllCaseList";
+import Help from "./component/Help";
+import Help2 from "./component/Help2";
+import Help3 from "./component/Help3";
+import Help4 from "./component/Help4";
+import Help5 from "./component/Help5";
 
 class App extends Component {
 
@@ -61,9 +66,19 @@ class App extends Component {
             <Router>
                 <div>
                     <nav className="navbar navbar-expand navbar-dark bg-dark">
-                        <Link to={{pathname: "/user", state: {requiredPage: 1}}} className="navbar-brand">
-                            AMSystem
+
+                        {currentUser && (
+                            // <li className="nav-item">
+                                <Link to={{pathname: "/user", state: {requiredPage: 1}}} className="navbar-brand">
+                                    AMSystem
+                                </Link>
+                            // </li>
+                        )}
+
+                        <Link to={'/help'} className="navbar-brand">
+                            [help]
                         </Link>
+
                         <div className="navbar-nav mr-auto">
 
                             {currentUser && (
@@ -148,6 +163,11 @@ class App extends Component {
                             <Route path='/users' exact={true} component={AllUserList}/>
                             <Route path='/users/:id' component={UserEdit}/>
                             <Route path='/case_details' exact={true} component={CaseDetails}/>
+                            <Route path='/help' exact={true} component={Help}/>
+                            <Route path='/help2' exact={true} component={Help2}/>
+                            <Route path='/help3' exact={true} component={Help3}/>
+                            <Route path='/help4' exact={true} component={Help4}/>
+                            <Route path='/help5' exact={true} component={Help5}/>
                         </Switch>
                     </div>
                 </div>

@@ -84,6 +84,7 @@ class AllCaseList extends Component {
         }
 
         const caseList = currentCases.map(aCase => {
+            const currentUser = AuthService.getCurrentUser();
             var isRequired;
             if (aCase.isCoverRequired) {isRequired='yes'} else {isRequired='no'}
             var isProvided;
@@ -111,7 +112,7 @@ class AllCaseList extends Component {
                         state: {returnAddress: '/cases', requiredPage: this.state.currentPage}}}>
                         <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
                                 size="sm" color="warning"
-                                disabled={aCase.isCaseResolved ? true : false}>
+                                disabled={aCase.isCaseResolved && !currentUser.roles.includes("ROLE_ADMIN") ? true : false}>
                             Edit
                         </Button>
                     </Link>

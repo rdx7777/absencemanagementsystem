@@ -44,12 +44,10 @@ public class AbsenceCaseService {
         try {
             Optional<User> user = userRepository.findUserByEmail(aCase.getUser().getEmail());
             if (user.isEmpty()) {
-                System.out.println("****************************************************");
                 userRepository.save(aCase.getUser());
             }
             Optional<User> headTeacher = userRepository.findUserByEmail(aCase.getHeadTeacher().getEmail());
             if (headTeacher.isEmpty()) {
-                System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
                 userRepository.save(aCase.getHeadTeacher());
             }
             return repository.save(aCase);
@@ -94,7 +92,7 @@ public class AbsenceCaseService {
     }
 
     public Collection<AbsenceCase> getAllCases() throws ServiceOperationException {
-        Sort sort = Sort.by(Sort.Direction.ASC, "id");
+        Sort sort = Sort.by(Sort.Direction.DESC, "id");
         try {
             return repository.findAll(sort);
         } catch (NonTransientDataAccessException e) {
@@ -124,7 +122,7 @@ public class AbsenceCaseService {
 
     public Collection<AbsenceCase> getAllActiveCases() throws ServiceOperationException {
         Example<AbsenceCase> example = Example.of(new AbsenceCase.Builder().withIsCaseResolved(false).build());
-        Sort sort = Sort.by(Sort.Direction.ASC, "id");
+        Sort sort = Sort.by(Sort.Direction.DESC, "id");
         try {
             return repository.findAll(example, sort);
         } catch (NonTransientDataAccessException e) {
@@ -159,7 +157,7 @@ public class AbsenceCaseService {
         }
         User userExample = User.builder().withId(userId).build();
         Example<AbsenceCase> caseExample = Example.of(new AbsenceCase.Builder().withUser(userExample).build());
-        Sort sort = Sort.by(Sort.Direction.ASC, "id");
+        Sort sort = Sort.by(Sort.Direction.DESC, "id");
         try {
             return repository.findAll(caseExample, sort);
         } catch (NonTransientDataAccessException e) {
@@ -198,7 +196,7 @@ public class AbsenceCaseService {
         }
         User headTeacherExample = User.builder().withId(headTeacherId).build();
         Example<AbsenceCase> caseExample = Example.of(new AbsenceCase.Builder().withHeadTeacher(headTeacherExample).withIsCaseResolved(false).build());
-        Sort sort = Sort.by(Sort.Direction.ASC, "id");
+        Sort sort = Sort.by(Sort.Direction.DESC, "id");
         try {
             return repository.findAll(caseExample, sort);
         } catch (NonTransientDataAccessException e) {

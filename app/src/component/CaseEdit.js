@@ -261,7 +261,9 @@ class CaseEdit extends Component {
                         </FormGroup>
                         <Link className="col-md-1 mb-n2 h-25 align-self-end mr-1"
                               to={{pathname: `${this.state.returnAddress}`, state: {requiredPage: this.state.requiredPage}}}>
-                            <Button color="secondary">
+                            <Button color="secondary"
+                                    // disabled={this.props.match.params.id !== 'new' ? true : false}
+                                    style={{display: this.props.match.params.id == 'new' ? "" : "none"}}>
                                 Cancel
                             </Button>
                         </Link>

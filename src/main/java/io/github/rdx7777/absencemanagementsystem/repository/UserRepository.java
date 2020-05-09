@@ -14,7 +14,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findUserByEmail(String email);
 
-    @Query(value="SELECT * FROM users u ORDER BY u.id offset ?1 limit ?2", nativeQuery = true)
+    @Query(value="SELECT * FROM users u ORDER BY u.id DESC offset ?1 limit ?2", nativeQuery = true)
     Collection<User> findAllByOffsetAndLimit(Long offset, Long limit);
 
 }
