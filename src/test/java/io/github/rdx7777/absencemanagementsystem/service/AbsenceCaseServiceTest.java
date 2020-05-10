@@ -210,7 +210,7 @@ class AbsenceCaseServiceTest {
     void shouldReturnAllCases() throws ServiceOperationException {
         // given
         List<AbsenceCase> cases = List.of(AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayType(), AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayType());
-        Sort sort = Sort.by(Sort.Direction.ASC, "id");
+        Sort sort = Sort.by(Sort.Direction.DESC, "id");
         when(repository.findAll(sort)).thenReturn(cases);
 
         // when
@@ -224,7 +224,7 @@ class AbsenceCaseServiceTest {
     @Test
     void getAllCasesMethodShouldThrowExceptionWhenAnErrorOccursDuringGettingAllCases() {
         // given
-        Sort sort = Sort.by(Sort.Direction.ASC, "id");
+        Sort sort = Sort.by(Sort.Direction.DESC, "id");
         doThrow(new NonTransientDataAccessException("") {
             @Override
             public String getMessage() {
@@ -242,7 +242,7 @@ class AbsenceCaseServiceTest {
         // given
         List<AbsenceCase> cases = List.of(AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayType(), AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayType());
         Example<AbsenceCase> example = Example.of(new AbsenceCase.Builder().withIsCaseResolved(false).build());
-        Sort sort = Sort.by(Sort.Direction.ASC, "id");
+        Sort sort = Sort.by(Sort.Direction.DESC, "id");
         when(repository.findAll(example, sort)).thenReturn(cases);
 
         // when
@@ -273,7 +273,7 @@ class AbsenceCaseServiceTest {
         // given
         List<AbsenceCase> cases = List.of(AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayTypeAndSpecificUserId(2L), AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayTypeAndSpecificUserId(2L));
         Example<AbsenceCase> example = Example.of(new AbsenceCase.Builder().withUser(User.builder().withId(2L).build()).build());
-        Sort sort = Sort.by(Sort.Direction.ASC, "id");
+        Sort sort = Sort.by(Sort.Direction.DESC, "id");
         when(repository.findAll(example, sort)).thenReturn(cases);
 
         // when
@@ -313,7 +313,7 @@ class AbsenceCaseServiceTest {
             .withHeadTeacher(User.builder().withId(4L).build())
             .withIsCaseResolved(false)
             .build());
-        Sort sort = Sort.by(Sort.Direction.ASC, "id");
+        Sort sort = Sort.by(Sort.Direction.DESC, "id");
         when(repository.findAll(example, sort)).thenReturn(cases);
 
         // when

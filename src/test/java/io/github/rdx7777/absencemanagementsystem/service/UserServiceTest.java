@@ -271,7 +271,7 @@ class UserServiceTest {
     void shouldReturnAllUsers() throws ServiceOperationException {
         // given
         List<User> users = List.of(UserGenerator.getRandomEmployee(), UserGenerator.getRandomEmployee());
-        Sort sort = Sort.by(Sort.Direction.ASC, "id");
+        Sort sort = Sort.by(Sort.Direction.DESC, "id");
         when(repository.findAll(sort)).thenReturn(users);
 
         // when
@@ -285,7 +285,7 @@ class UserServiceTest {
     @Test
     void getAllUsersMethodShouldThrowExceptionWhenAnErrorOccursDuringGettingAllUsers() {
         // given
-        Sort sort = Sort.by(Sort.Direction.ASC, "id");
+        Sort sort = Sort.by(Sort.Direction.DESC, "id");
         doThrow(new NonTransientDataAccessException("") {
             @Override
             public String getMessage() {
@@ -303,7 +303,7 @@ class UserServiceTest {
         // given
         List<User> users = List.of(UserGenerator.getRandomEmployee(), UserGenerator.getRandomEmployee());
         Example<User> example = Example.of(new User.Builder().withIsActive(true).build());
-        Sort sort = Sort.by(Sort.Direction.ASC, "id");
+        Sort sort = Sort.by(Sort.Direction.DESC, "id");
         when(repository.findAll(example, sort)).thenReturn(users);
 
         // when
