@@ -84,10 +84,10 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${basedir}/target/classes/resources</outputDirectory>
+                            <outputDirectory>target/classes/resources</outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>${basedir}/app/build</directory>
+                                    <directory>app/build</directory>
                                     <filtering>true</filtering>
                                 </resource>
                             </resources>
