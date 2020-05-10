@@ -263,7 +263,7 @@ class CaseEdit extends Component {
                               to={{pathname: `${this.state.returnAddress}`, state: {requiredPage: this.state.requiredPage}}}>
                             <Button color="secondary"
                                     // disabled={this.props.match.params.id !== 'new' ? true : false}
-                                    style={{display: this.props.match.params.id == 'new' ? "" : "none"}}>
+                                    style={{display: this.props.match.params.id === 'new' ? "" : "none"}}>
                                 Cancel
                             </Button>
                         </Link>
