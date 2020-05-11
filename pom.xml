@@ -84,7 +84,7 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>target/classes/resources</outputDirectory>
+                            <outputDirectory>target/classes/resources/static</outputDirectory>
                             <resources>
                                 <resource>
                                     <directory>app/build</directory>
