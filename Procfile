@@ -1,1 +1,1 @@
-web: cd app && npm install && npm run start
+web: cd app && yarn start

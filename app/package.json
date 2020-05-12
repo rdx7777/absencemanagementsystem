@@ -38,7 +38,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "heroku-postbuild": "cd app && npm run start"
+    "heroku-postbuild": "cd app && yarn start"
   },
   "proxy": "https://absence-management-system.herokuapp.com/",
   "eslintConfig": {
