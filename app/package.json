@@ -34,12 +34,11 @@
     "validator": "12.2.0"
   },
   "scripts": {
-    "dev": "react-scripts start",
-    "start": "serve -s build",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "heroku-postbuild": "npm run build"
+    "heroku-postbuild": "cd app && npm install && npm run build"
   },
   "proxy": "https://absence-management-system.herokuapp.com/",
   "eslintConfig": {
