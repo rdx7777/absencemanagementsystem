@@ -39,7 +39,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "proxy": "https://absence-management-system.herokuapp.com/",
+  "proxy": "https://absence-management-system.herokuapp.com",
   "eslintConfig": {
     "extends": "react-app"
   },
