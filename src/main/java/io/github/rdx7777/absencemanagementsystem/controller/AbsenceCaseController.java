@@ -25,7 +25,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
+@CrossOrigin(origins = {"https://a-m-system.herokuapp.com/", "*"}, maxAge = 3600)
 @RestController
 @RequestMapping("/api/cases")
 public class AbsenceCaseController {
