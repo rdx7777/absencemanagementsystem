@@ -1,10 +1,12 @@
 import axios from "axios";
 
+const API_URL = "https://absence-management-system.herokuapp.com/";
+
 class AuthService {
 
     login(username, password) {
         return axios
-            .post("api/auth/signin", {
+            .post(API_URL + "api/auth/signin", {
                 username,
                 password
             })
