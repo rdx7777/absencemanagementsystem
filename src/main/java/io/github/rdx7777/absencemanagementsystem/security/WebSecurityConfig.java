@@ -4,6 +4,7 @@ import io.github.rdx7777.absencemanagementsystem.security.jwt.AuthEntryPointJwt;
 import io.github.rdx7777.absencemanagementsystem.security.jwt.AuthTokenFilter;
 import io.github.rdx7777.absencemanagementsystem.security.services.UserDetailsServiceImpl;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 import org.springframework.context.annotation.Bean;
@@ -75,6 +76,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         configuration.setAllowedOrigins(Collections.singletonList("*"));
         configuration.setAllowedMethods(Collections.singletonList("*"));
         configuration.setAllowedHeaders(Collections.singletonList("*"));
+        configuration.setExposedHeaders(Arrays.asList("header1", "header2"));
         configuration.setAllowCredentials(true);
         configuration.applyPermitDefaultValues();
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
