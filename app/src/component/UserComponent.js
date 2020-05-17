@@ -4,6 +4,9 @@ import {Button, Container, Table} from "reactstrap";
 import {Link, withRouter} from "react-router-dom";
 import authHeader from "../auth/AuthHeader";
 import Pagination from "./Pagination";
+import apiUrl from "../helper/ApiUrl";
+
+const API_URL = apiUrl();
 
 class UserComponent extends Component {
 
@@ -30,7 +33,7 @@ class UserComponent extends Component {
         const currentUser = AuthService.getCurrentUser();
         const id = currentUser.id;
 
-        fetch('api/cases/count/user/' + id, {headers: authHeader()})
+        fetch(API_URL + 'api/cases/count/user/' + id, {headers: authHeader()})
             .then(response => response.json())
             .then(data => this.setState({totalCases: data, isLoading: false}));
     }
@@ -42,7 +45,7 @@ class UserComponent extends Component {
         const {currentPage, totalPages, pageLimit} = data;
         const offset = (currentPage - 1) * pageLimit;
 
-        fetch(`api/cases/user/${id}?offset=${offset}&limit=${pageLimit}`, {headers: authHeader()})
+        fetch(`${API_URL}api/cases/user/${id}?offset=${offset}&limit=${pageLimit}`, {headers: authHeader()})
             .then(response => response.json())
             .then(data => this.setState({currentCases: data, isLoading: false,
                 currentPage: currentPage, totalPages: totalPages, pageLimit: pageLimit}));

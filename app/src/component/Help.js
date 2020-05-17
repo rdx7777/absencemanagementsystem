@@ -32,12 +32,12 @@ class Help extends Component {
                         <li className="mb-0">Only ADMIN can delete any case. It happens very rarely.</li>
                         <li className="mb-0">If a case marked as "resolved" must be edited, ADMIN can do this.</li>
                         <li className="mb-0">
-                            <a>And only ADMIN can see, add, edit and delete users from the database, including her/himself. </a>
-                            <a className="font-weight-bold text-danger">So be very careful</a>
-                            <a> – after deleting user with ADMIN authorisation,
-                                managing users will be impossible. In this case just contact me (</a>
+                            <span>And only ADMIN can see, add, edit and delete users from the database, including her/himself. </span>
+                            <span className="font-weight-bold text-danger">So be very careful</span>
+                            <span> – after deleting user with ADMIN authorisation,
+                                managing users will be impossible. In this case just contact me (</span>
                             <a href="mailto:radek.jerzynski@gmail.com">radek.jerzynski@gmail.com</a>
-                            <a>), I will solve this problem adding a new admin to the database.</a>
+                            <span>), I will solve this problem adding a new admin to the database.</span>
                         </li>
                     </ul>
                     <Link to='/help2' className="mr-5">II. Predefined users and cases</Link>

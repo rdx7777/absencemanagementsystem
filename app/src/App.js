@@ -20,6 +20,9 @@ import Help2 from "./component/Help2";
 import Help3 from "./component/Help3";
 import Help4 from "./component/Help4";
 import Help5 from "./component/Help5";
+import apiUrl from "./helper/ApiUrl";
+
+const API_URL = apiUrl();
 
 class App extends Component {
 
@@ -46,10 +49,7 @@ class App extends Component {
                 showHRSupervisorBoard: user.roles.includes("ROLE_HR_SUPERVISOR"),
                 showAdminBoard: user.roles.includes("ROLE_ADMIN")
             });
-            // fetch('api/users/' + AuthService.getCurrentUser().id, {headers: authHeader()})
-            //     .then(response => response.json())
-            //     .then(data => this.setState({userForShow: data}));
-            fetch('api/users/show_user/' + AuthService.getCurrentUser().id, {headers: authHeader()})
+            fetch(API_URL + 'api/users/show_user/' + AuthService.getCurrentUser().id, {headers: authHeader()})
                 .then(response => response.json())
                 .then(data => this.setState({userForShow: data}));
         }

@@ -15,11 +15,11 @@ class Help4 extends Component {
                             and adds their case. The app saves this case in a database and sends an email to the COVER SUPERVISOR
                             with message "Action required".</li>
                         <li className="mb-1">
-                            <a>COVER SUPERVISOR logs in to the application, finds the case whose id is given
+                            <span>COVER SUPERVISOR logs in to the application, finds the case whose id is given
                             in the email message (usually it is displayed as the first case on the page), edits it when required
-                            (especially about ensuring teacher cover) and saves the case (even if nothing was changed – </a>
-                            <a className="font-weight-bold text-danger">it is critically required</a>
-                            <a>). Then the app sends an email to the appropriate HEAD TEACHER, provided by the USER.</a>
+                            (especially about ensuring teacher cover) and saves the case (even if nothing was changed – </span>
+                            <span className="font-weight-bold text-danger">it is critically required</span>
+                            <span>). Then the app sends an email to the appropriate HEAD TEACHER, provided by the USER.</span>
                         </li>
                         <li className="mb-1">HEAD TEACHER logs in to the application, finds the case, edits it
                             ("Absence approved" & "Absence paid" fields must be checked) and saves.

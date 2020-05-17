@@ -3,6 +3,9 @@ import {Button, Container, Form, FormGroup, Input, Label} from 'reactstrap';
 import AuthService from "../auth/AuthService";
 import authHeader from "../auth/AuthHeader";
 import {Link} from "react-router-dom";
+import apiUrl from "../helper/ApiUrl";
+
+const API_URL = apiUrl();
 
 export default class AddUserCase extends Component {
 
@@ -45,8 +48,8 @@ export default class AddUserCase extends Component {
                 returnAddress: this.props.location.state.returnAddress});
         }
         const currentUser = AuthService.getCurrentUser();
-        const user = await (await fetch(`/api/users/${currentUser.id}`, {headers: authHeader()})).json();
-        const headTeachers = await (await fetch('/api/users/headteachers', {headers: authHeader()})).json();
+        const user = await (await fetch(`${API_URL}api/users/${currentUser.id}`, {headers: authHeader()})).json();
+        const headTeachers = await (await fetch(API_URL + 'api/users/headteachers', {headers: authHeader()})).json();
         const filteredHeadTeachers = headTeachers.filter(u => !(u.id === currentUser.id));
 
         const {aCase} = this.state;
@@ -85,7 +88,7 @@ export default class AddUserCase extends Component {
         headers.set('Accept', 'application/json');
         headers.set('Content-Type', 'application/json');
 
-        await fetch('/api/cases', {
+        await fetch(API_URL + 'api/cases', {
             method: 'POST',
             headers: headers,
             body: JSON.stringify(aCase)
@@ -102,10 +105,10 @@ export default class AddUserCase extends Component {
         const headTeacher = headTeachers
             .filter(ht => !(ht.id === currentUser.id))
             .map((headTeacher, index) =>
-            <option key={index} value={index}>
-                {headTeacher.name} {headTeacher.surname}
-            </option>
-        );
+                <option key={index} value={index}>
+                    {headTeacher.name} {headTeacher.surname}
+                </option>
+            );
 
         return <div>
             <Container>
@@ -118,8 +121,10 @@ export default class AddUserCase extends Component {
                     </div>
                     <div className="row">
                         <FormGroup className="col-md-4 mb-3">
-                            <Label for="headTeacher">Select Head Teacher </Label>
-                            <Label className="text-danger">*</Label>
+                            <Label for="headTeacher">
+                                <span>Select Head Teacher </span>
+                                <span className="text-danger">*</span>
+                            </Label>
                             <Input type="select" name="headTeacher" id="headTeacher" defaultValue={aCase.headTeacher}
                                    onChange={this.handleHeadTeacherChange}>
                                 <option/>
@@ -127,20 +132,26 @@ export default class AddUserCase extends Component {
                             </Input>
                         </FormGroup>
                         <FormGroup className="col-md-2 mb-3">
-                            <Label for="startDate">Start Date </Label>
-                            <Label className="text-danger">*</Label>
+                            <Label for="startDate">
+                                <span>Start Date </span>
+                                <span className="text-danger">*</span>
+                            </Label>
                             <Input type="text" name="startDate" id="startDate" value={aCase.startDate} placeholder="YYYY-MM-DD"
                                    onChange={this.handleChange}/>
                         </FormGroup>
                         <FormGroup className="col-md-2 mb-3">
-                            <Label for="endDate">End Date </Label>
-                            <Label className="text-danger">*</Label>
+                            <Label for="endDate">
+                                <span>End Date </span>
+                                <span className="text-danger">*</span>
+                            </Label>
                             <Input type="text" name="endDate" id="endDate" value={aCase.endDate} placeholder="YYYY-MM-DD"
                                    onChange={this.handleChange}/>
                         </FormGroup>
                         <FormGroup className="col-md-2 mb-3">
-                            <Label for="partDayType">Part Day Type </Label>
-                            <Label className="text-danger">*</Label>
+                            <Label for="partDayType">
+                                <span>Part Day Type </span>
+                                <span className="text-danger">*</span>
+                            </Label>
                             <Input type="select" name="partDayType" id="partDayType" value={aCase.partDayType}
                                    onChange={this.handleChange}>
                                 <option/>
@@ -152,21 +163,27 @@ export default class AddUserCase extends Component {
                     </div>
                     <div className="row">
                         <FormGroup className="col-md-5 mb-3">
-                            <Label for="absenceReason">Absence Reason </Label>
-                            <Label className="text-danger">*</Label>
+                            <Label for="absenceReason">
+                                <span>Absence Reason </span>
+                                <span className="text-danger">*</span>
+                            </Label>
                             <Input type="textarea" name="absenceReason" id="absenceReason" value={aCase.absenceReason}
                                    onChange={this.handleChange}/>
                         </FormGroup>
                         <FormGroup className="col-md-5 mb-3">
-                            <Label for="userComment">User Comment</Label>
+                            <Label for="userComment">
+                                <span>User Comment</span>
+                            </Label>
                             <Input type="textarea" name="userComment" id="userComment" value={aCase.userComment}
                                    onChange={this.handleChange}/>
                         </FormGroup>
                     </div>
                     <div className="row">
                         <FormGroup className="col-md-2 mb-3">
-                            <Label for="isCoverRequired">Cover Required </Label>
-                            <Label className="text-danger">*</Label>
+                            <Label for="isCoverRequired">
+                                <span>Cover Required </span>
+                                <span className="text-danger">*</span>
+                            </Label>
                             <Input type="select" name="isCoverRequired" id="isCoverRequired"
                                    value={aCase.isCoverRequired}
                                    onChange={this.handleChange}>

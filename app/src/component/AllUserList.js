@@ -3,6 +3,9 @@ import {Button, Container, Table} from "reactstrap";
 import {Link} from "react-router-dom";
 import authHeader from "../auth/AuthHeader";
 import Pagination from "./Pagination";
+import apiUrl from "../helper/ApiUrl";
+
+const API_URL = apiUrl();
 
 class AllUserList extends Component {
 
@@ -27,7 +30,7 @@ class AllUserList extends Component {
         }
         this.setState({isLoading: true});
 
-        fetch('api/users/count', {headers: authHeader()})
+        fetch(API_URL + 'api/users/count', {headers: authHeader()})
             .then(response => response.json())
             .then(data => this.setState({totalUsers: data, isLoading: false}));
     }
@@ -36,7 +39,7 @@ class AllUserList extends Component {
         const {currentPage, totalPages, pageLimit} = data;
         const offset = (currentPage - 1) * pageLimit;
 
-        fetch(`api/users?offset=${offset}&limit=${pageLimit}`, {headers: authHeader()})
+        fetch(`${API_URL}api/users?offset=${offset}&limit=${pageLimit}`, {headers: authHeader()})
             .then(response => response.json())
             .then(data => this.setState({currentUsers: data, isLoading: false,
                 currentPage: currentPage, totalPages: totalPages, pageLimit: pageLimit}));
@@ -47,17 +50,17 @@ class AllUserList extends Component {
         headers.set('Accept', 'application/json');
         headers.set('Content-Type', 'application/json');
 
-        await fetch(`/api/users/${id}`, {
+        await fetch(`${API_URL}api/users/${id}`, {
             method: 'DELETE',
             headers: headers
         }).then(() => {
-            fetch('api/users/count', {headers: authHeader()})
+            fetch(API_URL + 'api/users/count', {headers: authHeader()})
                 .then(response => response.json())
                 .then(data => this.setState({totalUsers: data, isLoading: false}))
                 .then(() => {
                     const {currentPage, pageLimit} = this.state;
                     const offset = (currentPage - 1) * pageLimit;
-                    fetch(`api/users?offset=${offset}&limit=${pageLimit}`, {headers: authHeader()})
+                    fetch(`${API_URL}api/users?offset=${offset}&limit=${pageLimit}`, {headers: authHeader()})
                         .then(response => response.json())
                         .then(data => this.setState({currentUsers: data, isLoading: false}));
                 });

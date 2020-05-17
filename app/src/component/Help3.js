@@ -19,11 +19,11 @@ class Help3 extends Component {
                         <p className="mb-0">3. HEAD TEACHER (position: Head Teacher, authorisation: head teacher)</p>
                         <p className="mb-0">4. HUMAN RESOURCES SUPERVISOR (position: HR supervisor, authorisation: HR supervisor)</p>
                         <p className="mb-1">5. and some "simple" USERS of course (position: Employee, authorisation: user)</p>
-                        <p className="mb-1"><a>Only one COVER SUPERVISOR and only one HUMAN RESOURCES SUPERVISOR can be saved
-                            in the database. </a>
-                            <a>When any next of these supervisors are added to database, </a>
-                            <a className="text-danger">the app will not work properly, </a>
-                            <a>especially when it comes to sending emails to the right person.</a></p>
+                        <p className="mb-1"><span>Only one COVER SUPERVISOR and only one HUMAN RESOURCES SUPERVISOR can be saved
+                            in the database. </span>
+                            <span>When any next of these supervisors are added to database, </span>
+                            <span className="text-danger">the app will not work properly, </span>
+                            <span>especially when it comes to sending emails to the right person.</span></p>
                         <li className="font-weight-bold mb-0">Adding a new case or editing an existing case
                             (also a new or existing user)</li>
                         <p className="mb-1">When adding a new or editing an existing case all fields in a form marked
@@ -34,15 +34,15 @@ class Help3 extends Component {
                         <p className="mb-0">Because this is really simple application, it does not currently support
                             the following situations (and does not display error messages):</p>
                         <p className="mb-0">
-                            <a>– when a Head Teacher is adding or editing her/his own case as a User on any privileged dashboard
-                                (it means: not basic User Board) and gives her/himself as a Head Teacher, </a>
-                            <a className="text-danger">this case will not be saved or updated in database</a>
-                            <a>,</a>
+                            <span>– when a Head Teacher is adding or editing her/his own case as a User on any privileged dashboard
+                                (it means: not basic User Board) and gives her/himself as a Head Teacher, </span>
+                            <span className="text-danger">this case will not be saved or updated in database</span>
+                            <span>,</span>
                         </p>
                         <p className="mb-0">
-                            <a>– if any of the required field is not filled, </a>
-                            <a className="text-danger">a case will not be saved or updated in database</a>
-                            <a>.</a>
+                            <span>– if any of the required field is not filled, </span>
+                            <span className="text-danger">a case will not be saved or updated in database</span>
+                            <span>.</span>
                         </p>
                     </ul>
                     <Link to='/help' className="mt-0 mr-5">I. How to use this app</Link>

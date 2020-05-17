@@ -4,6 +4,9 @@ import {Link, withRouter} from 'react-router-dom';
 import AuthService from "../auth/AuthService";
 import authHeader from "../auth/AuthHeader";
 import Pagination from "./Pagination";
+import apiUrl from "../helper/ApiUrl";
+
+const API_URL = apiUrl();
 
 class ActiveCaseList extends Component {
 
@@ -37,7 +40,7 @@ class ActiveCaseList extends Component {
             this.setState({displayHeadTeacherButton: ""})
         }
 
-        fetch('api/cases/active/count', {headers: authHeader()})
+        fetch(API_URL + 'api/cases/active/count', {headers: authHeader()})
             .then(response => response.json())
             .then(data => this.setState({totalCases: data, isLoading: false}));
     }
@@ -46,7 +49,7 @@ class ActiveCaseList extends Component {
         const {currentPage, totalPages, pageLimit} = data;
         const offset = (currentPage - 1) * pageLimit;
 
-        fetch(`api/cases/active?offset=${offset}&limit=${pageLimit}`, {headers: authHeader()})
+        fetch(`${API_URL}api/cases/active?offset=${offset}&limit=${pageLimit}`, {headers: authHeader()})
             .then(response => response.json())
             .then(data => this.setState({currentCases: data, isLoading: false,
                 currentPage: currentPage, totalPages: totalPages, pageLimit: pageLimit}));
@@ -56,17 +59,17 @@ class ActiveCaseList extends Component {
         const headers = new Headers(authHeader());
         headers.set('Accept', 'application/json');
         headers.set('Content-Type', 'application/json');
-        await fetch(`/api/cases/${id}`, {
+        await fetch(`${API_URL}api/cases/${id}`, {
             method: 'DELETE',
             headers: headers
         }).then(() => {
-            fetch('api/cases/active/count', {headers: authHeader()})
+            fetch(API_URL + 'api/cases/active/count', {headers: authHeader()})
                 .then(response => response.json())
                 .then(data => this.setState({totalCases: data, isLoading: false}))
                 .then(() => {
                     const {currentPage, pageLimit} = this.state;
                     const offset = (currentPage - 1) * pageLimit;
-                    fetch(`api/cases/active?offset=${offset}&limit=${pageLimit}`, {headers: authHeader()})
+                    fetch(`${API_URL}api/cases/active?offset=${offset}&limit=${pageLimit}`, {headers: authHeader()})
                         .then(response => response.json())
                         .then(data => this.setState({currentCases: data, isLoading: false}));
                 });

@@ -1,6 +1,7 @@
 import axios from "axios";
+import apiUrl from "../helper/ApiUrl";
 
-const API_URL = "https://absence-management-system.herokuapp.com/";
+const API_URL = apiUrl();
 
 class AuthService {
 

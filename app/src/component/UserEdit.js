@@ -2,6 +2,9 @@ import React, {Component} from "react";
 import {Button, Container, Form, FormGroup, Input, Label} from "reactstrap";
 import {Link, withRouter} from "react-router-dom";
 import authHeader from "../auth/AuthHeader";
+import apiUrl from "../helper/ApiUrl";
+
+const API_URL = apiUrl();
 
 class UserEdit extends Component {
 
@@ -31,7 +34,7 @@ class UserEdit extends Component {
             this.setState({requiredPage: this.props.location.state.requiredPage});
         }
         if (this.props.match.params.id !== 'new') {
-            const user = await (await fetch(`/api/users/${this.props.match.params.id}`, {headers: authHeader()})).json();
+            const user = await (await fetch(`${API_URL}api/users/${this.props.match.params.id}`, {headers: authHeader()})).json();
             this.setState({user: user});
         }
     }
@@ -52,7 +55,7 @@ class UserEdit extends Component {
         headers.set('Accept', 'application/json');
         headers.set('Content-Type', 'application/json');
 
-        await fetch('/api/users' + (user.id ? '/' + user.id : ''), {
+        await fetch(API_URL + 'api/users' + (user.id ? '/' + user.id : ''), {
             method: (user.id) ? 'PUT' : 'POST',
             headers: headers,
             body: JSON.stringify(user)
@@ -72,15 +75,19 @@ class UserEdit extends Component {
                 <Form onSubmit={this.handleSubmit}>
                     <div className="row">
                         <FormGroup className="col-md-4 mb-3">
-                            <Label for="name">Name </Label>
-                            <Label className="text-danger" for="name">*</Label>
+                            <Label for="name">
+                                <span>Name </span>
+                                <span className="text-danger">*</span>
+                            </Label>
                             <Input type="text" name="name" id="name" value={user.name}
                                    onChange={this.handleChange}>
                             </Input>
                         </FormGroup>
                         <FormGroup className="col-md-4 mb-3">
-                            <Label for="surname">Surname </Label>
-                            <Label className="text-danger" for="surname">*</Label>
+                            <Label for="surname">
+                                <span>Surname </span>
+                                <span className="text-danger">*</span>
+                            </Label>
                             <Input type="text" name="surname" id="surname" value={user.surname}
                                    onChange={this.handleChange}>
                             </Input>
@@ -88,28 +95,36 @@ class UserEdit extends Component {
                     </div>
                     <div className="row">
                         <FormGroup className="col-md-4 mb-3">
-                            <Label for="email">Email </Label>
-                            <Label className="text-danger" for="email">*</Label>
+                            <Label for="email">
+                                <span>Email </span>
+                                <span className="text-danger">*</span>
+                            </Label>
                             <Input type="email" name="email" id="email" value={user.email}
                                    onChange={this.handleChange} placeholder="user email"/>
                         </FormGroup>
                         <FormGroup className="col-md-6 mb-3">
-                            <Label for="password">Password </Label>
-                            <Label className="text-danger" for="password">*</Label>
+                            <Label for="password">
+                                <span>Password </span>
+                                <span className="text-danger">*</span>
+                            </Label>
                             <Input type="text" name="password" id="password" value={user.password}
                                    onChange={this.handleChange}/>
                         </FormGroup>
                     </div>
                     <div className="row">
                         <FormGroup className="col-md-4 mb-3">
-                            <Label for="jobTitle">Job title </Label>
-                            <Label className="text-danger" for="jobTitle">*</Label>
+                            <Label for="jobTitle">
+                                <span>Job title </span>
+                                <span className="text-danger">*</span>
+                            </Label>
                             <Input type="text" name="jobTitle" id="jobTitle" value={user.jobTitle}
                                    onChange={this.handleChange}/>
                         </FormGroup>
                         <FormGroup className="col-md-2 mb-3">
-                            <Label for="isActive">User active? </Label>
-                            <Label className="text-danger" for="isActive">*</Label>
+                            <Label for="isActive">
+                                <span>User active? </span>
+                                <span className="text-danger">*</span>
+                            </Label>
                             <Input type="select" name="isActive" id="isActive" value={user.isActive}
                                    onChange={this.handleChange}>
                                 <option/>
@@ -120,8 +135,10 @@ class UserEdit extends Component {
                     </div>
                     <div className="row">
                         <FormGroup className="col-md-2 mb-3">
-                            <Label for="position">Position </Label>
-                            <Label className="text-danger" for="position">*</Label>
+                            <Label for="position">
+                                <span>Position </span>
+                                <span className="text-danger">*</span>
+                            </Label>
                             <Input type="select" name="position" id="position" value={user.position}
                                    onChange={this.handleChange}>
                                 <option value=""/>
@@ -132,8 +149,10 @@ class UserEdit extends Component {
                             </Input>
                         </FormGroup>
                         <FormGroup className="col-md-4 mb-3">
-                            <Label for="role">Authorisation </Label>
-                            <Label className="text-danger" for="role">*</Label>
+                            <Label for="role">
+                                <span>Authorisation </span>
+                                <span className="text-danger">*</span>
+                            </Label>
                             <Input type="select" name="role" id="role" value={user.role}
                                    onChange={this.handleChange}>
                                 <option value=""/>
