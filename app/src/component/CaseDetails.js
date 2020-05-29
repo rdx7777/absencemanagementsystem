@@ -40,9 +40,10 @@ class CaseDetails extends Component {
                             <ListGroupItem className="rounded block-example border border-dark col-md-7 mb-1">Head Teacher title:  {aCase.headTeacher.jobTitle}</ListGroupItem>
                         </div>
                         <div className="row">
-                            <ListGroupItem className="rounded block-example border border-dark col-md-4 mb-1">Start date:  {aCase.startDate}</ListGroupItem>
-                            <ListGroupItem className="rounded block-example border border-dark col-md-4 mb-1">End date:  {aCase.endDate}</ListGroupItem>
-                            <ListGroupItem className="rounded block-example border border-dark col-md-4 mb-1">Part day type:  {partDayType}</ListGroupItem>
+                            <ListGroupItem className="rounded block-example border border-dark col-md-3 mb-1">Created date:  {aCase.createdDate}</ListGroupItem>
+                            <ListGroupItem className="rounded block-example border border-dark col-md-3 mb-1">Start date:  {aCase.startDate}</ListGroupItem>
+                            <ListGroupItem className="rounded block-example border border-dark col-md-3 mb-1">End date:  {aCase.endDate}</ListGroupItem>
+                            <ListGroupItem className="rounded block-example border border-dark col-md-3 mb-1">Part day type:  {partDayType}</ListGroupItem>
                         </div>
                         <div className="row">
                             <ListGroupItem className="rounded block-example border border-dark col-md-12 mb-1">Absence reason:  {aCase.absenceReason}</ListGroupItem>
@@ -61,7 +62,8 @@ class CaseDetails extends Component {
                             <ListGroupItem className="rounded block-example border border-dark col-md-7 mb-1">Head Teacher comment:  {aCase.headTeacherComment}</ListGroupItem>
                         </div>
                         <div className="row">
-                            <ListGroupItem className="rounded block-example border border-dark col-md-10 mb-2">HR Supervisor comment:  {aCase.hrSupervisorComment}</ListGroupItem>
+                            <ListGroupItem className="rounded block-example border border-dark col-md-7 mb-2">HR Supervisor comment:  {aCase.hrSupervisorComment}</ListGroupItem>
+                            <ListGroupItem className="rounded block-example border border-dark col-md-3 mb-2">Resolved date:  {aCase.resolvedDate}</ListGroupItem>
                             <ListGroupItem className="rounded block-example border border-dark col-md-2 mb-2">Case resolved: {isCaseResolved}</ListGroupItem>
                         </div>
                     </ListGroup>

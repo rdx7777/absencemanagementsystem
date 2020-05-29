@@ -42,6 +42,7 @@ class AbsenceCaseValidatorTest {
             .withId(1000L)
             .withUser(correctUser)
             .withHeadTeacher(correctHeadTeacher)
+            .withCreatedDate(LocalDate.of(2019, 01, 01))
             .withStartDate(LocalDate.of(2019, 01, 01))
             .withEndDate(LocalDate.of(2099, 12, 31))
             .withPartDayType(PartDayType.AllDay)
@@ -55,6 +56,7 @@ class AbsenceCaseValidatorTest {
             .withHeadTeacherComment("No comment.")
             .withHrSupervisorComment("No comment.")
             .withIsCaseResolved(true)
+            .withResolvedDate(LocalDate.of(2099, 12, 31))
             .build();
     }
 
@@ -103,6 +105,28 @@ class AbsenceCaseValidatorTest {
             Arguments.of(correctHeadTeacher, Collections.emptyList())
         );
     }
+
+    // TODO: (done) validation method is unnecessary, this test's been removed
+    /*@ParameterizedTest
+    @MethodSource("SetOfCreatedDatesAndValidationResults")
+    void shouldValidateCreatedDate(LocalDate createdDate, List<String> expected) {
+        AbsenceCase caseWithVariableCreatedDate = AbsenceCase.builder()
+            .withCase(correctCase)
+            .withCreatedDate(createdDate)
+            .build();
+
+        List<String> resultOfValidation = AbsenceCaseValidator.validate(caseWithVariableCreatedDate);
+
+        assertEquals(expected, resultOfValidation);
+    }
+
+    private static Stream<Arguments> SetOfCreatedDatesAndValidationResults() {
+        return Stream.of(
+            Arguments.of(null, Collections.singletonList("Created date cannot be null.")),
+            Arguments.of(LocalDate.of(2019, 1, 10), Collections.emptyList()),
+            Arguments.of(LocalDate.now(), Collections.emptyList())
+        );
+    }*/
 
     @ParameterizedTest
     @MethodSource("SetOfStartDatesAndValidationResults")
@@ -271,4 +295,26 @@ class AbsenceCaseValidatorTest {
 
         assertEquals(Collections.singletonList("Is case resolved index cannot be null."), resultOfValidation);
     }
+
+    // TODO: (done) validation method is unnecessary, this test's been removed
+/*    @ParameterizedTest
+    @MethodSource("SetOfResolvedDatesAndValidationResults")
+    void shouldValidateResolvedDate(LocalDate resolvedDate, List<String> expected) {
+        AbsenceCase caseWithVariableResolvedDate = AbsenceCase.builder()
+            .withCase(correctCase)
+            .withResolvedDate(resolvedDate)
+            .build();
+
+        List<String> resultOfValidation = AbsenceCaseValidator.validate(caseWithVariableResolvedDate);
+
+        assertEquals(expected, resultOfValidation);
+    }
+
+    private static Stream<Arguments> SetOfResolvedDatesAndValidationResults() {
+        return Stream.of(
+            Arguments.of(null, Collections.singletonList("Resolved date cannot be null.")),
+            Arguments.of(LocalDate.of(2019, 1, 10), Collections.emptyList()),
+            Arguments.of(LocalDate.now(), Collections.emptyList())
+        );
+    }*/
 }

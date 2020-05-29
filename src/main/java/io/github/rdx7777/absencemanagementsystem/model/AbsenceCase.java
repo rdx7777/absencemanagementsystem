@@ -21,6 +21,7 @@ public class AbsenceCase {
     @ManyToOne(cascade = CascadeType.MERGE)
     private final User headTeacher;
 
+    private final LocalDate createdDate;
     private final LocalDate startDate;
     private final LocalDate endDate;
     private final PartDayType partDayType;
@@ -34,12 +35,14 @@ public class AbsenceCase {
     private final String headTeacherComment; // option, must not be validated
     private final String hrSupervisorComment; // option, must not be validated
     private final Boolean isCaseResolved;
+    private final LocalDate resolvedDate;
 
     @SuppressWarnings("unused")
     public AbsenceCase() {
         id = null;
         user = null;
         headTeacher = null;
+        createdDate = null;
         startDate = null;
         endDate = null;
         partDayType = null;
@@ -53,12 +56,14 @@ public class AbsenceCase {
         headTeacherComment = null;
         hrSupervisorComment = null;
         isCaseResolved = null;
+        resolvedDate = null;
     }
 
     private AbsenceCase(Builder builder) {
         id = builder.id;
         user = builder.user;
         headTeacher = builder.headTeacher;
+        createdDate = builder.createdDate;
         startDate = builder.startDate;
         endDate = builder.endDate;
         partDayType = builder.partDayType;
@@ -72,6 +77,7 @@ public class AbsenceCase {
         headTeacherComment = builder.headTeacherComment;
         hrSupervisorComment = builder.hrSupervisorComment;
         isCaseResolved = builder.isCaseResolved;
+        resolvedDate = builder.resolvedDate;
     }
 
     public static AbsenceCase.Builder builder() {
@@ -88,6 +94,10 @@ public class AbsenceCase {
 
     public User getHeadTeacher() {
         return headTeacher;
+    }
+
+    public LocalDate getCreatedDate() {
+        return createdDate;
     }
 
     public LocalDate getStartDate() {
@@ -142,6 +152,10 @@ public class AbsenceCase {
         return isCaseResolved;
     }
 
+    public LocalDate getResolvedDate() {
+        return resolvedDate;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -150,6 +164,7 @@ public class AbsenceCase {
         return Objects.equals(id, aCase.id) &&
             Objects.equals(user, aCase.user) &&
             Objects.equals(headTeacher, aCase.headTeacher) &&
+            Objects.equals(createdDate, aCase.createdDate) &&
             Objects.equals(startDate, aCase.startDate) &&
             Objects.equals(endDate, aCase.endDate) &&
             partDayType == aCase.partDayType &&
@@ -162,12 +177,13 @@ public class AbsenceCase {
             Objects.equals(isAbsencePaid, aCase.isAbsencePaid) &&
             Objects.equals(headTeacherComment, aCase.headTeacherComment) &&
             Objects.equals(hrSupervisorComment, aCase.hrSupervisorComment) &&
-            Objects.equals(isCaseResolved, aCase.isCaseResolved);
+            Objects.equals(isCaseResolved, aCase.isCaseResolved) &&
+            Objects.equals(resolvedDate, aCase.resolvedDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, user, headTeacher, startDate, endDate, partDayType, absenceReason, userComment, isCoverRequired, isCoverProvided, coverSupervisorComment, isApprovedByHeadTeacher, isAbsencePaid, headTeacherComment, hrSupervisorComment, isCaseResolved);
+        return Objects.hash(id, user, headTeacher, createdDate, startDate, endDate, partDayType, absenceReason, userComment, isCoverRequired, isCoverProvided, coverSupervisorComment, isApprovedByHeadTeacher, isAbsencePaid, headTeacherComment, hrSupervisorComment, isCaseResolved, resolvedDate);
     }
 
     @Override
@@ -176,6 +192,7 @@ public class AbsenceCase {
             "id=" + id +
             ", userId=" + user +
             ", headTeacherId=" + headTeacher +
+            ", createdDate=" + createdDate +
             ", startDate=" + startDate +
             ", endDate=" + endDate +
             ", partDayType=" + partDayType +
@@ -189,6 +206,7 @@ public class AbsenceCase {
             ", headTeacherComment='" + headTeacherComment + '\'' +
             ", hrSupervisorComment='" + hrSupervisorComment + '\'' +
             ", isCaseResolved=" + isCaseResolved +
+            ", resolvedDate=" + resolvedDate +
             '}';
     }
 
@@ -197,6 +215,7 @@ public class AbsenceCase {
         private Long id;
         private User user;
         private User headTeacher;
+        private LocalDate createdDate;
         private LocalDate startDate;
         private LocalDate endDate;
         private PartDayType partDayType;
@@ -210,11 +229,13 @@ public class AbsenceCase {
         private String headTeacherComment;
         private String hrSupervisorComment;
         private Boolean isCaseResolved;
+        private LocalDate resolvedDate;
 
         public Builder withCase(AbsenceCase aCase) {
             this.id = aCase.getId();
             this.user = aCase.getUser();
             this.headTeacher = aCase.getHeadTeacher();
+            this.createdDate = aCase.getCreatedDate();
             this.startDate = aCase.getStartDate();
             this.endDate = aCase.getEndDate();
             this.partDayType = aCase.getPartDayType();
@@ -228,6 +249,7 @@ public class AbsenceCase {
             this.headTeacherComment = aCase.getHeadTeacherComment();
             this.hrSupervisorComment = aCase.getHrSupervisorComment();
             this.isCaseResolved = aCase.getIsCaseResolved();
+            this.resolvedDate = aCase.getResolvedDate();
             return this;
         }
 
@@ -243,6 +265,11 @@ public class AbsenceCase {
 
         public Builder withHeadTeacher(User headTeacher) {
             this.headTeacher = headTeacher;
+            return this;
+        }
+
+        public Builder withCreatedDate(LocalDate createdDate) {
+            this.createdDate = createdDate;
             return this;
         }
 
@@ -308,6 +335,11 @@ public class AbsenceCase {
 
         public Builder withIsCaseResolved(Boolean isCaseResolved) {
             this.isCaseResolved = isCaseResolved;
+            return this;
+        }
+
+        public Builder withResolvedDate(LocalDate resolvedDate) {
+            this.resolvedDate = resolvedDate;
             return this;
         }
 

@@ -12,6 +12,7 @@ public class AbsenceCaseGenerator {
         Long id = IdGenerator.getNextId();
         User user = UserGenerator.getRandomEmployee();
         User headTeacher = UserGenerator.getRandomHeadTeacher();
+        LocalDate createdDate = LocalDate.now();
         LocalDate startDate = LocalDate.now();
         LocalDate endDate = LocalDate.now();
         PartDayType type = PartDayType.Morning;
@@ -25,11 +26,13 @@ public class AbsenceCaseGenerator {
         String headTeacherComment = WordGenerator.getRandomWord();
         String hrSupervisorComment = WordGenerator.getRandomWord();
         Boolean isCaseResolved = false;
+        LocalDate resolvedDate = LocalDate.now();
 
         return AbsenceCase.builder()
             .withId(id)
             .withUser(user)
             .withHeadTeacher(headTeacher)
+            .withCreatedDate(createdDate)
             .withStartDate(startDate)
             .withEndDate(endDate)
             .withPartDayType(type)
@@ -43,6 +46,7 @@ public class AbsenceCaseGenerator {
             .withHeadTeacherComment(headTeacherComment)
             .withHrSupervisorComment(hrSupervisorComment)
             .withIsCaseResolved(isCaseResolved)
+            .withResolvedDate(resolvedDate)
             .build();
     }
 
@@ -50,6 +54,7 @@ public class AbsenceCaseGenerator {
         Long id = IdGenerator.getNextId();
         User user = UserGenerator.getRandomEmployee();
         User headTeacher = UserGenerator.getRandomHeadTeacher();
+        LocalDate createdDate = LocalDate.now();
         LocalDate startDate = LocalDate.now();
         LocalDate endDate = LocalDate.now();
         PartDayType type = PartDayType.Afternoon;
@@ -63,11 +68,13 @@ public class AbsenceCaseGenerator {
         String headTeacherComment = WordGenerator.getRandomWord();
         String hrSupervisorComment = WordGenerator.getRandomWord();
         Boolean isCaseResolved = false;
+        LocalDate resolvedDate = LocalDate.now();
 
         return AbsenceCase.builder()
             .withId(id)
             .withUser(user)
             .withHeadTeacher(headTeacher)
+            .withCreatedDate(createdDate)
             .withStartDate(startDate)
             .withEndDate(endDate)
             .withPartDayType(type)
@@ -81,6 +88,7 @@ public class AbsenceCaseGenerator {
             .withHeadTeacherComment(headTeacherComment)
             .withHrSupervisorComment(hrSupervisorComment)
             .withIsCaseResolved(isCaseResolved)
+            .withResolvedDate(resolvedDate)
             .build();
     }
 
@@ -88,6 +96,7 @@ public class AbsenceCaseGenerator {
         Long id = IdGenerator.getNextId();
         User user = UserGenerator.getRandomEmployee();
         User headTeacher = UserGenerator.getRandomHeadTeacher();
+        LocalDate createdDate = LocalDate.now();
         LocalDate startDate = LocalDate.now();
         LocalDate endDate = startDate.plusDays(2);
         PartDayType partDayType = PartDayType.AllDay;
@@ -101,11 +110,13 @@ public class AbsenceCaseGenerator {
         String headTeacherComment = WordGenerator.getRandomWord();
         String hrSupervisorComment = WordGenerator.getRandomWord();
         Boolean isCaseResolved = false;
+        LocalDate resolvedDate = LocalDate.now();
 
         return AbsenceCase.builder()
             .withId(id)
             .withUser(user)
             .withHeadTeacher(headTeacher)
+            .withCreatedDate(createdDate)
             .withStartDate(startDate)
             .withEndDate(endDate)
             .withPartDayType(partDayType)
@@ -119,12 +130,14 @@ public class AbsenceCaseGenerator {
             .withHeadTeacherComment(headTeacherComment)
             .withHrSupervisorComment(hrSupervisorComment)
             .withIsCaseResolved(isCaseResolved)
+            .withResolvedDate(resolvedDate)
             .build();
     }
 
     public static AbsenceCase getRandomCaseWithAllDayPartDayTypeAndSpecificId(Long id) {
         User user = UserGenerator.getRandomEmployee();
         User headTeacher = UserGenerator.getRandomHeadTeacher();
+        LocalDate createdDate = LocalDate.now();
         LocalDate startDate = LocalDate.now();
         LocalDate endDate = startDate.plusDays(2);
         PartDayType type = PartDayType.AllDay;
@@ -138,11 +151,13 @@ public class AbsenceCaseGenerator {
         String headTeacherComment = WordGenerator.getRandomWord();
         String hrSupervisorComment = WordGenerator.getRandomWord();
         Boolean isCaseResolved = false;
+        LocalDate resolvedDate = LocalDate.now();
 
         return AbsenceCase.builder()
             .withId(id)
             .withUser(user)
             .withHeadTeacher(headTeacher)
+            .withCreatedDate(createdDate)
             .withStartDate(startDate)
             .withEndDate(endDate)
             .withPartDayType(type)
@@ -156,12 +171,14 @@ public class AbsenceCaseGenerator {
             .withHeadTeacherComment(headTeacherComment)
             .withHrSupervisorComment(hrSupervisorComment)
             .withIsCaseResolved(isCaseResolved)
+            .withResolvedDate(resolvedDate)
             .build();
     }
 
     public static AbsenceCase getRandomCaseWithAllDayPartDayTypeAndNullId() {
         User user = UserGenerator.getRandomEmployee();
         User headTeacher = UserGenerator.getRandomHeadTeacher();
+        LocalDate createdDate = LocalDate.now();
         LocalDate startDate = LocalDate.now();
         LocalDate endDate = startDate.plusDays(2);
         PartDayType type = PartDayType.AllDay;
@@ -175,10 +192,12 @@ public class AbsenceCaseGenerator {
         String headTeacherComment = WordGenerator.getRandomWord();
         String hrSupervisorComment = WordGenerator.getRandomWord();
         Boolean isCaseResolved = false;
+        LocalDate resolvedDate = LocalDate.now();
 
         return AbsenceCase.builder()
             .withUser(user)
             .withHeadTeacher(headTeacher)
+            .withCreatedDate(createdDate)
             .withStartDate(startDate)
             .withEndDate(endDate)
             .withPartDayType(type)
@@ -192,12 +211,14 @@ public class AbsenceCaseGenerator {
             .withHeadTeacherComment(headTeacherComment)
             .withHrSupervisorComment(hrSupervisorComment)
             .withIsCaseResolved(isCaseResolved)
+            .withResolvedDate(resolvedDate)
             .build();
     }
 
     public static AbsenceCase getRandomCaseWithAllDayPartDayTypeAndSpecificUserId(Long userId) {
         Long id = IdGenerator.getNextId();
         User headTeacher = UserGenerator.getRandomHeadTeacher();
+        LocalDate createdDate = LocalDate.now();
         LocalDate startDate = LocalDate.now();
         LocalDate endDate = startDate.plusDays(2);
         PartDayType type = PartDayType.AllDay;
@@ -211,11 +232,13 @@ public class AbsenceCaseGenerator {
         String headTeacherComment = WordGenerator.getRandomWord();
         String hrSupervisorComment = WordGenerator.getRandomWord();
         Boolean isCaseResolved = false;
+        LocalDate resolvedDate = LocalDate.now();
 
         return AbsenceCase.builder()
             .withId(id)
             .withUser(UserGenerator.getRandomEmployeeWithSpecificId(userId))
             .withHeadTeacher(headTeacher)
+            .withCreatedDate(createdDate)
             .withStartDate(startDate)
             .withEndDate(endDate)
             .withPartDayType(type)
@@ -229,12 +252,14 @@ public class AbsenceCaseGenerator {
             .withHeadTeacherComment(headTeacherComment)
             .withHrSupervisorComment(hrSupervisorComment)
             .withIsCaseResolved(isCaseResolved)
+            .withResolvedDate(resolvedDate)
             .build();
     }
 
     public static AbsenceCase getRandomCaseWithAllDayPartDayTypeAndSpecificHeadTeacherId(Long headTeacherId) {
         Long id = IdGenerator.getNextId();
         User user = UserGenerator.getRandomEmployee();
+        LocalDate createdDate = LocalDate.now();
         LocalDate startDate = LocalDate.now();
         LocalDate endDate = startDate.plusDays(2);
         PartDayType type = PartDayType.AllDay;
@@ -248,11 +273,13 @@ public class AbsenceCaseGenerator {
         String headTeacherComment = WordGenerator.getRandomWord();
         String hrSupervisorComment = WordGenerator.getRandomWord();
         Boolean isCaseResolved = false;
+        LocalDate resolvedDate = LocalDate.now();
 
         return AbsenceCase.builder()
             .withId(id)
             .withUser(user)
             .withHeadTeacher(UserGenerator.getRandomHeadTeacherWithSpecificId(headTeacherId))
+            .withCreatedDate(createdDate)
             .withStartDate(startDate)
             .withEndDate(endDate)
             .withPartDayType(type)
@@ -266,6 +293,7 @@ public class AbsenceCaseGenerator {
             .withHeadTeacherComment(headTeacherComment)
             .withHrSupervisorComment(hrSupervisorComment)
             .withIsCaseResolved(isCaseResolved)
+            .withResolvedDate(resolvedDate)
             .build();
     }
 }

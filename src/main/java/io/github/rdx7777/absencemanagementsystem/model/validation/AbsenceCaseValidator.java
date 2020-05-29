@@ -22,6 +22,9 @@ public class AbsenceCaseValidator extends Validator {
 
         addResultOfValidation(result, validateHeadTeacher(aCase.getHeadTeacher()));
 
+        // TODO: (done) this validation's been removed, because createdDate is added automatically
+//        addResultOfValidation(result, validateCreatedDate(aCase.getCreatedDate()));
+
         String resultOfValidationStartDate = validateStartDate(aCase.getStartDate());
         addResultOfValidation(result, resultOfValidationStartDate);
 
@@ -46,6 +49,9 @@ public class AbsenceCaseValidator extends Validator {
 
         addResultOfValidation(result, validateIsCaseResolved(aCase.getIsCaseResolved()));
 
+        // TODO: (done) this validation's been removed, because resolvedDate is added automatically
+//        addResultOfValidation(result, validateResolvedDate(aCase.getResolvedDate()));
+
         return result;
     }
 
@@ -59,6 +65,13 @@ public class AbsenceCaseValidator extends Validator {
     private static String validateHeadTeacher(User headTeacher) {
         if (headTeacher == null) {
             return "Head Teacher cannot be null.";
+        }
+        return null;
+    }
+
+    private static String validateCreatedDate(LocalDate createdDate) {
+        if (createdDate == null) {
+            return "Created date cannot be null.";
         }
         return null;
     }
@@ -134,6 +147,13 @@ public class AbsenceCaseValidator extends Validator {
     private static String validateIsCaseResolved(Boolean isCaseResolved) {
         if (isCaseResolved == null) {
             return "Is case resolved index cannot be null.";
+        }
+        return null;
+    }
+
+    private static String validateResolvedDate(LocalDate resolvedDate) {
+        if (resolvedDate == null) {
+            return "Resolved date cannot be null.";
         }
         return null;
     }

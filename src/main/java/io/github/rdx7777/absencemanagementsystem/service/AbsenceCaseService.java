@@ -5,6 +5,7 @@ import io.github.rdx7777.absencemanagementsystem.model.User;
 import io.github.rdx7777.absencemanagementsystem.repository.AbsenceCaseRepository;
 import io.github.rdx7777.absencemanagementsystem.repository.UserRepository;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -50,7 +51,13 @@ public class AbsenceCaseService {
             if (headTeacher.isEmpty()) {
                 userRepository.save(aCase.getHeadTeacher());
             }
-            return repository.save(aCase);
+            AbsenceCase caseToSave;
+            if (aCase.getIsCaseResolved()) {
+                caseToSave = AbsenceCase.builder().withCase(aCase).withCreatedDate(LocalDate.now()).withResolvedDate(LocalDate.now()).build();
+            } else {
+                caseToSave = AbsenceCase.builder().withCase(aCase).withCreatedDate(LocalDate.now()).build();
+            }
+            return repository.save(caseToSave);
         } catch (NonTransientDataAccessException e) {
             String message = "An error occurred during adding absence case.";
             logger.error(message, e);
@@ -69,7 +76,13 @@ public class AbsenceCaseService {
             throw new ServiceOperationException("Given absence case does not exist in database.");
         }
         try {
-            return repository.save(aCase);
+            AbsenceCase caseToUpdate;
+            if (aCase.getIsCaseResolved() && (repository.findById(aCase.getId()).get().getResolvedDate() == null)) {
+                caseToUpdate = AbsenceCase.builder().withCase(aCase).withResolvedDate(LocalDate.now()).build();
+            } else {
+                caseToUpdate = aCase;
+            }
+            return repository.save(caseToUpdate);
         } catch (NonTransientDataAccessException e) {
             String message = "An error occurred during updating absence case.";
             logger.error(message, e);

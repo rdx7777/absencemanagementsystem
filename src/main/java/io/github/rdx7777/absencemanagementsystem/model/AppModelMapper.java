@@ -25,6 +25,7 @@ public class AppModelMapper {
             .withId(absenceCase.getId())
             .withUser(userDTO)
             .withHeadTeacher(headTeacherDTO)
+            .withCreatedDate(absenceCase.getCreatedDate())
             .withStartDate(absenceCase.getStartDate())
             .withEndDate(absenceCase.getEndDate())
             .withPartDayType(absenceCase.getPartDayType())
@@ -38,6 +39,7 @@ public class AppModelMapper {
             .withHeadTeacherComment(absenceCase.getHeadTeacherComment())
             .withHrSupervisorComment(absenceCase.getHrSupervisorComment())
             .withIsCaseResolved(absenceCase.getIsCaseResolved())
+            .withResolvedDate(absenceCase.getResolvedDate())
             .build();
     }
 
@@ -48,6 +50,7 @@ public class AppModelMapper {
             .withId(caseDTO.getId())
             .withUser(user)
             .withHeadTeacher(headTeacher)
+            .withCreatedDate(caseDTO.getCreatedDate())
             .withStartDate(caseDTO.getStartDate())
             .withEndDate(caseDTO.getEndDate())
             .withPartDayType(caseDTO.getPartDayType())
@@ -61,6 +64,7 @@ public class AppModelMapper {
             .withHeadTeacherComment(caseDTO.getHeadTeacherComment())
             .withHrSupervisorComment(caseDTO.getHrSupervisorComment())
             .withIsCaseResolved(caseDTO.getIsCaseResolved())
+            .withResolvedDate(caseDTO.getResolvedDate())
             .build();
     }
 
