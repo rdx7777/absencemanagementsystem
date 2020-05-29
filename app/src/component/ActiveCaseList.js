@@ -88,16 +88,22 @@ class ActiveCaseList extends Component {
             if (aCase.isCoverRequired) {isRequired='yes'} else {isRequired='no'}
             var isProvided;
             if (aCase.isCoverProvided) {isProvided = 'yes'} else {isProvided = 'no'}
+            var isApproved;
+            if (aCase.isApprovedByHeadTeacher) {isApproved = 'yes'} else {isApproved = 'no'}
+            var isPaid;
+            if (aCase.isAbsencePaid) {isPaid = 'yes'} else {isPaid = 'no'}
             var isResolved;
             if (aCase.isCaseResolved) {isResolved = 'yes'} else {isResolved = 'no'}
             return <tr key={aCase.id}>
                 <td style={{whiteSpace: 'nowrap'}}>{aCase.id}</td>
                 <td>{aCase.user.name || ''} {aCase.user.surname || ''}</td>
-                <td>{aCase.headTeacher.name || ''} {aCase.headTeacher.surname || ''}</td>
                 <td>{aCase.startDate}</td>
                 <td>{aCase.endDate}</td>
                 <td>{isRequired}</td>
                 <td>{isProvided}</td>
+                <td>{isApproved}</td>
+                <td>{isPaid}</td>
+                <td>{aCase.absenceReason}</td>
                 <td>{isResolved}</td>
                 <td>
                     <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
@@ -155,14 +161,16 @@ class ActiveCaseList extends Component {
                         <thead>
                         <tr>
                             <th width="5%">Id</th>
-                            <th width="15%">User</th>
-                            <th width="15%">Head Teacher</th>
+                            <th width="10%">User</th>
                             <th width="10%">Start date</th>
                             <th width="10%">End date</th>
-                            <th width="5%">Cover required?</th>
-                            <th width="5%">Cover provided?</th>
-                            <th width="5%">Case resolved?</th>
-                            <th width="20%">Actions</th>
+                            <th width="3%">Cover req</th>
+                            <th width="3%">Cover prvdd</th>
+                            <th width="3%">Abs. appd</th>
+                            <th width="3%">Abs. paid</th>
+                            <th width="15%">Absence reason</th>
+                            <th width="3%">Case resolv.</th>
+                            <th width="20%"/>
                         </tr>
                         </thead>
                         <tbody>
