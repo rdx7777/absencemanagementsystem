@@ -3,6 +3,7 @@ import {Button, Container, Form, FormGroup, Input, Label} from "reactstrap";
 import {Link, withRouter} from "react-router-dom";
 import authHeader from "../auth/AuthHeader";
 import apiUrl from "../helper/ApiUrl";
+import AuthService from "../auth/AuthService";
 
 const API_URL = apiUrl();
 
@@ -30,12 +31,17 @@ class UserEdit extends Component {
     }
 
     async componentDidMount() {
-        if (this.props.location.state !== null) {
-            this.setState({requiredPage: this.props.location.state.requiredPage});
-        }
-        if (this.props.match.params.id !== 'new') {
-            const user = await (await fetch(`${API_URL}api/users/${this.props.match.params.id}`, {headers: authHeader()})).json();
-            this.setState({user: user});
+        try {
+            if (this.props.location.state !== null) {
+                this.setState({requiredPage: this.props.location.state.requiredPage});
+            }
+            if (this.props.match.params.id !== 'new') {
+                const user = await (await fetch(`${API_URL}api/users/${this.props.match.params.id}`, {headers: authHeader()})).json();
+                this.setState({user: user});
+            }
+        } catch (e) {
+            AuthService.logout();
+            this.props.history.push({pathname: '/'});
         }
     }
 

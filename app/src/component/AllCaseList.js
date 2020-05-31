@@ -28,21 +28,26 @@ class AllCaseList extends Component {
     }
 
     componentDidMount() {
-        if (this.props.location.state !== null) {
-            this.setState({requiredPage: this.props.location.state.requiredPage});
-        }
-        this.setState({isLoading: true});
-        const currentUser = AuthService.getCurrentUser();
-        if (currentUser.roles.includes("ROLE_ADMIN")) {
-            this.setState({displayButton: ""})
-        }
-        if (currentUser.roles.includes("ROLE_HEAD_TEACHER")) {
-            this.setState({displayHeadTeacherButton: ""})
-        }
+        try {
+            if (this.props.location.state !== null) {
+                this.setState({requiredPage: this.props.location.state.requiredPage});
+            }
+            this.setState({isLoading: true});
+            const currentUser = AuthService.getCurrentUser();
+            if (currentUser.roles.includes("ROLE_ADMIN")) {
+                this.setState({displayButton: ""})
+            }
+            if (currentUser.roles.includes("ROLE_HEAD_TEACHER")) {
+                this.setState({displayHeadTeacherButton: ""})
+            }
 
-        fetch(API_URL + 'api/cases/count', {headers: authHeader()})
-            .then(response => response.json())
-            .then(data => this.setState({totalCases: data, isLoading: false}));
+            fetch(API_URL + 'api/cases/count', {headers: authHeader()})
+                .then(response => response.json())
+                .then(data => this.setState({totalCases: data, isLoading: false}));
+        } catch (e) {
+            AuthService.logout();
+            this.props.history.push({pathname: '/'});
+        }
     }
 
     onPageChanged = data => {

@@ -4,6 +4,7 @@ import {Link} from "react-router-dom";
 import authHeader from "../auth/AuthHeader";
 import Pagination from "./Pagination";
 import apiUrl from "../helper/ApiUrl";
+import AuthService from "../auth/AuthService";
 
 const API_URL = apiUrl();
 
@@ -25,14 +26,19 @@ class AllUserList extends Component {
     }
 
     componentDidMount() {
-        if (this.props.location.state !== null) {
-            this.setState({requiredPage: this.props.location.state.requiredPage});
-        }
-        this.setState({isLoading: true});
+        try {
+            if (this.props.location.state !== null) {
+                this.setState({requiredPage: this.props.location.state.requiredPage});
+            }
+            this.setState({isLoading: true});
 
-        fetch(API_URL + 'api/users/count', {headers: authHeader()})
-            .then(response => response.json())
-            .then(data => this.setState({totalUsers: data, isLoading: false}));
+            fetch(API_URL + 'api/users/count', {headers: authHeader()})
+                .then(response => response.json())
+                .then(data => this.setState({totalUsers: data, isLoading: false}));
+        } catch (e) {
+            AuthService.logout();
+            this.props.history.push({pathname: '/'});
+        }
     }
 
     onPageChanged = data => {
@@ -125,7 +131,6 @@ class AllUserList extends Component {
                             <th width="20%">Email</th>
                             <th width="20%">Job Title</th>
                             <th width="5%">Active?</th>
-                            {/*<th width="5%">User position</th>*/}
                             <th width="10%">Authorisation</th>
                             <th width="15%">Actions</th>
                         </tr>

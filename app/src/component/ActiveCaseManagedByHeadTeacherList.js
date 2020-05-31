@@ -26,16 +26,21 @@ class ActiveCaseManagedByHeadTeacherList extends Component {
     }
 
     componentDidMount() {
-        if (this.props.location.state !== null) {
-            this.setState({requiredPage: this.props.location.state.requiredPage});
-        }
-        this.setState({isLoading: true});
-        const currentUser = AuthService.getCurrentUser();
-        const id = currentUser.id;
+        try {
+            if (this.props.location.state !== null) {
+                this.setState({requiredPage: this.props.location.state.requiredPage});
+            }
+            this.setState({isLoading: true});
+            const currentUser = AuthService.getCurrentUser();
+            const id = currentUser.id;
 
-        fetch(API_URL + 'api/cases/active/count/ht/' + id, {headers: authHeader()})
-            .then(response => response.json())
-            .then(data => this.setState({totalCases: data, isLoading: false}));
+            fetch(API_URL + 'api/cases/active/count/ht/' + id, {headers: authHeader()})
+                .then(response => response.json())
+                .then(data => this.setState({totalCases: data, isLoading: false}));
+        } catch (e) {
+            AuthService.logout();
+            this.props.history.push({pathname: '/'});
+        }
     }
 
     onPageChanged = data => {

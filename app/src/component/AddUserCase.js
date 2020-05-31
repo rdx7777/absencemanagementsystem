@@ -43,25 +43,30 @@ export default class AddUserCase extends Component {
     }
 
     async componentDidMount() {
-        if (this.props.location.state !== null) {
-            this.setState({requiredPage: this.props.location.state.requiredPage,
-                returnAddress: this.props.location.state.returnAddress});
+        try {
+            if (this.props.location.state !== null) {
+                this.setState({requiredPage: this.props.location.state.requiredPage,
+                    returnAddress: this.props.location.state.returnAddress});
+            }
+            const currentUser = AuthService.getCurrentUser();
+            const user = await (await fetch(`${API_URL}api/users/${currentUser.id}`, {headers: authHeader()})).json();
+            const headTeachers = await (await fetch(API_URL + 'api/users/headteachers', {headers: authHeader()})).json();
+            const filteredHeadTeachers = headTeachers.filter(u => !(u.id === currentUser.id));
+
+            const {aCase} = this.state;
+
+            aCase.id = null;
+            aCase.user = user;
+            aCase.isCoverProvided = false;
+            aCase.isApprovedByHeadTeacher = false;
+            aCase.isAbsencePaid = false;
+            aCase.isCaseResolved = false;
+
+            this.setState({aCase: aCase, user: user, headTeachers: filteredHeadTeachers});
+        } catch (e) {
+            AuthService.logout();
+            this.props.history.push({pathname: '/'});
         }
-        const currentUser = AuthService.getCurrentUser();
-        const user = await (await fetch(`${API_URL}api/users/${currentUser.id}`, {headers: authHeader()})).json();
-        const headTeachers = await (await fetch(API_URL + 'api/users/headteachers', {headers: authHeader()})).json();
-        const filteredHeadTeachers = headTeachers.filter(u => !(u.id === currentUser.id));
-
-        const {aCase} = this.state;
-
-        aCase.id = null;
-        aCase.user = user;
-        aCase.isCoverProvided = false;
-        aCase.isApprovedByHeadTeacher = false;
-        aCase.isAbsencePaid = false;
-        aCase.isCaseResolved = false;
-
-        this.setState({aCase: aCase, user: user, headTeachers: filteredHeadTeachers});
     }
 
     handleChange(event) {

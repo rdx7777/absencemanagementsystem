@@ -43,19 +43,24 @@ class CaseEdit extends Component {
     }
 
     async componentDidMount() {
-        if (this.props.location.state !== null) {
-            this.setState({requiredPage: this.props.location.state.requiredPage,
-                returnAddress: this.props.location.state.returnAddress});
-        }
-        const headTeachers = await (await fetch(API_URL + 'api/users/headteachers', {headers: authHeader()})).json();
-        const users = await (await fetch(API_URL + 'api/users', {headers: authHeader()})).json();
-        const currentUser = AuthService.getCurrentUser();
-        const filteredUsers = users.filter(u => !(u.id === currentUser.id));
-        if (this.props.match.params.id !== 'new') {
-            const aCase = await (await fetch(`${API_URL}api/cases/${this.props.match.params.id}`, {headers: authHeader()})).json();
-            this.setState({aCase: aCase, users: filteredUsers, headTeachers: headTeachers});
-        } else {
-            this.setState({users: filteredUsers, headTeachers: headTeachers})
+        try {
+            if (this.props.location.state !== null) {
+                this.setState({requiredPage: this.props.location.state.requiredPage,
+                    returnAddress: this.props.location.state.returnAddress});
+            }
+            const headTeachers = await (await fetch(API_URL + 'api/users/headteachers', {headers: authHeader()})).json();
+            const users = await (await fetch(API_URL + 'api/users', {headers: authHeader()})).json();
+            const currentUser = AuthService.getCurrentUser();
+            const filteredUsers = users.filter(u => !(u.id === currentUser.id));
+            if (this.props.match.params.id !== 'new') {
+                const aCase = await (await fetch(`${API_URL}api/cases/${this.props.match.params.id}`, {headers: authHeader()})).json();
+                this.setState({aCase: aCase, users: filteredUsers, headTeachers: headTeachers});
+            } else {
+                this.setState({users: filteredUsers, headTeachers: headTeachers})
+            }
+        } catch (e) {
+            AuthService.logout();
+            this.props.history.push({pathname: '/'});
         }
     }
 
