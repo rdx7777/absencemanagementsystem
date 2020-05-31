@@ -116,10 +116,8 @@ export default class AddUserCase extends Component {
                 <Form onSubmit={this.handleSubmit}>
                     <div className="row">
                         <FormGroup className="col-md-4 mb-3">
-                            <Label>User: {aCase.user.name} {aCase.user.surname}</Label>
+                            <Label>User: <span className="font-weight-bold">{aCase.user.name} {aCase.user.surname}</span></Label>
                         </FormGroup>
-                    </div>
-                    <div className="row">
                         <FormGroup className="col-md-4 mb-3">
                             <Label for="headTeacher">
                                 <span>Select Head Teacher </span>
@@ -131,20 +129,22 @@ export default class AddUserCase extends Component {
                                 {headTeacher}
                             </Input>
                         </FormGroup>
-                        <FormGroup className="col-md-2 mb-3">
+                    </div>
+                    <div className="row">
+                        <FormGroup className="col-md-4 mb-3">
                             <Label for="startDate">
                                 <span>Start Date </span>
                                 <span className="text-danger">*</span>
                             </Label>
-                            <Input type="text" name="startDate" id="startDate" value={aCase.startDate} placeholder="YYYY-MM-DD"
+                            <Input type="date" name="startDate" id="startDate" value={aCase.startDate} placeholder="YYYY-MM-DD"
                                    onChange={this.handleChange}/>
                         </FormGroup>
-                        <FormGroup className="col-md-2 mb-3">
+                        <FormGroup className="col-md-4 mb-3">
                             <Label for="endDate">
                                 <span>End Date </span>
                                 <span className="text-danger">*</span>
                             </Label>
-                            <Input type="text" name="endDate" id="endDate" value={aCase.endDate} placeholder="YYYY-MM-DD"
+                            <Input type="date" name="endDate" id="endDate" value={aCase.endDate} placeholder="YYYY-MM-DD"
                                    onChange={this.handleChange}/>
                         </FormGroup>
                         <FormGroup className="col-md-2 mb-3">

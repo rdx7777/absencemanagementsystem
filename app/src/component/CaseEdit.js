@@ -151,20 +151,20 @@ class CaseEdit extends Component {
                         </FormGroup>
                     </div>
                     <div className="row">
-                        <FormGroup className="col-md-2 mb-n2">
+                        <FormGroup className="col-md-4 mb-n2">
                             <Label className="mb-0" for="startDate">
                                 <span>Start date </span>
                                 <span className="text-danger">*</span>
                             </Label>
-                            <Input type="text" name="startDate" id="startDate" value={aCase.startDate}
+                            <Input type="date" name="startDate" id="startDate" value={aCase.startDate}
                                    onChange={this.handleChange}/>
                         </FormGroup>
-                        <FormGroup className="col-md-2 mb-n2">
+                        <FormGroup className="col-md-4 mb-n2">
                             <Label className="mb-0" for="endDate">
                                 <span>End date </span>
                                 <span className="text-danger">*</span>
                             </Label>
-                            <Input type="text" name="endDate" id="endDate" value={aCase.endDate}
+                            <Input type="date" name="endDate" id="endDate" value={aCase.endDate}
                                    onChange={this.handleChange}/>
                         </FormGroup>
                         <FormGroup className="col-md-2 mb-n2">
