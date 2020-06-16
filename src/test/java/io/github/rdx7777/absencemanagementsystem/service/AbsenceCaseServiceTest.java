@@ -6,6 +6,7 @@ import static org.mockito.Mockito.*;
 
 import io.github.rdx7777.absencemanagementsystem.generators.AbsenceCaseGenerator;
 import io.github.rdx7777.absencemanagementsystem.model.AbsenceCase;
+import io.github.rdx7777.absencemanagementsystem.model.ActionStatus;
 import io.github.rdx7777.absencemanagementsystem.model.User;
 import io.github.rdx7777.absencemanagementsystem.repository.AbsenceCaseRepository;
 import io.github.rdx7777.absencemanagementsystem.repository.UserRepository;
@@ -241,7 +242,7 @@ class AbsenceCaseServiceTest {
     void shouldReturnAllActiveCases() throws ServiceOperationException {
         // given
         List<AbsenceCase> cases = List.of(AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayType(), AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayType());
-        Example<AbsenceCase> example = Example.of(new AbsenceCase.Builder().withIsCaseResolved(false).build());
+        Example<AbsenceCase> example = Example.of(new AbsenceCase.Builder().withIsCaseResolved(ActionStatus.No).build());
         Sort sort = Sort.by(Sort.Direction.DESC, "id");
         when(repository.findAll(example, sort)).thenReturn(cases);
 
@@ -311,7 +312,7 @@ class AbsenceCaseServiceTest {
         List<AbsenceCase> cases = List.of(AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayTypeAndSpecificHeadTeacherId(4L), AbsenceCaseGenerator.getRandomCaseWithAllDayPartDayTypeAndSpecificHeadTeacherId(4L));
         Example<AbsenceCase> example = Example.of(new AbsenceCase.Builder()
             .withHeadTeacher(User.builder().withId(4L).build())
-            .withIsCaseResolved(false)
+            .withIsCaseResolved(ActionStatus.No)
             .build());
         Sort sort = Sort.by(Sort.Direction.DESC, "id");
         when(repository.findAll(example, sort)).thenReturn(cases);

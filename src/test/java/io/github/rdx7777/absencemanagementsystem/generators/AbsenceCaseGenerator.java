@@ -1,6 +1,7 @@
 package io.github.rdx7777.absencemanagementsystem.generators;
 
 import io.github.rdx7777.absencemanagementsystem.model.AbsenceCase;
+import io.github.rdx7777.absencemanagementsystem.model.ActionStatus;
 import io.github.rdx7777.absencemanagementsystem.model.PartDayType;
 import io.github.rdx7777.absencemanagementsystem.model.User;
 
@@ -18,14 +19,14 @@ public class AbsenceCaseGenerator {
         PartDayType type = PartDayType.Morning;
         String absenceReason = WordGenerator.getRandomWord();
         String userComment = WordGenerator.getRandomWord();
-        Boolean isCoverRequired = false;
-        Boolean isCoverProvided = false;
+        ActionStatus isCoverRequired = ActionStatus.No;
+        ActionStatus isCoverProvided = ActionStatus.No;
         String coverSupervisorComment = WordGenerator.getRandomWord();
-        Boolean isApprovedByHeadTeacher = false;
-        Boolean isAbsencePaid = false;
+        ActionStatus isApprovedByHeadTeacher = ActionStatus.No;
+        ActionStatus isAbsencePaid = ActionStatus.No;
         String headTeacherComment = WordGenerator.getRandomWord();
         String hrSupervisorComment = WordGenerator.getRandomWord();
-        Boolean isCaseResolved = false;
+        ActionStatus isCaseResolved = ActionStatus.No;
         LocalDate resolvedDate = LocalDate.now();
 
         return AbsenceCase.builder()
@@ -60,14 +61,14 @@ public class AbsenceCaseGenerator {
         PartDayType type = PartDayType.Afternoon;
         String absenceReason = WordGenerator.getRandomWord();
         String userComment = WordGenerator.getRandomWord();
-        Boolean isCoverRequired = false;
-        Boolean isCoverProvided = false;
+        ActionStatus isCoverRequired = ActionStatus.No;
+        ActionStatus isCoverProvided = ActionStatus.No;
         String coverSupervisorComment = WordGenerator.getRandomWord();
-        Boolean isApprovedByHeadTeacher = false;
-        Boolean isAbsencePaid = false;
+        ActionStatus isApprovedByHeadTeacher = ActionStatus.No;
+        ActionStatus isAbsencePaid = ActionStatus.No;
         String headTeacherComment = WordGenerator.getRandomWord();
         String hrSupervisorComment = WordGenerator.getRandomWord();
-        Boolean isCaseResolved = false;
+        ActionStatus isCaseResolved = ActionStatus.No;
         LocalDate resolvedDate = LocalDate.now();
 
         return AbsenceCase.builder()
@@ -102,14 +103,14 @@ public class AbsenceCaseGenerator {
         PartDayType partDayType = PartDayType.AllDay;
         String absenceReason = WordGenerator.getRandomWord();
         String userComment = WordGenerator.getRandomWord();
-        Boolean isCoverRequired = false;
-        Boolean isCoverProvided = false;
+        ActionStatus isCoverRequired = ActionStatus.No;
+        ActionStatus isCoverProvided = ActionStatus.No;
         String coverSupervisorComment = WordGenerator.getRandomWord();
-        Boolean isApprovedByHeadTeacher = false;
-        Boolean isAbsencePaid = false;
+        ActionStatus isApprovedByHeadTeacher = ActionStatus.No;
+        ActionStatus isAbsencePaid = ActionStatus.No;
         String headTeacherComment = WordGenerator.getRandomWord();
         String hrSupervisorComment = WordGenerator.getRandomWord();
-        Boolean isCaseResolved = false;
+        ActionStatus isCaseResolved = ActionStatus.No;
         LocalDate resolvedDate = LocalDate.now();
 
         return AbsenceCase.builder()
@@ -143,14 +144,14 @@ public class AbsenceCaseGenerator {
         PartDayType type = PartDayType.AllDay;
         String absenceReason = WordGenerator.getRandomWord();
         String userComment = WordGenerator.getRandomWord();
-        Boolean isCoverRequired = false;
-        Boolean isCoverProvided = false;
+        ActionStatus isCoverRequired = ActionStatus.No;
+        ActionStatus isCoverProvided = ActionStatus.No;
         String coverSupervisorComment = WordGenerator.getRandomWord();
-        Boolean isApprovedByHeadTeacher = false;
-        Boolean isAbsencePaid = false;
+        ActionStatus isApprovedByHeadTeacher = ActionStatus.No;
+        ActionStatus isAbsencePaid = ActionStatus.No;
         String headTeacherComment = WordGenerator.getRandomWord();
         String hrSupervisorComment = WordGenerator.getRandomWord();
-        Boolean isCaseResolved = false;
+        ActionStatus isCaseResolved = ActionStatus.No;
         LocalDate resolvedDate = LocalDate.now();
 
         return AbsenceCase.builder()
@@ -184,14 +185,14 @@ public class AbsenceCaseGenerator {
         PartDayType type = PartDayType.AllDay;
         String absenceReason = WordGenerator.getRandomWord();
         String userComment = WordGenerator.getRandomWord();
-        Boolean isCoverRequired = false;
-        Boolean isCoverProvided = false;
+        ActionStatus isCoverRequired = ActionStatus.No;
+        ActionStatus isCoverProvided = ActionStatus.No;
         String coverSupervisorComment = WordGenerator.getRandomWord();
-        Boolean isApprovedByHeadTeacher = false;
-        Boolean isAbsencePaid = false;
+        ActionStatus isApprovedByHeadTeacher = ActionStatus.No;
+        ActionStatus isAbsencePaid = ActionStatus.No;
         String headTeacherComment = WordGenerator.getRandomWord();
         String hrSupervisorComment = WordGenerator.getRandomWord();
-        Boolean isCaseResolved = false;
+        ActionStatus isCaseResolved = ActionStatus.No;
         LocalDate resolvedDate = LocalDate.now();
 
         return AbsenceCase.builder()
@@ -224,14 +225,14 @@ public class AbsenceCaseGenerator {
         PartDayType type = PartDayType.AllDay;
         String absenceReason = WordGenerator.getRandomWord();
         String userComment = WordGenerator.getRandomWord();
-        Boolean isCoverRequired = false;
-        Boolean isCoverProvided = false;
+        ActionStatus isCoverRequired = ActionStatus.No;
+        ActionStatus isCoverProvided = ActionStatus.No;
         String coverSupervisorComment = WordGenerator.getRandomWord();
-        Boolean isApprovedByHeadTeacher = false;
-        Boolean isAbsencePaid = false;
+        ActionStatus isApprovedByHeadTeacher = ActionStatus.No;
+        ActionStatus isAbsencePaid = ActionStatus.No;
         String headTeacherComment = WordGenerator.getRandomWord();
         String hrSupervisorComment = WordGenerator.getRandomWord();
-        Boolean isCaseResolved = false;
+        ActionStatus isCaseResolved = ActionStatus.No;
         LocalDate resolvedDate = LocalDate.now();
 
         return AbsenceCase.builder()
@@ -265,14 +266,14 @@ public class AbsenceCaseGenerator {
         PartDayType type = PartDayType.AllDay;
         String absenceReason = WordGenerator.getRandomWord();
         String userComment = WordGenerator.getRandomWord();
-        Boolean isCoverRequired = false;
-        Boolean isCoverProvided = false;
+        ActionStatus isCoverRequired = ActionStatus.No;
+        ActionStatus isCoverProvided = ActionStatus.No;
         String coverSupervisorComment = WordGenerator.getRandomWord();
-        Boolean isApprovedByHeadTeacher = false;
-        Boolean isAbsencePaid = false;
+        ActionStatus isApprovedByHeadTeacher = ActionStatus.No;
+        ActionStatus isAbsencePaid = ActionStatus.No;
         String headTeacherComment = WordGenerator.getRandomWord();
         String hrSupervisorComment = WordGenerator.getRandomWord();
-        Boolean isCaseResolved = false;
+        ActionStatus isCaseResolved = ActionStatus.No;
         LocalDate resolvedDate = LocalDate.now();
 
         return AbsenceCase.builder()

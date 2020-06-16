@@ -27,14 +27,14 @@ public class AbsenceCase {
     private final PartDayType partDayType;
     private final String absenceReason;
     private final String userComment; // option, must not be validated
-    private final Boolean isCoverRequired;
-    private final Boolean isCoverProvided;
+    private final ActionStatus isCoverRequired;
+    private final ActionStatus isCoverProvided;
     private final String coverSupervisorComment; // option, must not be validated
-    private final Boolean isApprovedByHeadTeacher;
-    private final Boolean isAbsencePaid;
+    private final ActionStatus isApprovedByHeadTeacher;
+    private final ActionStatus isAbsencePaid;
     private final String headTeacherComment; // option, must not be validated
     private final String hrSupervisorComment; // option, must not be validated
-    private final Boolean isCaseResolved;
+    private final ActionStatus isCaseResolved;
     private final LocalDate resolvedDate;
 
     @SuppressWarnings("unused")
@@ -120,11 +120,11 @@ public class AbsenceCase {
         return userComment;
     }
 
-    public Boolean getIsCoverRequired() {
+    public ActionStatus getIsCoverRequired() {
         return isCoverRequired;
     }
 
-    public Boolean getIsCoverProvided() {
+    public ActionStatus getIsCoverProvided() {
         return isCoverProvided;
     }
 
@@ -132,11 +132,11 @@ public class AbsenceCase {
         return coverSupervisorComment;
     }
 
-    public Boolean getIsApprovedByHeadTeacher() {
+    public ActionStatus getIsApprovedByHeadTeacher() {
         return isApprovedByHeadTeacher;
     }
 
-    public Boolean getIsAbsencePaid() {
+    public ActionStatus getIsAbsencePaid() {
         return isAbsencePaid;
     }
 
@@ -148,7 +148,7 @@ public class AbsenceCase {
         return hrSupervisorComment;
     }
 
-    public Boolean getIsCaseResolved() {
+    public ActionStatus getIsCaseResolved() {
         return isCaseResolved;
     }
 
@@ -221,14 +221,14 @@ public class AbsenceCase {
         private PartDayType partDayType;
         private String absenceReason;
         private String userComment;
-        private Boolean isCoverRequired;
-        private Boolean isCoverProvided;
+        private ActionStatus isCoverRequired;
+        private ActionStatus isCoverProvided;
         private String coverSupervisorComment;
-        private Boolean isApprovedByHeadTeacher;
-        private Boolean isAbsencePaid;
+        private ActionStatus isApprovedByHeadTeacher;
+        private ActionStatus isAbsencePaid;
         private String headTeacherComment;
         private String hrSupervisorComment;
-        private Boolean isCaseResolved;
+        private ActionStatus isCaseResolved;
         private LocalDate resolvedDate;
 
         public Builder withCase(AbsenceCase aCase) {
@@ -298,12 +298,12 @@ public class AbsenceCase {
             return this;
         }
 
-        public Builder withIsCoverRequired(Boolean isCoverRequired) {
+        public Builder withIsCoverRequired(ActionStatus isCoverRequired) {
             this.isCoverRequired = isCoverRequired;
             return this;
         }
 
-        public Builder withIsCoverProvided(Boolean isCoverProvided) {
+        public Builder withIsCoverProvided(ActionStatus isCoverProvided) {
             this.isCoverProvided = isCoverProvided;
             return this;
         }
@@ -313,12 +313,12 @@ public class AbsenceCase {
             return this;
         }
 
-        public Builder withIsApprovedByHeadTeacher(Boolean isApprovedByHeadTeacher) {
+        public Builder withIsApprovedByHeadTeacher(ActionStatus isApprovedByHeadTeacher) {
             this.isApprovedByHeadTeacher = isApprovedByHeadTeacher;
             return this;
         }
 
-        public Builder withIsAbsencePaid(Boolean isAbsencePaid) {
+        public Builder withIsAbsencePaid(ActionStatus isAbsencePaid) {
             this.isAbsencePaid = isAbsencePaid;
             return this;
         }
@@ -333,7 +333,7 @@ public class AbsenceCase {
             return this;
         }
 
-        public Builder withIsCaseResolved(Boolean isCaseResolved) {
+        public Builder withIsCaseResolved(ActionStatus isCaseResolved) {
             this.isCaseResolved = isCaseResolved;
             return this;
         }

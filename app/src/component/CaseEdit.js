@@ -34,7 +34,8 @@ class CaseEdit extends Component {
             users: [],
             headTeachers: [],
             requiredPage: null,
-            returnAddress: undefined
+            returnAddress: undefined,
+            displayButton: ""
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleUserChange = this.handleUserChange.bind(this);
@@ -54,7 +55,7 @@ class CaseEdit extends Component {
             const filteredUsers = users.filter(u => !(u.id === currentUser.id));
             if (this.props.match.params.id !== 'new') {
                 const aCase = await (await fetch(`${API_URL}api/cases/${this.props.match.params.id}`, {headers: authHeader()})).json();
-                this.setState({aCase: aCase, users: filteredUsers, headTeachers: headTeachers});
+                this.setState({aCase: aCase, users: filteredUsers, headTeachers: headTeachers, displayButton: "none"});
             } else {
                 this.setState({users: filteredUsers, headTeachers: headTeachers})
             }
@@ -108,7 +109,7 @@ class CaseEdit extends Component {
     }
 
     render() {
-        const {aCase, users, headTeachers} = this.state;
+        const {aCase, users, headTeachers, displayButton} = this.state;
         const title = <h2 className="mb-n1">{aCase.id ? 'Edit Case' : 'Add Case'}</h2>;
         const user = users
             .map((user, index) =>
@@ -135,7 +136,8 @@ class CaseEdit extends Component {
                                 <span>) </span>
                                 <span className="text-danger">*</span>
                             </Label>
-                            <Input type="select" name="user" id="user" defaultValue={aCase.user}
+                            <Input style={{display: `${displayButton}`}}
+                                type="select" name="user" id="user" defaultValue={aCase.user}
                                    onChange={this.handleUserChange}>
                                 <option/>
                                 {user}
@@ -213,8 +215,8 @@ class CaseEdit extends Component {
                                    value={aCase.isCoverRequired}
                                    onChange={this.handleChange}>
                                 <option/>
-                                <option value="false">no</option>
-                                <option value="true">yes</option>
+                                <option value="No">No</option>
+                                <option value="Yes">Yes</option>
                             </Input>
                         </FormGroup>
                         <FormGroup className="col-md-2 mb-n2">
@@ -226,8 +228,9 @@ class CaseEdit extends Component {
                                    value={aCase.isCoverProvided}
                                    onChange={this.handleChange}>
                                 <option/>
-                                <option value="false">no</option>
-                                <option value="true">yes</option>
+                                <option value="Awaiting">Awaiting</option>
+                                <option value="No">No</option>
+                                <option value="Yes">Yes</option>
                             </Input>
                         </FormGroup>
                         <FormGroup className="col-md-6 mb-n2">
@@ -249,8 +252,9 @@ class CaseEdit extends Component {
                                    value={aCase.isApprovedByHeadTeacher}
                                    onChange={this.handleChange}>
                                 <option/>
-                                <option value="false">no</option>
-                                <option value="true">yes</option>
+                                <option value="Awaiting">Awaiting</option>
+                                <option value="No">No</option>
+                                <option value="Yes">Yes</option>
                             </Input>
                         </FormGroup>
                         <FormGroup className="col-md-2 mb-n2">
@@ -262,8 +266,9 @@ class CaseEdit extends Component {
                                    value={aCase.isAbsencePaid}
                                    onChange={this.handleChange}>
                                 <option/>
-                                <option value="false">no</option>
-                                <option value="true">yes</option>
+                                <option value="Awaiting">Awaiting</option>
+                                <option value="No">No</option>
+                                <option value="Yes">Yes</option>
                             </Input>
                         </FormGroup>
                         <FormGroup className="col-md-6 mb-n2">
@@ -293,8 +298,8 @@ class CaseEdit extends Component {
                                    value={aCase.isCaseResolved}
                                    onChange={this.handleChange}>
                                 <option/>
-                                <option value="false">no</option>
-                                <option value="true">yes</option>
+                                <option value="No">No</option>
+                                <option value="Yes">Yes</option>
                             </Input>
                         </FormGroup>
                         <Link className="col-md-1 mb-n2 h-25 align-self-end mr-1"

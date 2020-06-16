@@ -14,16 +14,16 @@ class CaseDetails extends Component {
         } else {
             partDayType = aCase.partDayType;
         }
-        var isCoverRequired;
-        if (aCase.isCoverRequired) {isCoverRequired = 'YES'} else {isCoverRequired = 'NO'}
-        var isCoverProvided;
-        if (aCase.isCoverProvided) {isCoverProvided = 'YES'} else {isCoverProvided = 'NO'}
-        var isAbsenceApproved;
-        if (aCase.isApprovedByHeadTeacher) {isAbsenceApproved = 'YES'} else {isAbsenceApproved = 'NO'}
-        var isAbsencePaid;
-        if (aCase.isAbsencePaid) {isAbsencePaid = 'YES'} else {isAbsencePaid = 'NO'}
-        var isCaseResolved;
-        if (aCase.isCaseResolved) {isCaseResolved = 'YES'} else {isCaseResolved = 'NO'}
+        // var isCoverRequired;
+        // if (aCase.isCoverRequired) {isCoverRequired = 'YES'} else {isCoverRequired = 'NO'}
+        // var isCoverProvided;
+        // if (aCase.isCoverProvided) {isCoverProvided = 'YES'} else {isCoverProvided = 'NO'}
+        // var isAbsenceApproved;
+        // if (aCase.isApprovedByHeadTeacher) {isAbsenceApproved = 'YES'} else {isAbsenceApproved = 'NO'}
+        // var isAbsencePaid;
+        // if (aCase.isAbsencePaid) {isAbsencePaid = 'YES'} else {isAbsencePaid = 'NO'}
+        // var isCaseResolved;
+        // if (aCase.isCaseResolved) {isCaseResolved = 'YES'} else {isCaseResolved = 'NO'}
 
         return (
             <div>
@@ -52,19 +52,19 @@ class CaseDetails extends Component {
                             <ListGroupItem className="rounded block-example border border-dark col-md-12 mb-1">User comment:  {aCase.userComment}</ListGroupItem>
                         </div>
                         <div className="row">
-                            <ListGroupItem className="rounded block-example border border-dark col-md-2 mb-1">Cover required: {isCoverRequired}</ListGroupItem>
-                            <ListGroupItem className="rounded block-example border border-dark col-md-2 mb-1">Cover provided: {isCoverProvided}</ListGroupItem>
-                            <ListGroupItem className="rounded block-example border border-dark col-md-8 mb-1">Cover Supervisor comment:  {aCase.coverSupervisorComment}</ListGroupItem>
+                            <ListGroupItem className="rounded block-example border border-dark col-md-2 mb-1">Cover required: {aCase.isCoverRequired}</ListGroupItem>
+                            <ListGroupItem className="rounded block-example border border-dark col-md-3 mb-1">Cover provided: {aCase.isCoverProvided}</ListGroupItem>
+                            <ListGroupItem className="rounded block-example border border-dark col-md-7 mb-1">Cover Supervisor comment:  {aCase.coverSupervisorComment}</ListGroupItem>
                         </div>
                         <div className="row">
-                            <ListGroupItem className="rounded block-example border border-dark col-md-3 mb-1">Absence approved: {isAbsenceApproved}</ListGroupItem>
-                            <ListGroupItem className="rounded block-example border border-dark col-md-2 mb-1">Absence paid: {isAbsencePaid}</ListGroupItem>
+                            <ListGroupItem className="rounded block-example border border-dark col-md-3 mb-1">Absence approved: {aCase.isApprovedByHeadTeacher}</ListGroupItem>
+                            <ListGroupItem className="rounded block-example border border-dark col-md-2 mb-1">Absence paid: {aCase.isAbsencePaid}</ListGroupItem>
                             <ListGroupItem className="rounded block-example border border-dark col-md-7 mb-1">Head Teacher comment:  {aCase.headTeacherComment}</ListGroupItem>
                         </div>
                         <div className="row">
                             <ListGroupItem className="rounded block-example border border-dark col-md-7 mb-2">HR Supervisor comment:  {aCase.hrSupervisorComment}</ListGroupItem>
                             <ListGroupItem className="rounded block-example border border-dark col-md-3 mb-2">Resolved date:  {aCase.resolvedDate}</ListGroupItem>
-                            <ListGroupItem className="rounded block-example border border-dark col-md-2 mb-2">Case resolved: {isCaseResolved}</ListGroupItem>
+                            <ListGroupItem className="rounded block-example border border-dark col-md-2 mb-2">Case resolved: {aCase.isCaseResolved}</ListGroupItem>
                         </div>
                     </ListGroup>
                     <div className="float-right">

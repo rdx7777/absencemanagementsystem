@@ -2,6 +2,7 @@ package io.github.rdx7777.absencemanagementsystem.controller;
 
 import io.github.rdx7777.absencemanagementsystem.model.AbsenceCase;
 import io.github.rdx7777.absencemanagementsystem.model.AbsenceCaseDTO;
+import io.github.rdx7777.absencemanagementsystem.model.ActionStatus;
 import io.github.rdx7777.absencemanagementsystem.model.AppModelMapper;
 import io.github.rdx7777.absencemanagementsystem.model.Position;
 import io.github.rdx7777.absencemanagementsystem.model.User;
@@ -136,7 +137,8 @@ public class AbsenceCaseController {
                 emailService.sendEmailToHumanResourcesSupervisor(headTeacher, user, updatedCase);
                 break;
             case HumanResourcesSupervisor:
-                if (updatedCase.getIsCaseResolved()) {
+                // TODO: check it
+                if (updatedCase.getIsCaseResolved().equals(ActionStatus.Yes)) {
                     emailService.sendEmailToUser(headTeacher, user, updatedCase);
                     break;
                 }
@@ -244,7 +246,7 @@ public class AbsenceCaseController {
     }
 
     @DeleteMapping(value = "/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('HR_SUPERVISOR')")
     public ResponseEntity<?> deleteCase(@PathVariable("id") Long id) throws ServiceOperationException {
         if (!caseService.caseExists(id)) {
             logger.error("Attempt to delete not existing case.");

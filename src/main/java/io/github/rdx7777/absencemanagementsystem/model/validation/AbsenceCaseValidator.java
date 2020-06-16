@@ -1,6 +1,7 @@
 package io.github.rdx7777.absencemanagementsystem.model.validation;
 
 import io.github.rdx7777.absencemanagementsystem.model.AbsenceCase;
+import io.github.rdx7777.absencemanagementsystem.model.ActionStatus;
 import io.github.rdx7777.absencemanagementsystem.model.PartDayType;
 import io.github.rdx7777.absencemanagementsystem.model.User;
 
@@ -116,35 +117,35 @@ public class AbsenceCaseValidator extends Validator {
         return null;
     }
 
-    private static String validateIsCoverRequired(Boolean isCoverRequired) {
+    private static String validateIsCoverRequired(ActionStatus isCoverRequired) {
         if (isCoverRequired == null) {
             return "Is cover required index cannot be null.";
         }
         return null;
     }
 
-    private static String validateIsCoverProvided(Boolean isCoverProvided) {
+    private static String validateIsCoverProvided(ActionStatus isCoverProvided) {
         if (isCoverProvided == null) {
             return "Is cover provided index cannot be null.";
         }
         return null;
     }
 
-    private static String validateIsApprovedByHeadTeacher(Boolean isApprovedByHeadTeacher) {
+    private static String validateIsApprovedByHeadTeacher(ActionStatus isApprovedByHeadTeacher) {
         if (isApprovedByHeadTeacher == null) {
             return "Is approved by Head Teacher index cannot be null.";
         }
         return null;
     }
 
-    private static String validateIsAbsencePaid(Boolean isAbsencePaid) {
+    private static String validateIsAbsencePaid(ActionStatus isAbsencePaid) {
         if (isAbsencePaid == null) {
             return "Is absence paid index cannot be null.";
         }
         return null;
     }
 
-    private static String validateIsCaseResolved(Boolean isCaseResolved) {
+    private static String validateIsCaseResolved(ActionStatus isCaseResolved) {
         if (isCaseResolved == null) {
             return "Is case resolved index cannot be null.";
         }

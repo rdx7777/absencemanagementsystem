@@ -1,6 +1,7 @@
 package io.github.rdx7777.absencemanagementsystem.service;
 
 import io.github.rdx7777.absencemanagementsystem.model.AbsenceCase;
+import io.github.rdx7777.absencemanagementsystem.model.ActionStatus;
 import io.github.rdx7777.absencemanagementsystem.model.User;
 import io.github.rdx7777.absencemanagementsystem.repository.AbsenceCaseRepository;
 import io.github.rdx7777.absencemanagementsystem.repository.UserRepository;
@@ -52,7 +53,8 @@ public class AbsenceCaseService {
                 userRepository.save(aCase.getHeadTeacher());
             }
             AbsenceCase caseToSave;
-            if (aCase.getIsCaseResolved()) {
+            // TODO: check it
+            if (aCase.getIsCaseResolved().equals(ActionStatus.Yes)) {
                 caseToSave = AbsenceCase.builder().withCase(aCase).withCreatedDate(LocalDate.now()).withResolvedDate(LocalDate.now()).build();
             } else {
                 caseToSave = AbsenceCase.builder().withCase(aCase).withCreatedDate(LocalDate.now()).build();
@@ -77,7 +79,8 @@ public class AbsenceCaseService {
         }
         try {
             AbsenceCase caseToUpdate;
-            if (aCase.getIsCaseResolved() && (repository.findById(aCase.getId()).get().getResolvedDate() == null)) {
+            // TODO: check it
+            if (aCase.getIsCaseResolved().equals(ActionStatus.Yes) && (repository.findById(aCase.getId()).get().getResolvedDate() == null)) {
                 caseToUpdate = AbsenceCase.builder().withCase(aCase).withResolvedDate(LocalDate.now()).build();
             } else {
                 caseToUpdate = aCase;
@@ -134,7 +137,9 @@ public class AbsenceCaseService {
     }
 
     public Collection<AbsenceCase> getAllActiveCases() throws ServiceOperationException {
-        Example<AbsenceCase> example = Example.of(new AbsenceCase.Builder().withIsCaseResolved(false).build());
+        // TODO: check it
+        // TODO: isCaseResolved is always No or Yes (never: Awaiting)
+        Example<AbsenceCase> example = Example.of(new AbsenceCase.Builder().withIsCaseResolved(ActionStatus.No).build());
         Sort sort = Sort.by(Sort.Direction.DESC, "id");
         try {
             return repository.findAll(example, sort);
@@ -145,6 +150,7 @@ public class AbsenceCaseService {
         }
     }
 
+    // TODO: check it (method in repository must be changed)
     public Collection<AbsenceCase> getAllActiveCasesPaginated(Long offset, Long limit) throws ServiceOperationException {
         if (offset < 0) {
             logger.error("Attempt to get all paginated active cases with offset less than 0.");
@@ -208,7 +214,7 @@ public class AbsenceCaseService {
             throw new IllegalArgumentException("Head teacher id cannot be null.");
         }
         User headTeacherExample = User.builder().withId(headTeacherId).build();
-        Example<AbsenceCase> caseExample = Example.of(new AbsenceCase.Builder().withHeadTeacher(headTeacherExample).withIsCaseResolved(false).build());
+        Example<AbsenceCase> caseExample = Example.of(new AbsenceCase.Builder().withHeadTeacher(headTeacherExample).withIsCaseResolved(ActionStatus.No).build());
         Sort sort = Sort.by(Sort.Direction.DESC, "id");
         try {
             return repository.findAll(caseExample, sort);
@@ -219,6 +225,7 @@ public class AbsenceCaseService {
         }
     }
 
+    // TODO: check it (method in repository must be changed)
     public Collection<AbsenceCase> getAllActiveCasesForHeadTeacherPaginated(Long headTeacherId, Long offset, Long limit) throws ServiceOperationException {
         if (headTeacherId == null) {
             logger.error("Attempt to get all paginated absence case for head teacher id providing null id.");
@@ -272,7 +279,7 @@ public class AbsenceCaseService {
     }
 
     public long activeCasesCount() throws ServiceOperationException {
-        Example<AbsenceCase> activeCaseExample = Example.of(new AbsenceCase.Builder().withIsCaseResolved(false).build());
+        Example<AbsenceCase> activeCaseExample = Example.of(new AbsenceCase.Builder().withIsCaseResolved(ActionStatus.No).build());
         try {
             return repository.count(activeCaseExample);
         } catch (NonTransientDataAccessException e) {
@@ -284,7 +291,7 @@ public class AbsenceCaseService {
 
     public long activeCasesForHeadTeacherCount(Long headTeacherId) throws ServiceOperationException {
         User headTeacherExample = User.builder().withId(headTeacherId).build();
-        Example<AbsenceCase> activeCaseForHeadTeacherExample = Example.of(new AbsenceCase.Builder().withHeadTeacher(headTeacherExample).withIsCaseResolved(false).build());
+        Example<AbsenceCase> activeCaseForHeadTeacherExample = Example.of(new AbsenceCase.Builder().withHeadTeacher(headTeacherExample).withIsCaseResolved(ActionStatus.No).build());
         try {
             return repository.count(activeCaseForHeadTeacherExample);
         } catch (NonTransientDataAccessException e) {

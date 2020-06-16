@@ -64,19 +64,19 @@ class UserComponent extends Component {
         }
 
         const caseList = currentCases.map(aCase => {
-            var isResolved;
-            if (aCase.isCaseResolved) {
-                isResolved = 'yes'
-            } else {
-                isResolved = 'no'
-            }
+            // var isResolved;
+            // if (aCase.isCaseResolved) {
+            //     isResolved = 'yes'
+            // } else {
+            //     isResolved = 'no'
+            // }
             return <tr key={aCase.id}>
                 <td>{aCase.id}</td>
                 <td>{aCase.headTeacher.name || ''} {aCase.headTeacher.surname || ''}</td>
                 <td>{aCase.startDate}</td>
                 <td>{aCase.endDate}</td>
                 <td>{aCase.absenceReason}</td>
-                <td>{isResolved}</td>
+                <td>{aCase.isCaseResolved}</td>
                 <td>
                     <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
                             size="sm" color="primary"

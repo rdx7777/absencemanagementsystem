@@ -82,7 +82,7 @@ class AllUserList extends Component {
 
         const userList = currentUsers.map(user => {
             var isActive;
-            isActive = user.isActive ? 'yes' : 'no';
+            isActive = user.isActive ? 'Yes' : 'No';
             var role;
             if (user.role === 'ROLE_USER') {role = "user"}
             if (user.role === 'ROLE_CS_SUPERVISOR') {role = "cover supervisor"}

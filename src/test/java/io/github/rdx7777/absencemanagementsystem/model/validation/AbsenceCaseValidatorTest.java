@@ -3,6 +3,7 @@ package io.github.rdx7777.absencemanagementsystem.model.validation;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import io.github.rdx7777.absencemanagementsystem.model.AbsenceCase;
+import io.github.rdx7777.absencemanagementsystem.model.ActionStatus;
 import io.github.rdx7777.absencemanagementsystem.model.PartDayType;
 import io.github.rdx7777.absencemanagementsystem.model.Position;
 import io.github.rdx7777.absencemanagementsystem.model.User;
@@ -48,14 +49,14 @@ class AbsenceCaseValidatorTest {
             .withPartDayType(PartDayType.AllDay)
             .withAbsenceReason("Sickness.")
             .withUserComment("Flu.")
-            .withIsCoverRequired(true)
-            .withIsCoverProvided(true)
+            .withIsCoverRequired(ActionStatus.Yes)
+            .withIsCoverProvided(ActionStatus.Yes)
             .withCoverSupervisorComment("Cover teacher name: John Lennon.")
-            .withIsApprovedByHeadTeacher(true)
-            .withIsAbsencePaid(true)
+            .withIsApprovedByHeadTeacher(ActionStatus.Yes)
+            .withIsAbsencePaid(ActionStatus.Yes)
             .withHeadTeacherComment("No comment.")
             .withHrSupervisorComment("No comment.")
-            .withIsCaseResolved(true)
+            .withIsCaseResolved(ActionStatus.Yes)
             .withResolvedDate(LocalDate.of(2099, 12, 31))
             .build();
     }

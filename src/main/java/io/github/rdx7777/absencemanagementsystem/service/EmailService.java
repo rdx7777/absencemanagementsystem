@@ -61,8 +61,8 @@ public class EmailService {
     @Async
     public void sendEmailToHeadTeacher(User headTeacher, User user, AbsenceCaseDTO aCase) {
         String headTeacherEmail = headTeacher.getEmail();
-        String isCoverRequired = aCase.getIsCoverRequired() ? "yes" : "no";
-        String isCoverProvided = aCase.getIsCoverProvided() ? "yes" : "no";
+        String isCoverRequired = aCase.getIsCoverRequired().getStatus();
+        String isCoverProvided = aCase.getIsCoverProvided().getStatus();
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
@@ -87,10 +87,10 @@ public class EmailService {
 
     @Async
     public void sendEmailToHumanResourcesSupervisor(User headTeacher, User user, AbsenceCaseDTO aCase) {
-        String isCoverRequired = aCase.getIsCoverRequired() ? "yes" : "no";
-        String isCoverProvided = aCase.getIsCoverProvided() ? "yes" : "no";
-        String isApprovedByHeadTeacher = aCase.getIsApprovedByHeadTeacher() ? "yes" : "no";
-        String isAbsencePaid = aCase.getIsAbsencePaid() ? "yes" : "no";
+        String isCoverRequired = aCase.getIsCoverRequired().getStatus();
+        String isCoverProvided = aCase.getIsCoverProvided().getStatus();
+        String isApprovedByHeadTeacher = aCase.getIsApprovedByHeadTeacher().getStatus();
+        String isAbsencePaid = aCase.getIsAbsencePaid().getStatus();
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
@@ -124,10 +124,10 @@ public class EmailService {
     @Async
     public void sendEmailToUser(User headTeacher, User user, AbsenceCaseDTO aCase) {
         String userEmail = user.getEmail();
-        String isCoverRequired = aCase.getIsCoverRequired() ? "yes" : "no";
-        String isCoverProvided = aCase.getIsCoverProvided() ? "yes" : "no";
-        String isApprovedByHeadTeacher = aCase.getIsApprovedByHeadTeacher() ? "yes" : "no";
-        String isAbsencePaid = aCase.getIsAbsencePaid() ? "yes" : "no";
+        String isCoverRequired = aCase.getIsCoverRequired().getStatus();
+        String isCoverProvided = aCase.getIsCoverProvided().getStatus();
+        String isApprovedByHeadTeacher = aCase.getIsApprovedByHeadTeacher().getStatus();
+        String isAbsencePaid = aCase.getIsAbsencePaid().getStatus();
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);

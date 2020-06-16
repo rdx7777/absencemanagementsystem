@@ -91,27 +91,34 @@ class AllCaseList extends Component {
 
         const caseList = currentCases.map(aCase => {
             const currentUser = AuthService.getCurrentUser();
-            var isRequired;
-            if (aCase.isCoverRequired) {isRequired='yes'} else {isRequired='no'}
+            // var isRequired;
+            // if (aCase.isCoverRequired) {isRequired='yes'} else {isRequired='no'}
             var isProvided;
-            if (aCase.isCoverProvided) {isProvided='yes'} else {isProvided='no'}
+            if (aCase.isCoverProvided === "Awaiting") {isProvided='Await.'} else {isProvided=aCase.isCoverProvided}
             var isApproved;
-            if (aCase.isApprovedByHeadTeacher) {isApproved = 'yes'} else {isApproved = 'no'}
+            if (aCase.isApprovedByHeadTeacher === "Awaiting") {isApproved = 'Await.'} else {isApproved = aCase.isApprovedByHeadTeacher}
             var isPaid;
-            if (aCase.isAbsencePaid) {isPaid = 'yes'} else {isPaid = 'no'}
-            var isResolved;
-            if (aCase.isCaseResolved) {isResolved='yes'} else {isResolved='no'}
+            if (aCase.isAbsencePaid === "Awaiting") {isPaid = 'Await.'} else {isPaid = aCase.isAbsencePaid}
+            // var isResolved;
+            // if (aCase.isCaseResolved) {isResolved='yes'} else {isResolved='no'}
+            var editButtonDisabled = true;
+            if (aCase.isCaseResolved === "No" || currentUser.roles.includes("ROLE_HR_SUPERVISOR") || currentUser.roles.includes("ROLE_ADMIN")) {
+                editButtonDisabled = false;
+            }
+            // if (aCase.isCaseResolved === "No") {editButtonDisabled = false}
+            // if (aCase.isCaseResolved === "Yes" && currentUser.roles.includes("ROLE_HR_SUPERVISOR")) {editButtonDisabled = false}
+            // if (aCase.isCaseResolved === "Yes" && currentUser.roles.includes("ROLE_ADMIN")) {editButtonDisabled = false}
             return <tr key={aCase.id}>
                 <td style={{whiteSpace: 'nowrap'}}>{aCase.id}</td>
                 <td>{aCase.user.name || ''} {aCase.user.surname || ''}</td>
-                <td>{aCase.startDate}</td>
-                <td>{aCase.endDate}</td>
-                <td>{isRequired}</td>
+                <td style={{whiteSpace: 'nowrap'}}>{aCase.startDate}</td>
+                <td style={{whiteSpace: 'nowrap'}}>{aCase.endDate}</td>
+                <td>{aCase.isCoverRequired}</td>
                 <td>{isProvided}</td>
                 <td>{isApproved}</td>
                 <td>{isPaid}</td>
                 <td>{aCase.absenceReason}</td>
-                <td>{isResolved}</td>
+                <td>{aCase.isCaseResolved}</td>
                 <td>
                     <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
                             size="sm" color="primary"
@@ -124,7 +131,7 @@ class AllCaseList extends Component {
                         state: {returnAddress: '/cases', requiredPage: this.state.currentPage}}}>
                         <Button style={{whiteSpace: 'nowrap', margin: '0 5px 0 auto', alignSelf: 'center'}}
                                 size="sm" color="warning"
-                                disabled={aCase.isCaseResolved && !currentUser.roles.includes("ROLE_ADMIN") ? true : false}>
+                                disabled={editButtonDisabled}>
                             Edit
                         </Button>
                     </Link>

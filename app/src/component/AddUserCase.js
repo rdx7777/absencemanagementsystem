@@ -57,10 +57,10 @@ export default class AddUserCase extends Component {
 
             aCase.id = null;
             aCase.user = user;
-            aCase.isCoverProvided = false;
-            aCase.isApprovedByHeadTeacher = false;
-            aCase.isAbsencePaid = false;
-            aCase.isCaseResolved = false;
+            aCase.isCoverProvided = "Awaiting";
+            aCase.isApprovedByHeadTeacher = "Awaiting";
+            aCase.isAbsencePaid = "Awaiting";
+            aCase.isCaseResolved = "No";
 
             this.setState({aCase: aCase, user: user, headTeachers: filteredHeadTeachers});
         } catch (e) {
@@ -193,8 +193,8 @@ export default class AddUserCase extends Component {
                                    value={aCase.isCoverRequired}
                                    onChange={this.handleChange}>
                                 <option/>
-                                <option value="false">no</option>
-                                <option value="true">yes</option>
+                                <option value="No">no</option>
+                                <option value="Yes">yes</option>
                             </Input>
                         </FormGroup>
                     </div>
